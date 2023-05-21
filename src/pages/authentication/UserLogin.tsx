@@ -1,12 +1,13 @@
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, FormControl, Typography } from "@material-ui/core";
 import { TextField } from "@mui/material";
-import { ClerkProvider } from "@clerk/clerk-react";
+import { ClerkProvider, RedirectToSignIn, SignIn } from "@clerk/clerk-react";
 import { useClerk, useSession } from "@clerk/clerk-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ROUTING_MANAGER } from "../../navigation/Router";
 
 const UserLogin = () => {
     const [email, setEmail] = useState();
@@ -17,9 +18,10 @@ const UserLogin = () => {
 
     const navigate = useNavigate();
 
-    const onClickButton = () => {
-        //TODO
-    };
+    const linkTo = ((url : string) => {
+        navigate(url)
+        //window.location.reload;
+    })
 
     return (
         <>
@@ -34,7 +36,7 @@ const UserLogin = () => {
                 sx={{
                     width: "70%",
                     height: 800,
-                    backgroundColor: "primary.main",
+                    backgroundColor: "lightblue",
                 }}
                 borderRadius="3%"
                 >
@@ -50,40 +52,30 @@ const UserLogin = () => {
                 </Grid>
 
                 <br />
-                <Grid className="emailInput" container justifyContent="center">
-                    <TextField
-                    sx={{ width: 600 }}
-                    value={email}
-                    label={t("session.email")}
-                    // onChange={(ev) => setEmail(ev.target.value)}
-                    className="inputBox"
-                    />
-                    <label className="errorLabel">{emailError}</label>
-                </Grid>
-
-                <br />
-                <Grid className="passwordInput" container justifyContent="center">
-                <TextField
-                    sx={{ width: 600 }}
-                    type="password"
-                    value={password}
-                    label={t("session.password")}
-                    // onChange={(ev) => setPassword(ev.target.value)}
-                />    
-                </Grid>
-                
-            
-                <br />
                 <Grid container justifyContent="center" alignContent="center">
                     <div className="buttonContainer">
+                <Link to={ROUTING_MANAGER.COMBOS}>
                     <Button
                         className="inputButton"
-                        onClick={onClickButton}
                         variant="contained"
+                        // TODO: Ver cómo redireccionar a Sign In. 
                     >
                         {t("session.login")}
                     </Button>
+                </Link>
+
                     </div>
+                    </Grid>
+
+                    <br />
+                    <Grid container justifyContent="center" alignContent="center">
+                    <Button 
+                        variant="contained"
+                        onClick={() => {linkTo(ROUTING_MANAGER.REGISTER)}}
+                    >
+                        {t("session.signUpButton")}
+                    </Button>
+                    
                 </Grid>
                 </Box>
             </Grid>
@@ -92,3 +84,4 @@ const UserLogin = () => {
 };
 
 export default UserLogin;
+

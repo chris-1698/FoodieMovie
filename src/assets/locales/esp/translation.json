@@ -1,16 +1,15 @@
 {
-    "page_welcome_msg" : "Bienvenido a página!",
+    "page_welcome_msg" : "Bienvenido/a a FoodieMovie!",
     "session" : {
         "startSession" : "Iniciar sesión",
+        "username": "Nombre de usuario",
         "email" : "Correo electrónico",
         "password" : "Contraseña",
         "passwordForgor" : "¿Has olvidado tu contraseña?",
+        "repeatPassword" : "Repita la contraseña",
         "login" : "Iniciar sesión",
-        "error" : {
-            "passwordNotValid" : "Correo electrónico o contraseña no válidos",
-            "mandatoryField" : "Debes rellenar este campo",
-            "incorrectEmailFormat" : "El formato del correo electrónico es incorrecto"
-        }
+        "signUpButton": "Crear cuenta",
+        "signUp": "Crea una cuenta"
     }
 
 }
