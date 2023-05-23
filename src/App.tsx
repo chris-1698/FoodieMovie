@@ -9,9 +9,9 @@ import {
     RedirectToSignUp
 } from '@clerk/clerk-react'
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom'
-import UserLogin from './pages/authentication/UserLogin';
-import Menus from './pages/dashboard/Combos';
+import AllCombos from './components/AllCombos';
 import { ROUTING_MANAGER } from './navigation/Router';
+import MainPage from './pages/authentication/MainPage';
 
 const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -23,32 +23,21 @@ const ClerkProviderWithRoutes = () => {
             publishableKey={clerkPubKey}
             navigate={(to) => navigate(to)}
         >
-            <Routes>
-                <Route path={ROUTING_MANAGER.ROOT} element={<UserLogin />} />
-
-                <Route
-                    path={ROUTING_MANAGER.SIGN_IN}
-                    element={<RedirectToSignIn />}
-                />
-
-                <Route 
-                    path={ROUTING_MANAGER.REGISTER}
-                    element={<RedirectToSignUp/>}
-                />
-                <Route
-                    path={ROUTING_MANAGER.COMBOS}
-                    element={
+                <Routes>
+                    <Route path={ROUTING_MANAGER.ROOT} element={<MainPage />} />
+                    <Route path={ROUTING_MANAGER.SIGN_IN} element={<RedirectToSignIn />}/>
+                    <Route path={ROUTING_MANAGER.REGISTER} element={<RedirectToSignUp/>}/>
+                    <Route path={ROUTING_MANAGER.ALL_COMBOS} element={
                         <>
                             <SignedIn>
-                                <Menus />
+                                <AllCombos />
                             </SignedIn>
                             <SignedOut>
-                                <RedirectToSignUp />
+                                <RedirectToSignIn />
                             </SignedOut>
                         </>
-                    }
-                />
-            </Routes>
+                    }/>
+                </Routes>
         </ClerkProvider>
     )
 }

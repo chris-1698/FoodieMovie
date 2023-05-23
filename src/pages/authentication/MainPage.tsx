@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ROUTING_MANAGER } from "../../navigation/Router";
 
-const UserLogin = () => {
+const MainPage = () => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [emailError, setEmailError] = useState();
@@ -54,7 +54,7 @@ const UserLogin = () => {
                 <br />
                 <Grid container justifyContent="center" alignContent="center">
                     <div className="buttonContainer">
-                <Link to={ROUTING_MANAGER.COMBOS}>
+                <Link to={ROUTING_MANAGER.ALL_COMBOS}>
                     <Button
                         className="inputButton"
                         variant="contained"
@@ -83,5 +83,5 @@ const UserLogin = () => {
     );
 };
 
-export default UserLogin;
+export default MainPage;
 
