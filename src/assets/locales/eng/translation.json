@@ -1,15 +1,18 @@
 {
-    "page_welcome_msg" : "Welcome to FoodieMovie!",
-    "session" : {
-        "startSession" : "Login",
-        "username" : "Username",
-        "email" : "Email",
-        "password" : "Password",
-        "passwordForgor" : "Forgot your password?",
-        "repeatPassword" : "Repeat your password",
-        "login" : "Login",
-        "signUpButton": "Sign up",
-        "signUp": "Sign up"
-    }
-
+  "page_welcome_msg": "Welcome to FoodieMovie!",
+  "session": {
+    "startSession": "Login",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "passwordForgor": "Forgot your password?",
+    "repeatPassword": "Repeat your password",
+    "login": "Login",
+    "signUpButton": "Sign up",
+    "signUp": "Sign up"
+  },
+  "dashboard": {
+    "pageName": "Foodie Movie",
+    "copyright": "All rights reserved. Foodie Movie"
+  }
 }
