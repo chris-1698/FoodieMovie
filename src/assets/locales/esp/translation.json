@@ -13,6 +13,7 @@
   },
   "dashboard": {
     "pageName": "Foodie Movie",
-    "copyright": "Todos los derechos reservados. Foodie Movie"
+    "copyright": "Todos los derechos reservados. Foodie Movie",
+    "addCart": "Añadir al carro"
   }
 }

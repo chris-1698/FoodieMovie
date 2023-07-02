@@ -1,4 +1,3 @@
-import { ThemeContext } from '@emotion/react';
 import {
   Button,
   Link,
@@ -11,17 +10,23 @@ import {
   Typography,
   Box,
   Divider,
-  IconButton,
 } from '@mui/material';
-import NextLink from 'next/link';
-import classes from '../styles/classes';
+import classes from '../utils/classes';
 import Head from 'next/head';
 import { useTranslation } from 'react-i18next';
 import { UserButton } from '@clerk/clerk-react';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-// export default function AllCombos({ title, description, children }) {
-function AllCombos() {
+function Layout({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  children: any;
+}) {
   const { t } = useTranslation();
   const theme = createTheme({
     components: {
@@ -57,13 +62,13 @@ function AllCombos() {
   return (
     <>
       <Head>
-        <title>{'Mmm..food'}</title>
+        <title>{title ? `${title} - Foodie Movie` : 'Foodie Movie'}</title>
+        {description && <meta name="description" content={description} />}
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="static" sx={classes.appbar}>
           <Toolbar>
-            {/* <NextLink href="/" passHref> da error :(*/}
             <Link href="/">
               <Typography sx={classes.brand}>
                 {t('dashboard.pageName')}
@@ -77,22 +82,15 @@ function AllCombos() {
                 <ShoppingCartIcon sx={{ color: 'white' }} />
               </Button>
             </Divider>
-
-            {/* </NextLink> */}
           </Toolbar>
         </AppBar>
         <Container component="main" sx={classes.main}>
-          {/* Children */}
+          {children}
         </Container>
         <Box component="footer" sx={classes.footer}>
           <Typography>{t('dashboard.copyright')}</Typography>
         </Box>
       </ThemeProvider>
-      {/* <h1>Prueba</h1>
-      <Button>
-        {' '}
-        <Link>Combo 1</Link>
-      </Button> */}
     </>
   );
 }
@@ -147,4 +145,4 @@ function AllCombos() {
 //     </>
 //   );
 
-export default AllCombos;
+export default Layout;

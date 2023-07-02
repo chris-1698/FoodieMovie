@@ -52,11 +52,7 @@ const MainPage = () => {
           <Grid container justifyContent="center" alignContent="center">
             <div className="buttonContainer">
               <Link to={ROUTING_MANAGER.ALL_COMBOS}>
-                <Button
-                  className="inputButton"
-                  variant="contained"
-                  // TODO: Ver cómo redireccionar a Sign In.
-                >
+                <Button className="inputButton" variant="contained">
                   {t('session.login')}
                 </Button>
               </Link>

@@ -9,10 +9,11 @@ import {
   RedirectToSignUp,
 } from '@clerk/clerk-react';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
-import AllCombos from './components/AllCombos';
+import Combos from './components/Combos';
 import { ROUTING_MANAGER } from './navigation/Router';
 import MainPage from './pages/authentication/MainPage';
-import ComboInformation from './components/ComboInformation';
+import ProductInfo, { getServerSideProps } from './pages/product/[slug]';
+import Trial from './components/Trial';
 
 const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -25,36 +26,33 @@ const ClerkProviderWithRoutes = () => {
         <Route path={ROUTING_MANAGER.ROOT} element={<MainPage />} />
         <Route path={ROUTING_MANAGER.SIGN_IN} element={<RedirectToSignIn />} />
         <Route path={ROUTING_MANAGER.REGISTER} element={<RedirectToSignUp />} />
+        <Route path={ROUTING_MANAGER.COMBO} element={<ProductInfo />} />
+        {/* TODO: Poner protegido el enlace de COMBO */}
         <Route
           path={ROUTING_MANAGER.ALL_COMBOS}
           element={
             <>
               <SignedIn>
-                {' '}
-                <AllCombos />{' '}
+                <Combos />
               </SignedIn>
               <SignedOut>
-                {' '}
-                <RedirectToSignIn />{' '}
+                <RedirectToSignIn />
               </SignedOut>
             </>
           }
         />
-        <Route
-          path={ROUTING_MANAGER.COMBO + '/:id'}
+        {/* <Route
+          path={ROUTING_MANAGER.COMBO + '/'}
           element={
             <>
-              <SignedIn>
-                {' '}
-                <ComboInformation />{' '}
-              </SignedIn>
+              <SignedIn> {/* <ProductInfo />{' '} /}</SignedIn>
               <SignedOut>
-                {' '}
-                <RedirectToSignIn />{' '}
+                
+                <RedirectToSignIn />
               </SignedOut>
             </>
           }
-        />
+        /> */}
       </Routes>
     </ClerkProvider>
   );
