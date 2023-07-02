@@ -13,7 +13,7 @@ import Combos from './components/Combos';
 import { ROUTING_MANAGER } from './navigation/Router';
 import MainPage from './pages/authentication/MainPage';
 import ProductInfo, { getServerSideProps } from './pages/product/[slug]';
-import Trial from './components/Trial';
+import { StoreProvider } from './utils/Store';
 
 const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -41,18 +41,6 @@ const ClerkProviderWithRoutes = () => {
             </>
           }
         />
-        {/* <Route
-          path={ROUTING_MANAGER.COMBO + '/'}
-          element={
-            <>
-              <SignedIn> {/* <ProductInfo />{' '} /}</SignedIn>
-              <SignedOut>
-                
-                <RedirectToSignIn />
-              </SignedOut>
-            </>
-          }
-        /> */}
       </Routes>
     </ClerkProvider>
   );
@@ -62,7 +50,9 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
-        <ClerkProviderWithRoutes />
+        <StoreProvider>
+          <ClerkProviderWithRoutes />
+        </StoreProvider>
       </BrowserRouter>
     </>
   );

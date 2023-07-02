@@ -10,12 +10,16 @@ import {
   Typography,
   Box,
   Divider,
+  Switch,
 } from '@mui/material';
 import classes from '../utils/classes';
 import Head from 'next/head';
 import { useTranslation } from 'react-i18next';
 import { UserButton } from '@clerk/clerk-react';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useContext } from 'react';
+import { Store } from '../utils/Store';
+import jsCookie from 'js-cookie';
 
 function Layout({
   title,
@@ -28,6 +32,8 @@ function Layout({
   children: any;
 }) {
   const { t } = useTranslation();
+  const { state, dispatch } = useContext(Store);
+  const { darkMode } = state;
   const theme = createTheme({
     components: {
       MuiLink: {
@@ -49,7 +55,7 @@ function Layout({
       },
     },
     palette: {
-      mode: 'light',
+      mode: darkMode ? 'dark' : 'light',
       primary: {
         main: '#f0c000',
       },
@@ -59,6 +65,12 @@ function Layout({
     },
   });
   // User: UsuarioPrueba letmechooseanemail1135@gmail.com Pass:Password1234
+
+  const darkModeChangeHandler = () => {
+    dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
+    const newDarkMode = !darkMode;
+    jsCookie.set('darkMode', newDarkMode ? 'ON' : 'OFF');
+  };
   return (
     <>
       <Head>
@@ -68,12 +80,15 @@ function Layout({
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AppBar position="static" sx={classes.appbar}>
-          <Toolbar>
-            <Link href="/">
-              <Typography sx={classes.brand}>
-                {t('dashboard.pageName')}
-              </Typography>
-            </Link>
+          <Toolbar sx={classes.toolbar}>
+            <Box display="flex" alignItems="center">
+              <Link href="/">
+                <Typography sx={classes.brand}>
+                  {t('dashboard.pageName')}
+                </Typography>
+              </Link>
+            </Box>
+
             <Divider sx={classes.divider}>
               <UserButton />
             </Divider>
@@ -85,6 +100,12 @@ function Layout({
           </Toolbar>
         </AppBar>
         <Container component="main" sx={classes.main}>
+          <Divider sx={classes.switchDivider}>
+            <Switch
+              checked={darkMode}
+              onChange={darkModeChangeHandler}
+            ></Switch>
+          </Divider>
           {children}
         </Container>
         <Box component="footer" sx={classes.footer}>

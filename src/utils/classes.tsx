@@ -31,6 +31,10 @@ const classes = {
   divider: {
     marginLeft: '75%',
   },
+  switchDivider: {
+    marginLeft: '90%',
+    marginBottom: '2%',
+  },
 };
 
 export default classes;
