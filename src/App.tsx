@@ -3,16 +3,13 @@ import {
   SignedIn,
   SignedOut,
   RedirectToSignIn,
-  SignIn,
-  SignUp,
-  UserButton,
   RedirectToSignUp,
 } from '@clerk/clerk-react';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
 import Combos from './components/Combos';
 import { ROUTING_MANAGER } from './navigation/Router';
 import MainPage from './pages/authentication/MainPage';
-import ProductInfo, { getServerSideProps } from './pages/product/[slug]';
+import ProductInfo from './pages/product/[slug]';
 import { StoreProvider } from './utils/Store';
 
 const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;

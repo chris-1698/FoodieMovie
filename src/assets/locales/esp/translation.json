@@ -14,6 +14,14 @@
   "dashboard": {
     "pageName": "Foodie Movie",
     "copyright": "Todos los derechos reservados. Foodie Movie",
-    "addCart": "Añadir al carro"
+    "addCart": "Añadir al carro",
+    "status": "Estado",
+    "price": "Precio",
+    "reviews": " valoraciones",
+    "description": "Descripción: ",
+    "brand": "Marca: ",
+    "category": "Categoría: ",
+    "productAvailable": "Disponible",
+    "productNotAvailable": "No disponible"
   }
 }

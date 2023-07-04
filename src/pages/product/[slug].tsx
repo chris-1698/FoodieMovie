@@ -1,5 +1,4 @@
-// TODO: Revisar por qué no funciona este componente. Además, ver si se queda como .js o .tsx
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import client from '../../../src/utils/client';
 import Layout from '../../layouts/Layout';
 import {
@@ -15,14 +14,19 @@ import {
   Button,
 } from '@mui/material';
 import classes from '../../utils/classes';
-import { getImageUrl } from '../../utils/image';
-import Image from 'next/image';
-import { List, ListItem } from '@material-ui/core';
+import { getImageUrl, urlForThumbnail } from '../../utils/image';
+import { List, ListItem, Snackbar } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { Store } from '../../utils/Store';
+import axios from 'axios';
 
-export default function ProductInfo(props) {
+export default function ProductInfo() {
   const slug = localStorage.getItem('product-slug');
   const { t } = useTranslation();
+  const {
+    state: { cart },
+    dispatch,
+  } = useContext(Store);
   const [state, setState] = useState({
     product: null,
     loading: true,
@@ -48,9 +52,35 @@ export default function ProductInfo(props) {
     fetchData();
   }, []);
 
+  const addToCartHandler = async () => {
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+    if (data.countInStock < quantity) {
+      <Snackbar autoHideDuration={6000}>
+        <Alert severity="error">Lo sentimos, producto fuera de stock</Alert>
+      </Snackbar>;
+      return;
+    }
+    dispatch({
+      type: 'CART_ADD_ITEM',
+      payload: {
+        _key: product._id,
+        name: product.name,
+        countInStock: product.countInStock,
+        slug: product.slug.current,
+        price: product.price,
+        image: urlForThumbnail(product.image),
+        quantity,
+      },
+    });
+    <Snackbar>
+      <Alert severity="success">{`${product.name} añadido al carro`}</Alert>
+    </Snackbar>;
+  };
+  //TODO Revisar lo de axios. Si no, buscar otra manera de implementar.
   return (
-    //     // <h1>Hola</h1>
-    <Layout>
+    <Layout title={product?.name} description={product?.description}>
       {loading ? (
         <CircularProgress value={2} />
       ) : error ? (
@@ -86,15 +116,21 @@ export default function ProductInfo(props) {
                     {product.name}
                   </Typography>
                 </ListItem>
-                <ListItem>Categoría: {product.category}</ListItem>
-                <ListItem>Marca: {product.brand}</ListItem>
+                <ListItem>
+                  {t('dashboard.category')} {product.category}
+                </ListItem>
+                <ListItem>
+                  {t('dashboard.brand')} {product.brand}
+                </ListItem>
                 <ListItem>
                   <Rating value={product.rating} readOnly></Rating>
                   <Typography sx={classes.smallText}>
-                    ({product.numReviews} valoraciones)
+                    ({product.numReviews} {t('dashboard.reviews')})
                   </Typography>
                 </ListItem>
-                <ListItem>Descripción: {product.description}</ListItem>
+                <ListItem>
+                  {t('dashboard.description')} {product.description}
+                </ListItem>
               </List>
             </Grid>
             <Grid item md={3} xs={12}>
@@ -103,7 +139,7 @@ export default function ProductInfo(props) {
                   <ListItem>
                     <Grid container>
                       <Grid item xs={6}>
-                        <Typography>Precio</Typography>
+                        <Typography>{t('dashboard.price')}</Typography>
                       </Grid>
                       <Grid item xs={6}>
                         <Typography>{product.price}€</Typography>
@@ -113,19 +149,23 @@ export default function ProductInfo(props) {
                   <ListItem>
                     <Grid container>
                       <Grid item xs={6}>
-                        <Typography>Estado</Typography>
+                        <Typography>{t('dashboard.status')}</Typography>
                       </Grid>
                       <Grid item xs={6}>
                         <Typography>
                           {product.countInStock > 0
-                            ? 'Disponible'
-                            : 'No disponible'}
+                            ? t('dashboard.productAvailable')
+                            : t('dashboard.productUnavailable')}
                         </Typography>
                       </Grid>
                     </Grid>
                   </ListItem>
                   <ListItem>
-                    <Button fullWidth variant="contained">
+                    <Button
+                      onClick={addToCartHandler}
+                      fullWidth
+                      variant="contained"
+                    >
                       {t('dashboard.addCart')}
                     </Button>
                   </ListItem>
