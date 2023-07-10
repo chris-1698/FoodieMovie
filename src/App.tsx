@@ -11,7 +11,10 @@ import { ROUTING_MANAGER } from './navigation/Router';
 import MainPage from './pages/authentication/MainPage';
 import ProductInfo from './pages/product/[slug]';
 import { StoreProvider } from './utils/Store';
-
+import CartPage from './pages/CartPage';
+// import App from '../../styles/App.css';
+// import OrderDetailsPage from './pages/OrderDetailsPage';
+//TODO: El problema creo que lo la la librería de Time Picker. Ver otra opción.
 const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 const ClerkProviderWithRoutes = () => {
@@ -24,7 +27,10 @@ const ClerkProviderWithRoutes = () => {
         <Route path={ROUTING_MANAGER.SIGN_IN} element={<RedirectToSignIn />} />
         <Route path={ROUTING_MANAGER.REGISTER} element={<RedirectToSignUp />} />
         <Route path={ROUTING_MANAGER.COMBO} element={<ProductInfo />} />
-        {/* TODO: Poner protegido el enlace de COMBO */}
+        <Route path={ROUTING_MANAGER.CART} element={<CartPage />} />
+        {/* <Route path={ROUTING_MANAGER.CHECKOUT} element={<OrderDetailsPage />} /> */}
+        {/* <Route path={ROUTING_MANAGER.CHECKOUT} element={<CheckoutPage />} /> */}
+        {/* TODO: Poner protegido el enlace de COMBO, CART? */}
         <Route
           path={ROUTING_MANAGER.ALL_COMBOS}
           element={

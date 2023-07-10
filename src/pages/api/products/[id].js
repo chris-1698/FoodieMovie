@@ -1,8 +1,7 @@
 import nc from 'next-connect';
 import client from '../../../utils/client';
-
+// TODO: Borrar? Probablemente.
 const handler = nc();
-console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 handler.get(async (req, res) => {
     const product = await client.fetch(`*[_type == "Product" && _id == $id][0]`, {
         id: req.query.id

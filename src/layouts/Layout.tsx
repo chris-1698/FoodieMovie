@@ -11,6 +11,7 @@ import {
   Box,
   Divider,
   Switch,
+  Badge,
 } from '@mui/material';
 import classes from '../utils/classes';
 import Head from 'next/head';
@@ -33,7 +34,7 @@ function Layout({
 }) {
   const { t } = useTranslation();
   const { state, dispatch } = useContext(Store);
-  const { darkMode } = state;
+  const { darkMode, cart } = state;
   const theme = createTheme({
     components: {
       MuiLink: {
@@ -94,7 +95,14 @@ function Layout({
             </Divider>
             <Divider>
               <Button>
-                <ShoppingCartIcon sx={{ color: 'white' }} />
+                <Link href="/cart">
+                  <ShoppingCartIcon sx={{ color: 'white' }} />
+                  {cart.cartItems.length > 0 && (
+                    <Badge color="primary" variant="dot">
+                      {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                    </Badge>
+                  )}
+                </Link>
               </Button>
             </Divider>
           </Toolbar>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import client from '../../../src/utils/client';
 import Layout from '../../layouts/Layout';
 import {
@@ -12,13 +12,17 @@ import {
   Rating,
   Card,
   Button,
+  Snackbar,
+  IconButton,
 } from '@mui/material';
 import classes from '../../utils/classes';
-import { getImageUrl, urlForThumbnail } from '../../utils/image';
-import { List, ListItem, Snackbar } from '@material-ui/core';
+import { getImageUrl } from '../../utils/image';
+import { List, ListItem } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Store } from '../../utils/Store';
-import axios from 'axios';
+import { CartItem } from '../../typings/Cart';
+import { convertProductToCartitem } from '../../utils/utils';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function ProductInfo() {
   const slug = localStorage.getItem('product-slug');
@@ -27,6 +31,8 @@ export default function ProductInfo() {
     state: { cart },
     dispatch,
   } = useContext(Store);
+
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const [state, setState] = useState({
     product: null,
     loading: true,
@@ -52,33 +58,35 @@ export default function ProductInfo() {
     fetchData();
   }, []);
 
-  const addToCartHandler = async () => {
+  const addToCartHandler = async (item: CartItem) => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(`/api/products/${product._id}`);
-    if (data.countInStock < quantity) {
-      <Snackbar autoHideDuration={6000}>
-        <Alert severity="error">Lo sentimos, producto fuera de stock</Alert>
-      </Snackbar>;
+    if (product.countInStock < quantity) {
       return;
     }
+    setOpenSnackBar(true);
     dispatch({
       type: 'CART_ADD_ITEM',
-      payload: {
-        _key: product._id,
-        name: product.name,
-        countInStock: product.countInStock,
-        slug: product.slug.current,
-        price: product.price,
-        image: urlForThumbnail(product.image),
-        quantity,
-      },
+      payload: { ...item, quantity },
     });
-    <Snackbar>
-      <Alert severity="success">{`${product.name} añadido al carro`}</Alert>
-    </Snackbar>;
   };
-  //TODO Revisar lo de axios. Si no, buscar otra manera de implementar.
+
+  const handleCloseSnackBar = () => {
+    setOpenSnackBar(false);
+  };
+
+  const closeSnackBar = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackBar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
   return (
     <Layout title={product?.name} description={product?.description}>
       {loading ? (
@@ -105,8 +113,6 @@ export default function ProductInfo() {
                 component="img"
                 image={getImageUrl(product.image)}
                 alt={product.name}
-                // width={640}
-                // height={640}
               />
             </Grid>
             <Grid item md={3} xs={12}>
@@ -161,13 +167,41 @@ export default function ProductInfo() {
                     </Grid>
                   </ListItem>
                   <ListItem>
-                    <Button
-                      onClick={addToCartHandler}
-                      fullWidth
-                      variant="contained"
-                    >
-                      {t('dashboard.addCart')}
-                    </Button>
+                    {product.countInStock === 0 ? (
+                      <Button size="small" disabled>
+                        {' '}
+                        {t('dashboard.addCart')}
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={
+                            () =>
+                              addToCartHandler(
+                                convertProductToCartitem(product)
+                              )
+                            // TODO: El código se ve feo
+                          }
+                          fullWidth
+                          variant="contained"
+                        >
+                          {t('dashboard.addCart')}
+                        </Button>
+                        <Snackbar
+                          open={openSnackBar}
+                          autoHideDuration={6000}
+                          onClose={handleCloseSnackBar}
+                          action={closeSnackBar}
+                        >
+                          <Alert
+                            onClose={handleCloseSnackBar}
+                            severity="success"
+                          >
+                            {`El aperitivo se ha añadido al carro.`}
+                          </Alert>
+                        </Snackbar>{' '}
+                      </>
+                    )}
                   </ListItem>
                 </List>
               </Card>

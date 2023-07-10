@@ -4,4 +4,6 @@ export const ROUTING_MANAGER = {
   REGISTER: '/register',
   ALL_COMBOS: '/combos',
   COMBO: '/combos/:slug',
+  CART: '/cart',
+  CHECKOUT: '/checkout',
 };

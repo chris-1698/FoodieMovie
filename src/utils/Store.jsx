@@ -1,14 +1,21 @@
 import Cookies from 'js-cookie';
 import { createContext, useReducer } from 'react';
+// import { CartItem } from '../typings/Cart';
 
 export const Store = createContext();
 
 const initialState = {
   darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
   cart: {
-    cartItems: Cookies.get('cartItems')
-      ? JSON.parse(Cookies.get('cartItems'))
+    cartItems: localStorage.getItem('cartItems')
+      ? JSON.parse(localStorage.getItem('cartItems'))
       : [],
+    paymentMethod: localStorage.getItem('paymentMethod')
+      ? localStorage.getItem('paymentMethod')
+      : 'PayPal',
+    itemsPrice: 0,
+    taxPrice: 0,
+    totalPrice: 0,
   },
 };
 
@@ -20,18 +27,43 @@ function reducer(state, action) {
       return { ...state, darkMode: false };
     case 'CART_ADD_ITEM': {
       const newItem = action.payload;
+      //   const existItem = state.cart.cartItems.find(
+      //     (item) => item._key === newItem._key
+      //   );
       const existItem = state.cart.cartItems.find(
-        (item) => item._key === newItem._key
+        (item) => item._id === newItem._id
       );
       //Si ya tengo el producto, lo actualizo. Si no, me quedo con el nuevo.
       const cartItems = existItem
         ? state.cart.cartItems.map((item) =>
-            item._key === existItem._key ? newItem : item
+            item._id === existItem._id ? newItem : item
           )
-        : [...state.cart.cartItems, newItem];
-      Cookies.set('cartItems', JSON.stringify(cartItems));
+        : //Se añade el producto al final del array de cartItems si no existe
+          [...state.cart.cartItems, newItem];
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
+    case 'CART_REMOVE_ITEM': {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item._id !== action.payload._id
+      );
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      return { ...state, cart: { ...state.cart, cartItems } };
+    }
+    // case 'SAVE_ORDER_DETAILS': {
+    //   return {
+    //     ...state,
+    //     cart: {
+    //       ...state.cart,
+    //       orderDetails: action.payload,
+    //     },
+    //   };
+    // }
+    // case 'SAVE_PAYMENT_METHOD':
+    //   return {
+    //     ...state,
+    //     cart: { ...state.cart, paymentMethod: action.payload },
+    //   };
     default:
       return state;
   }

@@ -1,4 +1,3 @@
-//TODO: Cambiar textos por literales. Seguir con el tutorial, VAMOOOOOOS
 import {
   Button,
   Card,
@@ -8,16 +7,56 @@ import {
   CardMedia,
   Typography,
   Rating,
+  Alert,
+  Snackbar,
+  IconButton,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { urlForThumbnail } from '../utils/image';
 import { ROUTING_MANAGER } from '../navigation/Router';
+import { Store } from '../utils/Store';
+import { convertProductToCartitem } from '../utils/utils';
+import React, { useContext, useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 
 /* eslint-disable */
 export default function DashboardProduct({ product }) {
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const { t } = useTranslation();
-  //   console.log(product);
+  const { state, dispatch } = useContext(Store);
+  const { cart } = state;
+
+  const addToCartHandler = () => {
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    if (product.countInStock < quantity) {
+      alert('Lo sentimos. El producto no tiene stock.');
+      return;
+    }
+    setOpenSnackBar(true);
+    dispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...convertProductToCartitem(product), quantity },
+    });
+  };
+
+  const handleCloseSnackBar = () => {
+    setOpenSnackBar(false);
+  };
+
+  const closeSnackBar = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackBar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
 
   return (
     <Card>
@@ -27,7 +66,6 @@ export default function DashboardProduct({ product }) {
         onClick={() => {
           localStorage.setItem('product-slug', product.slug.current);
         }}
-        /*href={`/combos?product=${product.slug.current}`}*/
       >
         <CardActionArea>
           <CardMedia
@@ -46,9 +84,34 @@ export default function DashboardProduct({ product }) {
       </Link>
       <CardActions>
         <Typography>{product.price}€</Typography>
-        <Button size="small" color="primary">
-          {t('dashboard.addCart')}
-        </Button>
+        <p></p>
+        {product.countInStock === 0 ? (
+          <Button size="small" disabled>
+            {t('dashboard.addCart')}
+          </Button>
+        ) : (
+          <>
+            <Button
+              size="small"
+              color="primary"
+              onClick={addToCartHandler}
+              variant="contained"
+            >
+              {t('dashboard.addCart')}
+            </Button>
+            <Snackbar
+              open={openSnackBar}
+              autoHideDuration={6000}
+              onClose={handleCloseSnackBar}
+              action={closeSnackBar}
+            >
+              <Alert
+                onClose={handleCloseSnackBar}
+                severity="success"
+              >{`${product.name} se ha añadido al carro.`}</Alert>
+            </Snackbar>
+          </>
+        )}
       </CardActions>
     </Card>
   );

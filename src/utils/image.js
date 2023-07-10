@@ -9,4 +9,8 @@ function getImageUrl(source) {
     return ImageUrlBuilder(client).image(source).width(580).url();
 }
 
-export { urlForThumbnail, getImageUrl };
+function urlForCart(source) {
+    return ImageUrlBuilder(client).image(source).width(50).height(50).url();
+}
+
+export { urlForThumbnail, getImageUrl, urlForCart };
