@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import client from '../../../src/utils/client';
-import Layout from '../../layouts/Layout';
+// MUI resources
 import {
   Alert,
   Box,
@@ -15,16 +13,33 @@ import {
   Snackbar,
   IconButton,
 } from '@mui/material';
+import { List, ListItem } from '@material-ui/core';
+import CloseIcon from '@mui/icons-material/Close';
+
+// React resources
+import React, { useContext, useEffect, useState } from 'react';
+
+// Project resources
+import client from '../../../src/utils/client';
+import Layout from '../../layouts/Layout';
 import classes from '../../utils/classes';
 import { getImageUrl } from '../../utils/image';
-import { List, ListItem } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 import { Store } from '../../utils/Store';
 import { CartItem } from '../../typings/Cart';
 import { convertProductToCartitem } from '../../utils/utils';
-import CloseIcon from '@mui/icons-material/Close';
 
-export default function ProductInfo() {
+// Translation resources
+import { useTranslation } from 'react-i18next';
+import useTitle from '../../components/useTitle';
+
+export default function ProductInfo({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
+  useTitle(title + subtitle);
   const slug = localStorage.getItem('product-slug');
   const { t } = useTranslation();
   const {
@@ -59,7 +74,9 @@ export default function ProductInfo() {
   }, []);
 
   const addToCartHandler = async (item: CartItem) => {
-    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const existItem = cart.cartItems.find(
+      (x: { _id: any }) => x._id === product?._id
+    );
     const quantity = existItem ? existItem.quantity + 1 : 1;
     if (product.countInStock < quantity) {
       return;
@@ -111,7 +128,7 @@ export default function ProductInfo() {
             <Grid item md={6} xs={12}>
               <CardMedia
                 component="img"
-                image={getImageUrl(product.image)}
+                image={getImageUrl(product?.image)}
                 alt={product.name}
               />
             </Grid>
@@ -213,7 +230,7 @@ export default function ProductInfo() {
   );
 }
 
-export function getServerSideProps(context) {
+export function getServerSideProps(context: { params: { slug: unknown } }) {
   return {
     props: { slug: context.params.slug },
   };

@@ -14,7 +14,7 @@
   "dashboard": {
     "pageName": "Foodie Movie",
     "copyright": "All rights reserved. Foodie Movie",
-    "addCart": "Añadir to cart",
+    "addCart": "Add to cart",
     "status": "Status",
     "price": "Price",
     "reviews": " reviews",
@@ -22,6 +22,17 @@
     "brand": "Brand: ",
     "category": "Category: ",
     "productAvailable": "Available",
-    "productNotAvailable": "Not available"
+    "productUnavailable": "Not available"
+  },
+  "titles": {
+    "brand": "Foodie Movie",
+    "allCombos": " - Appetizers",
+    "cart": " - Cart",
+    "profile": " - Profile",
+    "orderDetails": " - Order Details",
+    "paymentMethod": " - Payment Method",
+    "placeOrder": " - Place Order",
+    "signIn": " - Sign in",
+    "signUp": " - Sign up"
   }
 }

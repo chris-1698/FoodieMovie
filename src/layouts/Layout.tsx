@@ -1,5 +1,4 @@
 import {
-  Button,
   Link,
   Container,
   createTheme,
@@ -11,16 +10,16 @@ import {
   Box,
   Divider,
   Switch,
-  Badge,
+  Stack,
 } from '@mui/material';
 import classes from '../utils/classes';
 import Head from 'next/head';
 import { useTranslation } from 'react-i18next';
-import { UserButton } from '@clerk/clerk-react';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Store } from '../utils/Store';
 import jsCookie from 'js-cookie';
+import ProfileSettings from '../components/ProfileSettings';
+import ShoppingCart from '../components/ShoppingCart';
 
 function Layout({
   title,
@@ -34,7 +33,8 @@ function Layout({
 }) {
   const { t } = useTranslation();
   const { state, dispatch } = useContext(Store);
-  const { darkMode, cart } = state;
+  const { darkMode } = state;
+
   const theme = createTheme({
     components: {
       MuiLink: {
@@ -58,10 +58,10 @@ function Layout({
     palette: {
       mode: darkMode ? 'dark' : 'light',
       primary: {
-        main: '#f0c000',
+        main: '#208080',
       },
       secondary: {
-        main: '#208080',
+        main: '#f0c000',
       },
     },
   });
@@ -72,6 +72,7 @@ function Layout({
     const newDarkMode = !darkMode;
     jsCookie.set('darkMode', newDarkMode ? 'ON' : 'OFF');
   };
+
   return (
     <>
       <Head>
@@ -89,22 +90,14 @@ function Layout({
                 </Typography>
               </Link>
             </Box>
-
-            <Divider sx={classes.divider}>
-              <UserButton />
-            </Divider>
-            <Divider>
-              <Button>
-                <Link href="/cart">
-                  <ShoppingCartIcon sx={{ color: 'white' }} />
-                  {cart.cartItems.length > 0 && (
-                    <Badge color="primary" variant="dot">
-                      {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                    </Badge>
-                  )}
-                </Link>
-              </Button>
-            </Divider>
+            <Stack direction="row">
+              <Divider sx={classes.divider}>
+                <ProfileSettings />
+              </Divider>
+              <Divider>
+                <ShoppingCart />
+              </Divider>
+            </Stack>
           </Toolbar>
         </AppBar>
         <Container component="main" sx={classes.main}>

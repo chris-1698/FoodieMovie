@@ -22,6 +22,17 @@
     "brand": "Marca: ",
     "category": "Categoría: ",
     "productAvailable": "Disponible",
-    "productNotAvailable": "No disponible"
+    "productUnavailable": "No disponible"
+  },
+  "titles": {
+    "brand": "Foodie Movie",
+    "allCombos": " - Aperitivos",
+    "cart": " - Carro",
+    "profile": " - Perfil",
+    "orderDetails": " - Detalles del pedido",
+    "paymentMethod": " - Método de pago",
+    "placeOrder": " - Realizar pedido",
+    "signIn": " - Iniciar sesión",
+    "signUp": " - Registro"
   }
 }

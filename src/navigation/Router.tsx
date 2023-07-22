@@ -5,5 +5,8 @@ export const ROUTING_MANAGER = {
   ALL_COMBOS: '/combos',
   COMBO: '/combos/:slug',
   CART: '/cart',
+  ORDER_DETAILS: 'orderDetails',
   CHECKOUT: '/checkout',
+  USER_PROFILE: '/user/:id',
+  PAYMENT: '/payment',
 };

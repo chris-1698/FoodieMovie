@@ -1,46 +1,20 @@
-import {
-  Grid,
-  Table,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { Step, StepLabel, Stepper } from '@mui/material';
+import '../styles/App.css';
 
-export default function CheckoutRequirements(props: {
-  step1?: boolean; //Login
-  step2?: boolean; //Pick up details
-  step3?: boolean; //Payment method
-  step4?: boolean; //Place order?
-}) {
+export default function CheckoutRequirements({ activeStep = 0 }) {
+  //   step1 Login
+  //   step2 Pick up details
+  //   step3 Payment method
+  //   step4 Place order
   return (
-    <Grid>
-      <TableContainer>
-        <Table>
-          <TableRow className="checkout-requirements">
-            <TableCell>
-              <Typography className={props.step1 ? 'active' : ''}>
-                Sign-in
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography className={props.step2 ? 'active' : ''}>
-                Pick up details
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography className={props.step3 ? 'active' : ''}>
-                Payment Method
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography className={props.step4 ? 'active' : ''}>
-                Place order
-              </Typography>
-            </TableCell>
-          </TableRow>
-        </Table>
-      </TableContainer>
-    </Grid>
+    <Stepper activeStep={activeStep} alternativeLabel>
+      {['Login', 'Shipping Address', 'Paying Method', 'Place Order'].map(
+        (step) => (
+          <Step key={step}>
+            <StepLabel>{step}</StepLabel>
+          </Step>
+        )
+      )}
+    </Stepper>
   );
 }

@@ -1,44 +1,71 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
-import { useUser } from '@clerk/clerk-react';
+import { useSession } from '@clerk/clerk-react';
 import CheckoutRequirements from '../components/CheckoutRequirements';
-import dayjs from 'dayjs';
-import { Button, FormControl, Grid, Input, TextField } from '@mui/material';
-import { TimePicker } from '@mui/x-date-pickers';
+import { Button, Grid, Input, InputLabel, TextField } from '@mui/material';
+import Layout from '../layouts/Layout';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import '../styles/App.css';
+import { Container } from '@material-ui/core';
+import * as dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import 'dayjs/locale/es.js';
+import useTitle from '../components/useTitle';
 
-export default function OrderDetailsPage() {
+export default function OrderDetailsPage({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
+  useTitle(title + subtitle);
   const navigate = useNavigate();
   const { state, dispatch } = useContext(Store);
+  const session = useSession();
+  const userJson = localStorage.getItem('userInfo');
+  const userData = userJson !== null ? JSON.parse(userJson) : '';
   const {
     userInfo,
-    cart: { orderDetails },
+    cart: { orderDetails, cartItems },
   } = state;
 
+  //TODO: Revisar lo de dayjs 19-7-2023
+  dayjs().format();
+  dayjs.extend(customParseFormat);
+  dayjs.locale('es');
+
   useEffect(() => {
-    if (!userInfo) {
-      navigate('/sign-in?redirect=/orderDetails');
+    if (!session.isSignedIn && session.isLoaded) {
+      navigate('/sign-in/?redirect_url=/orderDetails');
     }
-  }, [userInfo, navigate]);
-  //TODO: El problema es que orderDetails aún no se ha declarado siquiera,
-  // entonces hace falta darle valores. Ahora mismo sale como undefined
-  const [fullName, setFullName] = useState(orderDetails.fullName || '');
-  const [pickUpDate, setPickupDate] = useState(orderDetails.pickUpDate || '');
-  const [pickUpTime, setPickupTime] = useState(orderDetails.pickUpTime || '');
+  }, [session, navigate]);
 
-  const today = dayjs();
-  const twoPM = dayjs().set('hour', 14).startOf('hour');
-  const twelveAM = dayjs().set('hour', 0).startOf('hour');
+  const [fullName, setFullName] = useState(userData.fullName || '');
+  const [email, setEmail] = useState(userData.email || '');
+  const [pickUpDate, setPickupDate] = useState(
+    orderDetails?.pickUpDate || Date.now()
+  );
+  const [pickUpTime, setPickUpTime] = useState(
+    orderDetails?.pickUpTime || Date.now()
+  );
+  console.log('Nombre: ', fullName);
+  console.log(email);
 
-  const submitHandler = (e: React.SyntheticEvent) => {
+  //   const today = dayjs();
+  //   const twoPM = dayjs().set('hour', 14).startOf('hour');
+  //   const twelveAM = dayjs().set('hour', 0).startOf('hour');
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log('aaaaa');
 
     dispatch({
       type: 'SAVE_ORDER_DETAILS',
       payload: {
         fullName,
         pickUpDate,
+        email,
         pickUpTime,
       },
     });
@@ -46,76 +73,76 @@ export default function OrderDetailsPage() {
       'orderDetails',
       JSON.stringify({
         fullName,
+        email,
         pickUpDate,
         pickUpTime,
       })
     );
     navigate('/payment');
   };
+  console.log('frcha:', dayjs(pickUpDate).get('hour'), 'aaaaaaa: ', pickUpTime);
 
   return (
-    <div>
-      <h1>Hola</h1>
-    </div>
+    <>
+      {/* <h1>Hola</h1>
+      <h2>Order detaiiils</h2> */}
+      {/* TODO: Ver cómo hacer DateTimePicker required */}
+      <Layout title="order details" description="order-details">
+        <CheckoutRequirements activeStep={1} />
+        <Container maxWidth="sm">
+          <form onSubmit={handleSubmit}>
+            <Grid sx={{ marginTop: '10%' }} container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Full Name"
+                  fullWidth
+                  required
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                  }}
+                ></TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Email"
+                  fullWidth
+                  value={email}
+                  disabled
+                ></TextField>
+              </Grid>
+
+              <Grid item xs={12} md={12}>
+                <DateTimePicker
+                  defaultValue={dayjs()}
+                  onChange={(e) => {
+                    setPickupDate(e);
+                    setPickUpTime(e);
+                  }}
+                ></DateTimePicker>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={() => redirect('/payment')}
+                >
+                  Continue
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </Container>
+      </Layout>
+    </>
   );
 }
+// TODO: Seguir con la página. Falta diseño. Falta gestionar los datos. Falta funcionalidad
+// Video: 4:25:50
 {
-  /* <title>Order Details</title> */
+  /* TODO: Ver el tema de realizar pedido. Obtener info de usuario,
+además continuar con la página de detalles de pedido: fecha y hora
+ Nombre y apellido? correo, fecha, hora, método de pago, detalle de precios
+ y cantidades etc. */
 }
-{
-  /* Login and current step: order details */
-}
-{
-  /* <CheckoutRequirements step1 step2></CheckoutRequirements>
-      <div className="container small-container">
-        <h1 className="my-3">Order Details</h1>
-        <Grid>
-          <FormControl onSubmit={submitHandler}>
-            <TextField
-              type="text"
-              variant="outlined"
-              label="Full name"
-              onChange={(e) => setFullName(e.target.value)}
-              value={fullName}
-              fullWidth
-              required
-            />
-            <TextField
-              type="date"
-              variant="outlined"
-              label="Pick up date"
-              onChange={(e) => setPickupDate(e.target.value)}
-              value={pickUpDate}
-              fullWidth
-              required
-              defaultValue={today}
-              sx={{ mb: 4 }}
-            />
-            <TimePicker
-              maxTime={twelveAM}
-              minTime={twoPM}
-              label="Pick up time"
-              onChange={(e) => setPickupTime(e.target.value as string)}
-              value={pickUpTime}
-            ></TimePicker>
-            <div className="mb-3">
-              <Button variant="contained" color="primary" type="submit">
-                Continue
-              </Button>
-            </div>
-          </FormControl>
-        </Grid>
-      </div> 
-    </div>
-  ); */
-}
-//   const {
-//   const { user } = useUser();
-//   user?.firstName;
-// }
-/* TODO: Ver el tema de realizar pedido. Obtener info de usuario,
- *además continuar con la página de detalles de pedido: fecha y hora
- * Nombre y apellido? correo, fecha, hora, método de pago, detalle de precios
- * y cantidades etc.
- *
- * */

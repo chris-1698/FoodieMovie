@@ -29,7 +29,9 @@ const classes = {
     fontSize: '1.5rem',
   },
   divider: {
-    marginLeft: '75%',
+    marginTop: 0.5,
+    display: 'relative',
+    justifyContent: 'space-between',
   },
   switchDivider: {
     marginLeft: '90%',

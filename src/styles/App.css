@@ -7,13 +7,21 @@
   box-shadow: none !important;
 }
 
+.cl-signIn-root,
+.cl-signUp-root {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .cl-auth-form-body input {
   border: 0;
   border-bottom: 1px solid #e5e5e5;
   border-radius: 0;
   padding: 0;
 }
-
+/* TODO: Revisar cómo centrar la caja de login de Clerk*/
 .cl-auth-form-body input:focus {
   border-bottom: 1px solid #312e81;
 }
@@ -46,12 +54,50 @@
   width: inherit;
 }
 
-/* .checkout-requirements > div {
-  border-bottom: 0.2rem solid #a0a0a0;
-  color: #a0a0a0;
+.cl-userButton-root {
+  display: flex;
+  padding-left: 15px;
 }
 
-.checkout-requirements > div.active {
-  border-bottom: 0.2rem solid #f08000;
-  color: #f08000;
-} */
+.cl-userButtonOuterIdentifier {
+  font-size: 15px;
+  position: absolute;
+  padding-left: 15%;
+}
+
+.cl-userButtonTrigger {
+  position: relative;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.delete-account {
+  color: #ff0000 !important;
+}
+
+.log-out {
+  color: #ff0000 !important;
+}
+
+.user-avatar {
+  opacity: 1 !important;
+}
+
+.user-fullname {
+  margin-right: 10%;
+}
+
+.cl-userButtonAvatarBox {
+  margin-right: 90%;
+}
+
+.userProfileCard {
+  padding-left: 60%;
+  justify-content: center;
+}
+
+.cl-userProfile-root {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+}

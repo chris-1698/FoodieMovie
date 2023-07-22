@@ -1,45 +1,151 @@
+// Clerk resources
 import {
   ClerkProvider,
   SignedIn,
   SignedOut,
-  RedirectToSignIn,
-  RedirectToSignUp,
+  SignIn,
+  SignUp,
 } from '@clerk/clerk-react';
-import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
-import Combos from './components/Combos';
-import { ROUTING_MANAGER } from './navigation/Router';
-import MainPage from './pages/authentication/MainPage';
-import ProductInfo from './pages/product/[slug]';
-import { StoreProvider } from './utils/Store';
-import CartPage from './pages/CartPage';
-// import App from '../../styles/App.css';
-// import OrderDetailsPage from './pages/OrderDetailsPage';
-//TODO: El problema creo que lo la la librería de Time Picker. Ver otra opción.
-const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
+import { esES } from '@clerk/localizations';
+import { dark } from '@clerk/themes';
 
-const ClerkProviderWithRoutes = () => {
+// React-router-dom resources
+import {
+  Routes,
+  Route,
+  useNavigate,
+  BrowserRouter,
+  Navigate,
+} from 'react-router-dom';
+
+// Project resources
+import AllCombosPage from './pages/AllCombosPage';
+import ProductInfo from './pages/product/[slug]';
+import CartPage from './pages/CartPage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
+import Profile from './pages/Profile';
+import PaymentPage from './pages/PaymentPage';
+
+import { ROUTING_MANAGER } from './navigation/Router';
+import { StoreProvider } from './utils/Store';
+import '../../app/src/styles/App.css';
+
+// Mui Date Picker resources
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'dayjs/locale/es';
+
+// Translation resources
+import { useTranslation } from 'react-i18next';
+
+//Public key for Clerk use
+const CLERK_PUB_KEY = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
+
+const AppComponent = () => {
   const navigate = useNavigate();
-  //User: TrialUser pass: sh-SHSH-sh email: letmechooseanemail1135@gmail.com
+  const { t } = useTranslation();
+  //TODO: User: TrialUser pass: sh-SHSH-sh email: letmechooseanemail1135@gmail.com
   return (
-    <ClerkProvider publishableKey={clerkPubKey} navigate={(to) => navigate(to)}>
+    <ClerkProvider
+      localization={esES}
+      publishableKey={CLERK_PUB_KEY}
+      appearance={{
+        baseTheme: dark,
+        variables: {
+          colorPrimary: '#208080',
+          colorText: 'white',
+        },
+        layout: {
+          //TODO: Ver cómo poner texto o diseñar un logo guapo
+          logoImageUrl: '/src/assets/images/logo.png',
+          logoPlacement: 'inside',
+        },
+      }}
+      navigate={(to) => navigate(to)}
+    >
       <Routes>
-        <Route path={ROUTING_MANAGER.ROOT} element={<MainPage />} />
-        <Route path={ROUTING_MANAGER.SIGN_IN} element={<RedirectToSignIn />} />
-        <Route path={ROUTING_MANAGER.REGISTER} element={<RedirectToSignUp />} />
-        <Route path={ROUTING_MANAGER.COMBO} element={<ProductInfo />} />
-        <Route path={ROUTING_MANAGER.CART} element={<CartPage />} />
-        {/* <Route path={ROUTING_MANAGER.CHECKOUT} element={<OrderDetailsPage />} /> */}
-        {/* <Route path={ROUTING_MANAGER.CHECKOUT} element={<CheckoutPage />} /> */}
-        {/* TODO: Poner protegido el enlace de COMBO, CART? */}
+        <Route
+          path={ROUTING_MANAGER.ROOT}
+          element={<Navigate to={ROUTING_MANAGER.ALL_COMBOS} />}
+        />
+
+        {/* Main page. All products */}
         <Route
           path={ROUTING_MANAGER.ALL_COMBOS}
           element={
+            <AllCombosPage
+              title={t('titles.brand')}
+              subtitle={t('titles.allCombos')}
+            />
+          }
+        />
+
+        {/* Sign in page */}
+        <Route
+          path={ROUTING_MANAGER.SIGN_IN}
+          element={<SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />}
+        />
+
+        {/* Sign up page */}
+        <Route
+          path={ROUTING_MANAGER.REGISTER}
+          element={<SignUp signInUrl={ROUTING_MANAGER.SIGN_IN} />}
+        />
+
+        {/* Single product page */}
+        <Route
+          path={ROUTING_MANAGER.COMBO}
+          element={<ProductInfo title={t('titles.brand')} subtitle={''} />}
+        />
+
+        {/* Cart page */}
+        <Route
+          path={ROUTING_MANAGER.CART}
+          element={
+            <CartPage title={t('titles.brand')} subtitle={t('titles.cart')} />
+          }
+        />
+        <Route
+          path={ROUTING_MANAGER.ORDER_DETAILS}
+          element={
+            <OrderDetailsPage
+              title={t('titles.brand')}
+              subtitle={t('titles.orderDetails')}
+            />
+          }
+        />
+
+        {/* User profile page */}
+        <Route
+          path={ROUTING_MANAGER.USER_PROFILE}
+          element={
             <>
               <SignedIn>
-                <Combos />
+                <Profile
+                  title={t('titles.brand')}
+                  subtitle={t('titles.profile')}
+                />
               </SignedIn>
               <SignedOut>
-                <RedirectToSignIn />
+                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
+              </SignedOut>
+            </>
+          }
+        />
+
+        {/* Payment page */}
+        <Route
+          path={ROUTING_MANAGER.PAYMENT}
+          element={
+            <>
+              <SignedIn>
+                <PaymentPage
+                  title={t('titles.brand')}
+                  subtitle={t('titles.paymentMethod')}
+                />
+              </SignedIn>
+              <SignedOut>
+                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
               </SignedOut>
             </>
           }
@@ -54,7 +160,9 @@ const App = () => {
     <>
       <BrowserRouter>
         <StoreProvider>
-          <ClerkProviderWithRoutes />
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <AppComponent />
+          </LocalizationProvider>
         </StoreProvider>
       </BrowserRouter>
     </>

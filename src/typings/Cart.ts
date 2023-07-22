@@ -19,6 +19,7 @@ export type Cart = {
 
 export type OrderDetails = {
   fullName: string;
+  email: string;
   pickUpDate: string;
   pickUpTime: string;
 };

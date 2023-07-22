@@ -1,10 +1,18 @@
 import Cookies from 'js-cookie';
 import { createContext, useReducer } from 'react';
 // import { CartItem } from '../typings/Cart';
+// import { UserInfo } from '../typings/UserInfo';
 
 export const Store = createContext();
+//TODO: Cambiar a .jsx, creo que es mejor. Hecho
+//Video: revisar 3:48:16 apra incluir userInfo
 
 const initialState = {
+  userinfo: localStorage.getItem('userInfo')
+    ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      JSON.parse(localStorage.getItem('userInfo'))
+    : null,
+
   darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
   cart: {
     cartItems: localStorage.getItem('cartItems')
@@ -27,9 +35,6 @@ function reducer(state, action) {
       return { ...state, darkMode: false };
     case 'CART_ADD_ITEM': {
       const newItem = action.payload;
-      //   const existItem = state.cart.cartItems.find(
-      //     (item) => item._key === newItem._key
-      //   );
       const existItem = state.cart.cartItems.find(
         (item) => item._id === newItem._id
       );
@@ -50,20 +55,24 @@ function reducer(state, action) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
-    // case 'SAVE_ORDER_DETAILS': {
-    //   return {
-    //     ...state,
-    //     cart: {
-    //       ...state.cart,
-    //       orderDetails: action.payload,
-    //     },
-    //   };
-    // }
-    // case 'SAVE_PAYMENT_METHOD':
-    //   return {
-    //     ...state,
-    //     cart: { ...state.cart, paymentMethod: action.payload },
-    //   };
+    case 'USER_SIGNIN': {
+      return { ...state, userInfo: action.payload };
+    }
+
+    case 'SAVE_ORDER_DETAILS': {
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          orderDetails: action.payload,
+        },
+      };
+    }
+    case 'SAVE_PAYMENT_METHOD':
+      return {
+        ...state,
+        cart: { ...state.cart, paymentMethod: action.payload },
+      };
     default:
       return state;
   }

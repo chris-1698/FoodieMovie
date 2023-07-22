@@ -26,10 +26,17 @@ import {
 } from '@mui/material';
 import { urlForCart } from '../utils/image';
 import { useUser } from '@clerk/clerk-react';
+import useTitle from '../components/useTitle';
 
-export default function CartPage() {
+export default function CartPage({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
+  useTitle(title + subtitle);
   const navigate = useNavigate();
-  //   const toast = useToast();
   const { user } = useUser();
   const {
     state: {
@@ -40,9 +47,8 @@ export default function CartPage() {
 
   const updateCartItemsHandler = (item: CartItem, quantity: number) => {
     console.log(user?.firstName);
-
     if (item.countInStock < quantity) {
-      //Warning
+      //TODO: cambiar esto?
       alert('Lo sentimos. No contamos con stock de ese producto.');
       return;
     }
@@ -55,7 +61,7 @@ export default function CartPage() {
   };
 
   const checkOutHandler = () => {
-    navigate('/checkout');
+    navigate('/orderDetails');
   };
 
   const removeItemHandler = (item: CartItem) => {
@@ -114,7 +120,10 @@ export default function CartPage() {
                   </TableHead>
                   <TableBody>
                     {cartItems.map((item) => (
-                      <TableRow key={item._key} className="align-items-center">
+                      <TableRow
+                        key={item.slug.current}
+                        className="align-items-center"
+                      >
                         <TableCell>
                           <Link href={`/combos/${item.slug.current}`}>
                             <CardMedia
