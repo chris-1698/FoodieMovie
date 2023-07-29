@@ -1,11 +1,7 @@
 import Cookies from 'js-cookie';
 import { createContext, useReducer } from 'react';
-// import { CartItem } from '../typings/Cart';
-// import { UserInfo } from '../typings/UserInfo';
 
 export const Store = createContext();
-//TODO: Cambiar a .jsx, creo que es mejor. Hecho
-//Video: revisar 3:48:16 apra incluir userInfo
 
 const initialState = {
   userinfo: localStorage.getItem('userInfo')

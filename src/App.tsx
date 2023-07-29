@@ -38,6 +38,9 @@ import 'dayjs/locale/es';
 // Translation resources
 import { useTranslation } from 'react-i18next';
 
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 //Public key for Clerk use
 const CLERK_PUB_KEY = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -155,13 +158,18 @@ const AppComponent = () => {
   );
 };
 
+const queryClient = new QueryClient();
+
 const App = () => {
   return (
     <>
       <BrowserRouter>
         <StoreProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-            <AppComponent />
+            <QueryClientProvider client={queryClient}>
+              <ReactQueryDevtools initialIsOpen={false} />
+              <AppComponent />
+            </QueryClientProvider>
           </LocalizationProvider>
         </StoreProvider>
       </BrowserRouter>
@@ -170,3 +178,4 @@ const App = () => {
 };
 
 export default App;
+//Bookmark: 1:40:02

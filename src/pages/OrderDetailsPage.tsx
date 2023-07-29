@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { redirect, useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
-import { useSession } from '@clerk/clerk-react';
+import { useSession, useUser } from '@clerk/clerk-react';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import { Button, Grid, Input, InputLabel, TextField } from '@mui/material';
 import Layout from '../layouts/Layout';
@@ -24,6 +24,7 @@ export default function OrderDetailsPage({
   const navigate = useNavigate();
   const { state, dispatch } = useContext(Store);
   const session = useSession();
+  const { user } = useUser();
   const userJson = localStorage.getItem('userInfo');
   const userData = userJson !== null ? JSON.parse(userJson) : '';
   const {
@@ -41,7 +42,7 @@ export default function OrderDetailsPage({
       navigate('/sign-in/?redirect_url=/orderDetails');
     }
   }, [session, navigate]);
-
+  const user_id = user?.id;
   const [fullName, setFullName] = useState(userData.fullName || '');
   const [email, setEmail] = useState(userData.email || '');
   const [pickUpDate, setPickupDate] = useState(
@@ -63,6 +64,7 @@ export default function OrderDetailsPage({
     dispatch({
       type: 'SAVE_ORDER_DETAILS',
       payload: {
+        user_id,
         fullName,
         pickUpDate,
         email,
@@ -72,6 +74,7 @@ export default function OrderDetailsPage({
     localStorage.setItem(
       'orderDetails',
       JSON.stringify({
+        user_id,
         fullName,
         email,
         pickUpDate,
@@ -84,8 +87,6 @@ export default function OrderDetailsPage({
 
   return (
     <>
-      {/* <h1>Hola</h1>
-      <h2>Order detaiiils</h2> */}
       {/* TODO: Ver cómo hacer DateTimePicker required */}
       <Layout title="order details" description="order-details">
         <CheckoutRequirements activeStep={1} />

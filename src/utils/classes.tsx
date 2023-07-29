@@ -1,3 +1,4 @@
+// Styles
 const classes = {
   smallText: {
     fontSize: '15px',

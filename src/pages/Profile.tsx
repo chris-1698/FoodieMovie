@@ -1,4 +1,7 @@
+//Clerk resources
 import { UserProfile } from '@clerk/clerk-react';
+
+//Project resources
 import Layout from '../layouts/Layout';
 import useTitle from '../components/useTitle';
 
