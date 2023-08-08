@@ -11,7 +11,8 @@ import { Container } from '@material-ui/core';
 import * as dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import 'dayjs/locale/es.js';
-import useTitle from '../components/useTitle';
+import useTitle from '../hooks/useTitle';
+import { useTranslation } from 'react-i18next';
 
 export default function OrderDetailsPage({
   title,
@@ -20,6 +21,7 @@ export default function OrderDetailsPage({
   title: string;
   subtitle: string;
 }) {
+  const { t } = useTranslation();
   useTitle(title + subtitle);
   const navigate = useNavigate();
   const { state, dispatch } = useContext(Store);
@@ -45,14 +47,45 @@ export default function OrderDetailsPage({
   const user_id = user?.id;
   const [fullName, setFullName] = useState(userData.fullName || '');
   const [email, setEmail] = useState(userData.email || '');
-  const [pickUpDate, setPickupDate] = useState(
-    orderDetails?.pickUpDate || Date.now()
-  );
-  const [pickUpTime, setPickUpTime] = useState(
-    orderDetails?.pickUpTime || Date.now()
-  );
-  console.log('Nombre: ', fullName);
-  console.log(email);
+  const [disableContinue, setDisableContinue] = useState(true)
+  const [pickUpDate, setPickupDate] = useState('');
+  const [pickUpTime, setPickUpTime] = useState('');
+  const days = [
+    t('days.monday'),
+    t('days.tuesday'),
+    t('days.wednesday'),
+    t('days.thursday'),
+    t('days.friday'),
+    t('days.saturday'),
+    t('days.sunday'),
+  ]
+  const [dateAsObj, setDateAsObj] = useState(new Date() || null);
+  // console.log('Nombre: ', fullName);
+  // console.log(email);
+
+  const handleSetPickUpDate = (e) => {
+    const dateAsObject = e.$d as Date;
+    setDateAsObj(dateAsObject)
+    var parsedDate = `
+      ${days[dateAsObject.getDay() - 1]}
+      ${dateAsObject.toLocaleDateString('es', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })}
+      `
+    setPickupDate(parsedDate)
+  }
+
+  const handleSetPickUpTime = (e) => {
+    const timeAsObject = e.$d as Date;
+    const parsedTime = timeAsObject.toLocaleTimeString('es', {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    setPickUpTime(parsedTime)
+  }
+  // console.log('Valores pickup date y time: ', pickUpDate, pickUpTime);
 
   //   const today = dayjs();
   //   const twoPM = dayjs().set('hour', 14).startOf('hour');
@@ -66,8 +99,8 @@ export default function OrderDetailsPage({
       payload: {
         user_id,
         fullName,
-        pickUpDate,
         email,
+        pickUpDate,
         pickUpTime,
       },
     });
@@ -81,9 +114,10 @@ export default function OrderDetailsPage({
         pickUpTime,
       })
     );
+    localStorage.setItem('dateAsObj', dateAsObj.toString())
     navigate('/payment');
   };
-  console.log('frcha:', dayjs(pickUpDate).get('hour'), 'aaaaaaa: ', pickUpTime);
+  // console.log('frcha:', dayjs(pickUpDate).get('hour'), 'aaaaaaa: ', pickUpTime);
 
   return (
     <>
@@ -113,19 +147,31 @@ export default function OrderDetailsPage({
                   disabled
                 ></TextField>
               </Grid>
-
+              {/* TODO: Hacer required datetimepicker */}
               <Grid item xs={12} md={12}>
                 <DateTimePicker
-                  defaultValue={dayjs()}
+                  disablePast
+                  defaultValue={dayjs(localStorage.getItem('dateAsObj'))}
+                  onAccept={(e) => {
+                    handleSetPickUpDate(e);
+                    handleSetPickUpTime(e);
+                    setDisableContinue(false)
+                  }}
                   onChange={(e) => {
-                    setPickupDate(e);
-                    setPickUpTime(e);
+                    handleSetPickUpDate(e);
+                    handleSetPickUpTime(e);
+                  }}
+                  slotProps={{
+                    textField: {
+                      required: true,
+                    }
                   }}
                 ></DateTimePicker>
               </Grid>
               <Grid item xs={12}>
                 <Button
                   type="submit"
+                  disabled={disableContinue}
                   variant="contained"
                   onClick={() => redirect('/payment')}
                 >

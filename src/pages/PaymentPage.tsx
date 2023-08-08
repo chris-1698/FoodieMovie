@@ -1,19 +1,22 @@
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import React, { useContext, useState, useEffect } from 'react';
 import Layout from '../layouts/Layout';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import {
   Button,
-  Container,
   FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
-  Stack,
-  Grid,
+  Typography,
+  List,
+  ListItem,
+  Alert,
 } from '@mui/material';
-import useTitle from '../components/useTitle';
+import useTitle from '../hooks/useTitle';
+import jsCookie from 'js-cookie';
+import { Snackbar } from '@material-ui/core';
 
 export default function PaymentPage({
   title,
@@ -25,38 +28,107 @@ export default function PaymentPage({
   const navigate = useNavigate();
   const { state, dispatch } = useContext(Store);
   const {
-    cart: { paymentMethod },
+    cart: { orderDetails, paymentMethod },
   } = state;
-  const orderDetails = JSON.parse(localStorage.getItem('orderDetails')!);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  // const orderDetails = JSON.parse(localStorage.getItem('orderDetails')!);
   const [paymentMethodName, setPaymentMethodName] = useState(
-    paymentMethod || 'PayPal'
+    paymentMethod || ''
   );
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(false)
+
   useTitle(title + subtitle);
   useEffect(() => {
     if (!orderDetails) {
       navigate('/orderDetails');
+    } else {
+      setPaymentMethodName(jsCookie.get('paymentMethod') || '')
     }
   }, [orderDetails, navigate]);
 
+
+  const handleSetPaymentMethodName = (paymentMethod: string) => {
+    setPaymentMethodName(paymentMethod)
+    setSelectedPaymentMethod(true)
+  }
+
   const submitHandler = (event: React.SyntheticEvent) => {
     event.preventDefault();
+
     dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethodName });
     localStorage.setItem('paymentMethod', paymentMethodName);
     navigate('/placeOrder');
   };
-
+  //TODO: 06/08/2023 Revisar que funcione correctamente
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   console.log('AAAAAAAAAAAAAA pago ', localStorage.getItem('orderDetails'));
-
   console.log('Nombre completo de la víctima: ', orderDetails?.fullName);
-  //TODO: Empezar con esta página 20-7-2023
+
   return (
     <>
-      {/* TODO: Continuar con esta página 22/7/2023 */}
       <Layout title="Payment method" description="payment method">
-        <CheckoutRequirements activeStep={3} />
-        <div>
-          <h1>Payment Method</h1>
+        <CheckoutRequirements activeStep={2} />
+        <form onSubmit={submitHandler}>
+          <Typography component="h1" variant="h1">
+            Payment Method
+          </Typography>
+          <List>
+            <ListItem>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  aria-label='Payment Method'
+                  name="paymentMethod"
+                  value={paymentMethodName}
+                  onChange={(e) => handleSetPaymentMethodName(e.target.value)}
+                >
+                  <FormControlLabel
+                    label="PayPal"
+                    value="PayPal"
+                    control={<Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
+                  ></FormControlLabel>
+                  <FormControlLabel
+                    label="Stripe"
+                    value="Stripe"
+                    control={<Radio />}
+                  ></FormControlLabel>
+                  <FormControlLabel
+                    label="Efectivo"
+                    value="Efectivo"
+                    control={<Radio />}
+                  ></FormControlLabel>
+                </RadioGroup>
+              </FormControl>
+            </ListItem>
+            <ListItem>
+              <Button
+                fullWidth
+                type='submit'
+                variant='contained'
+                color='primary'
+                disabled={!selectedPaymentMethod}
+              >
+                Continue
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                fullWidth
+                type='button'
+                variant='contained'
+                color='secondary'
+                onClick={() => navigate('/orderDetails')}
+              >
+                Back
+              </Button>
+            </ListItem>
+          </List>
+
+
+        </form>
+
+
+
+        {/* 
           <Container maxWidth="md">
             <form onSubmit={submitHandler}>
               <Grid
@@ -113,7 +185,7 @@ export default function PaymentPage({
               </Grid>
             </form>
           </Container>
-        </div>
+        </div> */}
       </Layout>
     </>
   );

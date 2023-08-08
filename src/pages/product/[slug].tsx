@@ -1,3 +1,4 @@
+// TODO: Cambiar literales por valor del JSON translation
 // MUI resources
 import {
   Alert,
@@ -30,7 +31,7 @@ import { convertProductToCartitem } from '../../utils/utils';
 
 // Translation resources
 import { useTranslation } from 'react-i18next';
-import useTitle from '../../components/useTitle';
+import useTitle from '../../hooks/useTitle';
 
 export default function ProductInfo({
   title,
@@ -197,7 +198,6 @@ export default function ProductInfo({
                               addToCartHandler(
                                 convertProductToCartitem(product)
                               )
-                            // TODO: El código se ve feo
                           }
                           fullWidth
                           variant="contained"

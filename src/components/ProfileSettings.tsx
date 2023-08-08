@@ -97,10 +97,11 @@ export default function ProfileSettings() {
             </MenuItem>
             <MenuItem disabled>
               <Typography
+                style={{ fontWeight: 'bold' }}
                 fontSize={'12px'}
               >{`${user?.emailAddresses[0]}`}</Typography>
             </MenuItem>
-            <Link href="/user/:id">
+            <Link href={`/user/${user?.id}`}>
               <MenuItem>
                 <Typography>Perfil</Typography>
               </MenuItem>
@@ -108,6 +109,7 @@ export default function ProfileSettings() {
             <MenuItem>
               <Link>Historial de pedidos</Link>
             </MenuItem>
+            {/* TODO: Implementar borrar cuenta! */}
             <Link href="https://github.com/" className="delete-account">
               <MenuItem>
                 <Typography className="delete-account">
@@ -118,12 +120,15 @@ export default function ProfileSettings() {
             <MenuItem>
               <SignOutButton>
                 <Button
+                  sx={{ paddingRight: '15%' }}
                   onClick={() => {
                     navigate('/combos');
-                    localStorage.removeItem('userInfo');
-                    localStorage.removeItem('cartItems');
-                    localStorage.removeItem('product-slug');
-                    localStorage.removeItem('orderDetails');
+                    localStorage.clear();
+                    // localStorage.removeItem('userInfo');
+                    // localStorage.removeItem('cartItems');
+                    // localStorage.removeItem('product-slug');
+                    // localStorage.removeItem('orderDetails');
+                    // localStorage.removeItem('paymentMethod')
                     window.location.reload();
                   }}
                   className="log-out"

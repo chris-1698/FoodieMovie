@@ -10,8 +10,9 @@ import {
   Alert,
   Snackbar,
   IconButton,
+  Link
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { urlForThumbnail } from '../utils/image';
 import { ROUTING_MANAGER } from '../navigation/Router';
@@ -65,9 +66,13 @@ export default function DashboardProduct({ product }) {
   return (
     <Card>
       <Link
-        color="black"
-        to={ROUTING_MANAGER.COMBO.replace(':slug', product.slug.current)}
+        // color="primary"
+        // href={ROUTING_MANAGER.COMBO.replace(':slug', product.slug.current)}
+        href={`/combos/${product.slug.current}`}
         onClick={() => {
+          localStorage.setItem('product-slug', product.slug.current);
+        }}
+        onAuxClick={() => {
           localStorage.setItem('product-slug', product.slug.current);
         }}
       >

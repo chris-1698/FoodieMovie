@@ -14,38 +14,55 @@ import { Store } from '../utils/Store';
 // Clerk resources
 import { useSession, useUser } from '@clerk/clerk-react';
 
-export default function Combos() {
-  const session = useSession();
-  const { user } = useUser();
 
+export default function Combos() {
+
+  const thisSession = useSession();
+
+  const [obtainedToken, setObtainedToken] = useState('')
   const [productState, setProductState] = useState({
     products: [],
     error: '',
     loading: true,
   });
+
+  const { user } = useUser();
   const { products, error, loading } = productState;
   const { state, dispatch } = useContext(Store);
 
+  const userToken = thisSession.session?.getToken({
+    template: 'foodie-movie-jwt',
+  }).then((tokenResponse) => {
+    console.log('Susana morosa ', tokenResponse);
+    setObtainedToken(tokenResponse!);
+  });
+
   useEffect(() => {
-    console.log('La sesion es: ', session);
+    console.log('La sesion es: ', thisSession);
     const fetchData = async () => {
       try {
         const products = await client.fetch(`*[_type == "product"]`);
         setProductState({ products, loading: false, error: '' });
-        console.log('Dentro del try: ', session);
+        console.log('Dentro del try: ', thisSession);
       } catch (err) {
         setProductState({ products: [], loading: false, error: err.message });
       }
     };
     fetchData();
+    // console.log('Susana le debe una caña a Pedro ', JSON.parse(localStorage.getItem('userInfo')!).token);
+
   }, []);
 
   // Almacenamos en el estado la información del usuario para orderDetails
   useEffect(() => {
+    if (obtainedToken === '') {
+      return;
+    }
     const userData = {
       fullName: user?.fullName,
       email: user?.emailAddresses[0].emailAddress,
       id: user?.id,
+      token: obtainedToken,
     };
     dispatch({
       type: 'USER_SIGNIN',
@@ -55,8 +72,11 @@ export default function Combos() {
       },
     });
     localStorage.setItem('userInfo', JSON.stringify(userData));
+    localStorage.setItem('product-slug', '');
     // }
-  }, [user]);
+    // console.log('Susana sigue debiendo una caña a Pedro ', userToken);
+
+  }, [obtainedToken]);
   return (
     <>
       {loading ? (

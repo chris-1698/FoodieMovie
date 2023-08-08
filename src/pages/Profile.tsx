@@ -3,7 +3,7 @@ import { UserProfile } from '@clerk/clerk-react';
 
 //Project resources
 import Layout from '../layouts/Layout';
-import useTitle from '../components/useTitle';
+import useTitle from '../hooks/useTitle';
 
 export default function Profile({
   title,
@@ -12,6 +12,7 @@ export default function Profile({
   title: string;
   subtitle: string;
 }) {
+
   useTitle(title + subtitle);
   return (
     <>
@@ -21,4 +22,3 @@ export default function Profile({
     </>
   );
 }
-//TODO: Ver el asunto de la ruta /user/:id

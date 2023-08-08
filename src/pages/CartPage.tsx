@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import { urlForCart } from '../utils/image';
 import { useUser } from '@clerk/clerk-react';
-import useTitle from '../components/useTitle';
+import useTitle from '../hooks/useTitle';
 
 export default function CartPage({
   title,
@@ -125,7 +125,15 @@ export default function CartPage({
                         className="align-items-center"
                       >
                         <TableCell>
-                          <Link href={`/combos/${item.slug.current}`}>
+                          <Link
+                            href={`/combos/${item.slug.current}`}
+                            onClick={() => {
+                              localStorage.setItem('product-slug', item.slug.current)
+                            }}
+                            onAuxClick={() => {
+                              localStorage.setItem('product-slug', item.slug.current);
+                            }}
+                          >
                             <CardMedia
                               component="img"
                               image={urlForCart(item.image)}
@@ -136,7 +144,13 @@ export default function CartPage({
                           </Link>
                         </TableCell>
                         <TableCell>
-                          <Link href={`/combos/${item.slug.current}`}>
+                          <Link href={`/combos/${item.slug.current}`}
+                            onClick={() => {
+                              localStorage.setItem('product-slug', item.slug.current)
+                            }}
+                            onAuxClick={() => {
+                              localStorage.setItem('product-slug', item.slug.current);
+                            }}>
                             <Typography>{item.name}</Typography>
                           </Link>
                         </TableCell>

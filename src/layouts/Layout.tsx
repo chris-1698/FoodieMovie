@@ -65,7 +65,7 @@ function Layout({
       },
     },
   });
-  // User: UsuarioPrueba letmechooseanemail1135@gmail.com Pass:Password1234
+  //TODO: User: UsuarioPrueba letmechooseanemail1135@gmail.com Pass:Password1234
 
   const darkModeChangeHandler = () => {
     dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });

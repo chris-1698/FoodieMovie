@@ -1,18 +1,17 @@
-import { CartItem } from './Cart';
+import { CartItem, OrderDetails } from './Cart';
+import { User } from './User';
 
 export type Order = {
   _id: string;
   orderItems: CartItem[];
-  clientId: string;
-  clientFullName: string;
-  clientEmail: string;
-  pickUpDate: string;
-  pickUptime: string;
+  user: User;
+  orderDetails: OrderDetails;
   paymentMethod: string;
   createdAt: string;
   promoId: string;
   promoApplied: boolean;
   isPaid: boolean;
+  paidAt: string;
   taxPrice: number;
   itemsPrice: number;
   totalPrice: number;

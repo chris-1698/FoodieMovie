@@ -9,4 +9,6 @@ export const ROUTING_MANAGER = {
   CHECKOUT: '/checkout',
   USER_PROFILE: '/user/:id',
   PAYMENT: '/payment',
+  PLACE_ORDER: '/placeOrder',
+  ORDER: '/order/:id'
 };

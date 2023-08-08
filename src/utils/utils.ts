@@ -1,4 +1,9 @@
+import { ApiError } from '../typings/ApiError';
 import { CartItem } from '../typings/Cart';
+
+/**
+ * Frontend common resources
+ */
 
 export const convertProductToCartitem = (product): CartItem => {
   const cartItem: CartItem = {
@@ -11,4 +16,10 @@ export const convertProductToCartitem = (product): CartItem => {
     quantity: 1,
   };
   return cartItem;
+};
+
+export const getError = (error: ApiError) => {
+  return error.response && error.response.data.message
+    ? error.response.data.message
+    : error.message;
 };

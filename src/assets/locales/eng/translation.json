@@ -33,6 +33,16 @@
     "paymentMethod": " - Payment Method",
     "placeOrder": " - Place Order",
     "signIn": " - Sign in",
-    "signUp": " - Sign up"
+    "signUp": " - Sign up",
+    "order": " - Your order"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
   }
 }

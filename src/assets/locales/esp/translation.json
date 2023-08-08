@@ -33,6 +33,16 @@
     "paymentMethod": " - Método de pago",
     "placeOrder": " - Realizar pedido",
     "signIn": " - Iniciar sesión",
-    "signUp": " - Registro"
+    "signUp": " - Registro",
+    "order": " - Tu pedido"
+  },
+  "days": {
+    "monday": "Lunes",
+    "tuesday": "Martes",
+    "wednesday": "Miércoles",
+    "thursday": "Jueves",
+    "friday": "Viernes",
+    "saturday": "Sábado",
+    "sunday": "Domingo"
   }
 }

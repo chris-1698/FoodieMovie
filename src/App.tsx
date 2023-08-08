@@ -40,6 +40,8 @@ import { useTranslation } from 'react-i18next';
 
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import PlaceOrderPage from './pages/PlaceOrderPage';
+import OrderPage from './pages/OrderPage';
 
 //Public key for Clerk use
 const CLERK_PUB_KEY = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
@@ -108,6 +110,7 @@ const AppComponent = () => {
             <CartPage title={t('titles.brand')} subtitle={t('titles.cart')} />
           }
         />
+        {/* Order details page */}
         <Route
           path={ROUTING_MANAGER.ORDER_DETAILS}
           element={
@@ -145,6 +148,42 @@ const AppComponent = () => {
                 <PaymentPage
                   title={t('titles.brand')}
                   subtitle={t('titles.paymentMethod')}
+                />
+              </SignedIn>
+              <SignedOut>
+                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
+              </SignedOut>
+            </>
+          }
+        />
+
+        {/* Place order page */}
+        <Route
+          path={ROUTING_MANAGER.PLACE_ORDER}
+          element={
+            <>
+              <SignedIn>
+                <PlaceOrderPage
+                  title={t('titles.brand')}
+                  subtitle={t('titles.paymentMethod')}
+                />
+              </SignedIn>
+              <SignedOut>
+                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
+              </SignedOut>
+            </>}
+        />
+
+
+        {/*  */}
+        <Route
+          path={ROUTING_MANAGER.ORDER}
+          element={
+            <>
+              <SignedIn>
+                <OrderPage
+                  title={t('titles.brand')}
+                  subtitle={t('titles.order')}
                 />
               </SignedIn>
               <SignedOut>
