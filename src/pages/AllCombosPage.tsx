@@ -3,8 +3,6 @@ import useTitle from '../hooks/useTitle';
 import Layout from '../layouts/Layout';
 import Combos from '../components/Combos';
 import { useSession } from '@clerk/clerk-react';
-import Cookies from 'js-cookie';
-// import jwt from "jsonwebtoken";
 
 export default function AllCombosPage({
   title,
@@ -19,7 +17,7 @@ export default function AllCombosPage({
     const token = thisSession.session?.getToken({
       template: 'foodie-movie-jwt',
     });
-    console.log('El bendito token alv: ', token);
+    // console.log('El bendito token alv: ', token);
   } catch (e) {
     console.log(e.message);
   }

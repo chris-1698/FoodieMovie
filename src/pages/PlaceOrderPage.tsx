@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Store } from '../utils/Store';
-import { Alert, Button, Card, CardMedia, Grid, Link, List, ListItem, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Alert, Button, Card, CardMedia, Grid, List, ListItem, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import Layout from '../layouts/Layout';
 import classes from '../utils/classes';
@@ -70,9 +70,6 @@ export default function PlaceOrderPage({
       </IconButton>
     </React.Fragment>
   )
-  // TODO: IMPORTANTE Revisar esto. Da fallo de uso incorrecto de hooks?
-  //5:08:34
-  //https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir
   const placeOrderHandler = async () => {
     try {
       const data = await createOrder({
@@ -89,7 +86,6 @@ export default function PlaceOrderPage({
     } catch (err) {
       console.log(cart.orderDetails, cart.cartItems, cart.paymentMethod);
       console.log(getError(err as ApiError));
-
       // setOpenSnackbar(true)
     }
   }

@@ -15,7 +15,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { urlForThumbnail } from '../utils/image';
-import { ROUTING_MANAGER } from '../navigation/Router';
 import { Store } from '../utils/Store';
 import { convertProductToCartitem } from '../utils/utils';
 import React, { useContext, useState, useEffect } from 'react';
@@ -25,12 +24,9 @@ import { useUser } from '@clerk/clerk-react';
 /* eslint-disable */
 export default function DashboardProduct({ product }) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
-  const userResource = useUser();
-  const { user } = useUser();
 
   const addToCartHandler = () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);

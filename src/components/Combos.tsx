@@ -1,3 +1,5 @@
+combos
+
 // React resources
 import { useContext, useEffect, useState } from 'react';
 
@@ -29,35 +31,52 @@ export default function Combos() {
   const { user } = useUser();
   const { products, error, loading } = productState;
   const { state, dispatch } = useContext(Store);
-
-  const userToken = thisSession.session?.getToken({
-    template: 'foodie-movie-jwt',
-  }).then((tokenResponse) => {
-    console.log('Susana morosa ', tokenResponse);
-    setObtainedToken(tokenResponse!);
-  });
-
+  //TODO: Ver dónde crear y guardar el token. 
+  //No puedo hacerlo de esta manera porque se queda esperando
+  // const userToken = thisSession.session?.getToken({
+  //   template: 'foodie-movie-jwt',
+  // }).then((tokenResponse) => {
+  //   setObtainedToken(tokenResponse!);
+  // });
+  // const userToken = thisSession.session?.getToken({
+  //   template: 'foodie-movie-jwt',
+  // })
   useEffect(() => {
-    console.log('La sesion es: ', thisSession);
+    // console.log('La sesion es: ', thisSession);
     const fetchData = async () => {
       try {
         const products = await client.fetch(`*[_type == "product"]`);
         setProductState({ products, loading: false, error: '' });
-        console.log('Dentro del try: ', thisSession);
+        // console.log('Dentro del try: ', thisSession);
       } catch (err) {
         setProductState({ products: [], loading: false, error: err.message });
       }
     };
     fetchData();
-    // console.log('Susana le debe una caña a Pedro ', JSON.parse(localStorage.getItem('userInfo')!).token);
+    // const userToken = thisSession.session?.getToken({
+    //   template: 'foodie-movie-jwt',
+    // })
 
+    // setObtainedToken(userToken!);
   }, []);
 
   // Almacenamos en el estado la información del usuario para orderDetails
   useEffect(() => {
-    if (obtainedToken === '') {
-      return;
-    }
+    if (thisSession) {
+      const userToken = thisSession.session?.getToken({
+        template: 'foodie-movie-jwt',
+      }).then((token) => {
+        setObtainedToken(token!)
+        console.log('El token de usuario es: ', token)
+
+      }
+      )
+
+    } else { return; }
+
+    // if (obtainedToken === '') {
+    //   return;
+    // }
     const userData = {
       fullName: user?.fullName,
       email: user?.emailAddresses[0].emailAddress,
@@ -69,6 +88,7 @@ export default function Combos() {
       payload: {
         fullName: user?.fullName,
         email: user?.emailAddresses[0].emailAddress,
+        id: user?.id,
       },
     });
     localStorage.setItem('userInfo', JSON.stringify(userData));
@@ -76,7 +96,7 @@ export default function Combos() {
     // }
     // console.log('Susana sigue debiendo una caña a Pedro ', userToken);
 
-  }, [obtainedToken]);
+  }, []);
   return (
     <>
       {loading ? (

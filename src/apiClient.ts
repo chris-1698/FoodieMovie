@@ -5,10 +5,11 @@ const apiClient = axios.create({
     process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : '/',
   headers: {
     'Content-type': 'application/json',
-    'Access-Control-Allow-Origin': 'http://localhost:5173',
-    'Access-Control-Allow-Methods': '*',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   },
 });
+//El GET sí deja. No hay problemas de CORS, parece
 // TODO: Ver problema de CORS al crear pedido.
 
 apiClient.interceptors.request.use(
@@ -16,28 +17,8 @@ apiClient.interceptors.request.use(
     // const thisSession = useSession();
     const userToken = JSON.parse(localStorage.getItem('userInfo')!).token;
 
-    // const encryptedToken = jwt.sign(
-    //   { token: userToken },
-    //   process.env.VITE_REACT_APP_CLERK_JWT_KEY || 'secretkey',
-    //   { algorithm: 'HS256' }
-    // );
-
-    // console.log('Fallo porque le tengo miedo al éxito: ', userToken);
-    // console.log(
-    //   'Los árboles hablan vietnamita por algún motivo. ',
-    //   encryptedToken
-    // );
-
     if (localStorage.getItem('userInfo'))
-      config.headers.authorization = `Bearer ${
-        userToken
-        //TODO: Ver si pasar como JSON
-        //Also: Si useSession no funciona por lo que fuera, podría guardar
-        //el token en userInfo, obtenerlo aquí como JSON y acceder al
-        //campo "token"
-        // thisSession.session?.getToken({ template: 'foodie-movie-jwt' })
-      }`;
-
+      config.headers.authorization = `Bearer ${userToken}`;
     return config;
   },
   (error) => {

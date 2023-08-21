@@ -61,8 +61,8 @@ export default function PaymentPage({
   };
   //TODO: 06/08/2023 Revisar que funcione correctamente
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  console.log('AAAAAAAAAAAAAA pago ', localStorage.getItem('orderDetails'));
-  console.log('Nombre completo de la víctima: ', orderDetails?.fullName);
+  // console.log('AAAAAAAAAAAAAA pago ', localStorage.getItem('orderDetails'));
+  // console.log('Nombre completo de la víctima: ', orderDetails?.fullName);
 
   return (
     <>

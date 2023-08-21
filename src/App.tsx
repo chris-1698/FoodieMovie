@@ -206,7 +206,7 @@ const App = () => {
         <StoreProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
             <QueryClientProvider client={queryClient}>
-              <ReactQueryDevtools initialIsOpen={false} />
+              {/* <ReactQueryDevtools initialIsOpen={false} /> */}
               <AppComponent />
             </QueryClientProvider>
           </LocalizationProvider>
