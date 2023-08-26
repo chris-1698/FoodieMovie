@@ -1,5 +1,3 @@
-combos
-
 // React resources
 import { useContext, useEffect, useState } from 'react';
 
@@ -95,7 +93,7 @@ export default function Combos() {
     localStorage.setItem('product-slug', '');
     // }
     // console.log('Susana sigue debiendo una caña a Pedro ', userToken);
-
+    // TODO: Empezar login desde 0. Siguiendo el tutorial y trabajando con la BBDD
   }, []);
   return (
     <>
