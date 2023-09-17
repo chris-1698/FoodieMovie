@@ -1,0 +1,103 @@
+/* Componentes de Clerk */
+
+.cl-sign-in,
+.cl-sign-up {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.cl-signIn-root,
+.cl-signUp-root {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cl-auth-form-body input {
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+  border-radius: 0;
+  padding: 0;
+}
+/* TODO: Revisar cómo centrar la caja de login de Clerk*/
+.cl-auth-form-body input:focus {
+  border-bottom: 1px solid #312e81;
+}
+
+.cl-auth-form-body label > span {
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: normal;
+  transition: transform 0.25s;
+  transform: translateY(20px);
+}
+
+.cl-auth-form-body label:focus-within > span,
+.cl-auth-form-body input:not([value='']) + span {
+  transform: translateY(0px);
+}
+
+.cl-oauth-button-group {
+  margin-bottom: 3em;
+}
+
+.cl-auth-button-group::after {
+  height: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+}
+
+.cl-user-profile .cl-main {
+  margin: 3em 0 0 0 !important;
+  padding: 0 !important;
+  width: inherit;
+}
+
+.cl-userButton-root {
+  display: flex;
+  padding-left: 15px;
+}
+
+.cl-userButtonOuterIdentifier {
+  font-size: 15px;
+  position: absolute;
+  padding-left: 15%;
+}
+
+.cl-userButtonTrigger {
+  position: relative;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.delete-account {
+  color: #ff0000 !important;
+}
+
+.log-out {
+  color: #ff0000 !important;
+}
+
+.user-avatar {
+  opacity: 1 !important;
+}
+
+.user-fullname {
+  margin-right: 10%;
+}
+
+.cl-userButtonAvatarBox {
+  margin-right: 90%;
+}
+
+.userProfileCard {
+  padding-left: 60%;
+  justify-content: center;
+}
+
+.cl-userProfile-root {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+}

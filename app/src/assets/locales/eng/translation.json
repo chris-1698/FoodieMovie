@@ -1,0 +1,48 @@
+{
+  "page_welcome_msg": "Welcome to FoodieMovie!",
+  "session": {
+    "startSession": "Login",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "passwordForgor": "Forgot your password?",
+    "repeatPassword": "Repeat your password",
+    "login": "Login",
+    "signUpButton": "Sign up",
+    "signUp": "Sign up"
+  },
+  "dashboard": {
+    "pageName": "Foodie Movie",
+    "copyright": "All rights reserved. Foodie Movie",
+    "addCart": "Add to cart",
+    "status": "Status",
+    "price": "Price",
+    "reviews": " reviews",
+    "description": "Description: ",
+    "brand": "Brand: ",
+    "category": "Category: ",
+    "productAvailable": "Available",
+    "productUnavailable": "Not available"
+  },
+  "titles": {
+    "brand": "Foodie Movie",
+    "allCombos": " - Appetizers",
+    "cart": " - Cart",
+    "profile": " - Profile",
+    "orderDetails": " - Order Details",
+    "paymentMethod": " - Payment Method",
+    "placeOrder": " - Place Order",
+    "signIn": " - Sign in",
+    "signUp": " - Sign up",
+    "order": " - Your order"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  }
+}
