@@ -1,6 +1,6 @@
 export const ROUTING_MANAGER = {
   ROOT: '/',
-  SIGN_IN: '/sign-in',
+  SIGN_IN: '/signin',
   REGISTER: '/register',
   ALL_COMBOS: '/combos',
   COMBO: '/combos/:slug',

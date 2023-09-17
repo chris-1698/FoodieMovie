@@ -20,6 +20,7 @@ import { convertProductToCartitem } from '../utils/utils';
 import React, { useContext, useState, useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useUser } from '@clerk/clerk-react';
+import { ROUTING_MANAGER } from '../navigation/Router';
 
 /* eslint-disable */
 export default function DashboardProduct({ product }) {
@@ -64,7 +65,7 @@ export default function DashboardProduct({ product }) {
       <Link
         // color="primary"
         // href={ROUTING_MANAGER.COMBO.replace(':slug', product.slug.current)}
-        href={`/combos/${product.slug.current}`}
+        href={ROUTING_MANAGER.ALL_COMBOS + `/${product.slug.current}`}
         onClick={() => {
           localStorage.setItem('product-slug', product.slug.current);
         }}

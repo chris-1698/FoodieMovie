@@ -25,8 +25,9 @@ import {
   Typography,
 } from '@mui/material';
 import { urlForCart } from '../utils/image';
-import { useUser } from '@clerk/clerk-react';
+// import { useUser } from '@clerk/clerk-react';
 import useTitle from '../hooks/useTitle';
+import { useTranslation } from 'react-i18next';
 
 export default function CartPage({
   title,
@@ -37,7 +38,7 @@ export default function CartPage({
 }) {
   useTitle(title + subtitle);
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { t } = useTranslation();
   const {
     state: {
       cart: { cartItems },
@@ -46,7 +47,7 @@ export default function CartPage({
   } = useContext(Store);
 
   const updateCartItemsHandler = (item: CartItem, quantity: number) => {
-    console.log(user?.firstName);
+    // console.log(user?.firstName);
     if (item.countInStock < quantity) {
       //TODO: cambiar esto?
       alert('Lo sentimos. No contamos con stock de ese producto.');
@@ -59,7 +60,7 @@ export default function CartPage({
       payload: { ...item, quantity },
     });
   };
-
+  //TODO Adaptar todo al nuevo login
   const checkOutHandler = () => {
     navigate('/orderDetails');
   };
@@ -73,13 +74,15 @@ export default function CartPage({
       <Layout title="Carro" description="a">
         <Typography component="h1" variant="h1">
           {' '}
-          Carro
+          {/*TODO: Texto */}
+          {t('cart.cart')}
         </Typography>
         {cartItems.length === 0 ? (
           <Box>
             <Typography>
-              El carro está vacío.{' '}
-              <Link href="/combos">¿Y si cambiamos eso?</Link>
+              {/*TODO: Texto */}
+              {t('cart.emptyCart')}{' '}
+              <Link href="/combos">{t('cart.productLink')}</Link>
             </Typography>
           </Box>
         ) : (
@@ -91,29 +94,34 @@ export default function CartPage({
                     <TableRow>
                       <TableCell>
                         <Typography sx={{ fontWeight: 'bold' }}>
-                          Image
+                          {/*TODO: Texto */}
+                          {t('cart.image')}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Typography
                           sx={{ fontWeight: 'bold', paddingLeft: '15px' }}
                         >
-                          Name
+                          {/*TODO: Texto */}
+                          {t('cart.name')}
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ paddingLeft: '35px' }}>
                         <Typography sx={{ fontWeight: 'bold' }}>
-                          Quantity
+                          {/*TODO: Texto */}
+                          {t('cart.quantity')}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Typography sx={{ fontWeight: 'bold' }}>
-                          Price
+                          {/*TODO: Texto */}
+                          {t('cart.price')}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Typography sx={{ fontWeight: 'bold' }}>
-                          Action
+                          {t('cart.delete')}
+                          {/*TODO: Texto */}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -196,9 +204,10 @@ export default function CartPage({
                 <List>
                   <ListItem>
                     <Typography variant="h2" align="center">
-                      Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}
-                      items):{' '}
-                      {cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}€{' '}
+                      {/*TODO: Texto */}
+                      {t('cart.subtotal')} ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}
+                      {t('cart.items')}):{' '}
+                      {cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}{t('currency')}{' '}
                     </Typography>
                     {/* TODO: cadenas de texto en translation
                     y seguir con el tutorial  */}
@@ -210,7 +219,8 @@ export default function CartPage({
                       variant="contained"
                       onClick={checkOutHandler}
                     >
-                      Checkout
+                      {/*TODO: Texto */}
+                      {t('cart.checkout')}
                     </Button>
                   </ListItem>
                 </List>

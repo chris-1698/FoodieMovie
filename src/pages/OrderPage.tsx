@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Store } from '../utils/Store';
-import { useGetOrderDetailsQuery } from '../hooks/orderHooks';
-import { CircularProgress, Alert, CardMedia } from '@mui/material';
-import { getError } from '../utils/utils';
-import { ApiError } from '../typings/ApiError';
+import { useGetOrderDetailsQuery, useGetPaypalClientIdQuery, usePayOrderMutation } from '../hooks/orderHooks';
 import {
+  CircularProgress,
+  Alert,
+  CardMedia,
   Grid,
   List,
   ListItem,
@@ -15,43 +15,111 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
-} from '@material-ui/core';
+  Typography,
+  Stack,
+  Button
+} from '@mui/material';
+import { getError } from '../utils/utils';
+import { ApiError } from '../typings/ApiError';
 import { Card } from '@mui/material'
 import useTitle from '../hooks/useTitle';
 import classes from '../utils/classes';
 import { urlForCart } from '../utils/image';
 import Layout from '../layouts/Layout';
+import { useTranslation } from 'react-i18next';
+import { PayPalButtons, PayPalButtonsComponentProps, SCRIPT_LOADING_STATE, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 
-export default function OrderPage(
-  { title, subtitle }: { title: string, subtitle: string }) {
+export default function OrderPage({ title, subtitle }: { title: string, subtitle: string }) {
   useTitle(title + subtitle)
+
   const navigate = useNavigate()
   const { state } = useContext(Store);
   const { userInfo } = state;
-
+  // TODO: 5:28:06 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir
   const params = useParams();
   const { id: orderId } = params;
+  const { data: order, isLoading, error, refetch } = useGetOrderDetailsQuery(orderId!);
+  const { t } = useTranslation();
 
-  const { data: order, isLoading, error } = useGetOrderDetailsQuery(orderId!);
+  // console.log(order);
+
+  const { mutateAsync: payOrder, isLoading: loadingPay } = usePayOrderMutation()
+
+  // 5:49:06
+  // TODO: Revisar. Se paga a la segunda pulsación del botón
+  const testPayHandler = () => {
+    payOrder({ orderId: orderId! })
+    refetch()
+    alert('Order is paid')
+  }
+
+  const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer()
+
+  const { data: paypalConfig } = useGetPaypalClientIdQuery()
 
 
   useEffect(() => {
-    if (!userInfo) {
-      // navigate
-      return navigate('/sign-in')
+    if (paypalConfig && paypalConfig.clientId) {
+      const loadPaypalScript = async () => {
+        paypalDispatch({
+          type: 'resetOptions',
+          value: {
+            'clientId': paypalConfig.clientId!,
+            currency: 'EUR',
+          },
+        })
+        paypalDispatch({
+          type: 'setLoadingStatus',
+          value: SCRIPT_LOADING_STATE.PENDING,
+        })
+      }
+      loadPaypalScript()
     }
-  }, [])
+  }, [paypalConfig]);
+
+  const paypalbuttonTransactionProps: PayPalButtonsComponentProps = {
+    style: { layout: 'vertical' },
+    // Al renderizar el botón de PayPal
+    createOrder(data, actions) {
+      return actions.order.create({
+        purchase_units: [
+          {
+            amount: {
+              value: order!.totalPrice.toString(),
+            },
+          },
+        ],
+      }).then((orderID: string) => {
+        return orderID
+      })
+    },
+    // Luego de finalizar el pedido en PayPal
+    onApprove(data, actions) {
+      return actions.order!.capture().then(async (details) => {
+        try {
+          payOrder({ orderId: orderId!, ...details })
+          refetch()
+          //TODO: Snackbar success
+        } catch (err) {
+          //TODO: Snackbar error
+        }
+      })
+    },
+    onError: (err) => {
+      // error as ApiError snackbar
+    },
+  }
 
   return (
     <Layout title='order' description='order'>
-      <Typography component='h1' variant='h1'>Order {order?._id}</Typography>
+      {/* TODO: Pedido */}
+      <Typography component='h2' variant='h2'>{t('orders.order')} {order?._id}</Typography>
       {isLoading ? (
         <CircularProgress></CircularProgress>
       ) : error ? (
-        <Alert severity='info'>{getError(error as ApiError)}</Alert>
+        <Alert severity='error'>{getError(error as ApiError)}</Alert>
       ) : !order ? (
-        <Alert severity='error'>Order Not Found</Alert>
+        <Alert severity='error'>{t('orders.orderNotFound')}</Alert>
       ) : (
         <Grid container spacing={1}>
           <Grid item md={9} xs={12}>
@@ -59,15 +127,26 @@ export default function OrderPage(
               <List>
                 <ListItem>
                   <Typography component='h2' variant='h2'>
-                    Order Details
+                    {/* TODO: Texto */}
+                    {t('orders.orderDetails')}
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  {order.user.fullName},
+                  <Stack direction='column' >
+                    <Typography>{t('orders.name')}{order.orderDetails.fullName}</Typography>
+                    <Typography>{t('orders.pickUpDate')}{order.orderDetails.pickUpDate}</Typography>
+                    <Typography>{t('orders.pickUpTime')}{order.orderDetails.pickUpTime}</Typography>
+                  </Stack>
+                  {/* TODO: Bookmark 5:28:53 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir*/}
+                  {/* {userInfo!.name + ' ' + userInfo!.lastName}, */}
                 </ListItem>
                 <ListItem>
-                  Status: {' '}
-                  {order.isPaid ? 'Yes' : 'No'}
+                  {/* TODO: Texto */}
+                  {/* Estado del pedido. */}
+                  {order.isPaid ?
+                    <Alert severity="success" variant='filled' sx={{ width: '100%' }}>{t('orders.delivered')}</Alert> :
+                    <Alert severity="warning" variant='filled' sx={{ width: '100%' }}>{t('orders.notDelivered')}</Alert>
+                  }
                 </ListItem>
               </List>
             </Card>
@@ -76,12 +155,16 @@ export default function OrderPage(
               <List>
                 <ListItem>
                   <Typography component='h2' variant='h2'>
-                    Payment Method
+                    {/* TODO: Texto */}
+                    {t('orders.payment')}
                   </Typography>
                 </ListItem>
-                <ListItem>{order.paymentMethod}</ListItem>
+                <ListItem>{t('orders.paymentMethod')}{order.paymentMethod}</ListItem>
                 <ListItem>
-                  Status: {order.isPaid ? `paid at ${order.paidAt}` : 'not paid'}
+                  {order.isPaid ?
+                    <Alert severity="success" variant='filled' sx={{ width: '100%' }}>{t('orders.paid')}</Alert> :
+                    <Alert severity="warning" variant='filled' sx={{ width: '100%' }}>{t('orders.notPaid')}</Alert>
+                  }
                 </ListItem>
               </List>
             </Card>
@@ -90,7 +173,8 @@ export default function OrderPage(
               <List>
                 <ListItem>
                   <Typography component='h2' variant='h2'>
-                    Order Items
+                    {/* TODO: Texto */}
+                    {t('orders.orderItems')}
                   </Typography>
                 </ListItem>
                 <ListItem>
@@ -98,15 +182,16 @@ export default function OrderPage(
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Image</TableCell>
-                          <TableCell>Name</TableCell>
-                          <TableCell align='right'>Quantity</TableCell>
-                          <TableCell align='right'>Price</TableCell>
+                          {/* TODO: Texto */}
+                          <TableCell sx={{ paddingLeft: '9%' }}>{t('orders.image')}</TableCell>
+                          <TableCell sx={{ paddingLeft: '9%' }}>{t('orders.itemName')}</TableCell>
+                          <TableCell align='right'>{t('orders.quantity')}</TableCell>
+                          <TableCell align='right'>{t('orders.price')}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {order.orderItems.map((item) => (
-                          <TableRow key={item.slug.current}>
+                          <TableRow key={item.slug}>
                             <TableCell>
                               <CardMedia
                                 component='img'
@@ -115,14 +200,17 @@ export default function OrderPage(
                                 height={50}
                               ></CardMedia>
                             </TableCell>
-                            <TableCell>
+
+                            <TableCell sx={{ paddingLeft: '6%' }}>
                               <Typography>{item.name}</Typography>
                             </TableCell>
-                            <TableCell>
-                              <Typography>{item.quantity}</Typography>
+
+                            <TableCell align='right'>
+                              <Typography sx={{ paddingRight: '15%' }}>{item.quantity}</Typography>
                             </TableCell>
-                            <TableCell>
-                              <Typography>{item.price}</Typography>
+
+                            <TableCell align='right'>
+                              <Typography>{item.price}{t('currency')}</Typography>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -137,38 +225,61 @@ export default function OrderPage(
             <Card>
               <List>
                 <ListItem>
-                  <Typography variant='h2'>Order Summary</Typography>
+                  <Typography variant='h2'>{t('orders.orderSummary')}</Typography>
                 </ListItem>
                 <ListItem>
                   <Grid container>
                     <Grid item xs={6}>
-                      <Typography>Items:</Typography>
+                      <Typography>{t('orders.itemsPrice')}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align='right'>${order.itemsPrice}</Typography>
+                      <Typography align='right'>{order.itemsPrice}{t('currency')}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
                 <ListItem>
                   <Grid container>
                     <Grid item xs={6}>
-                      <Typography>Tax: </Typography>
+                      <Typography>{t('orders.taxes')} </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align='right'>${order.taxPrice}</Typography>
+                      <Typography align='right'>{order.taxPrice}{t('currency')}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
                 <ListItem>
                   <Grid container>
                     <Grid item xs={6}>
-                      <Typography>Total Price:</Typography>
+                      {/*TODO: Texto */}
+
+                      <Typography><strong>{t('orders.total')}</strong></Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align='right'>${order.totalPrice}</Typography>
+                      <Typography align='right'><strong>{order.totalPrice}{t('currency')}</strong></Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
+                {!order.isPaid && (
+                  <ListItem>
+                    {isPending ? (
+                      <CircularProgress />
+                    ) : isRejected ? (
+                      <Alert severity='error'>
+                        {/* TODO: Texto */}
+                        Error al conectarse a paypal
+                      </Alert>
+                    ) : (
+                      <div>
+                        <PayPalButtons
+                          {...paypalbuttonTransactionProps}
+                        ></PayPalButtons>
+                        {/* TODO: Texto */}
+                        <Button onClick={testPayHandler}>Test Pay</Button>
+                      </div>
+                    )}
+                    {loadingPay && <CircularProgress />}
+                  </ListItem>
+                )}
               </List>
             </Card>
           </Grid>

@@ -12,15 +12,15 @@ export default function AllCombosPage({
   subtitle: string;
 }) {
   // const publicKey = process.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
-  const thisSession = useSession();
-  try {
-    const token = thisSession.session?.getToken({
-      template: 'foodie-movie-jwt',
-    });
-    // console.log('El bendito token alv: ', token);
-  } catch (e) {
-    console.log(e.message);
-  }
+  // const thisSession = useSession();
+  // try {
+  //   const token = thisSession.session?.getToken({
+  //     template: 'foodie-movie-jwt',
+  //   });
+  //   // console.log('El bendito token alv: ', token);
+  // } catch (e) {
+  //   console.log(e.message);
+  // }
   // const publicKey = process.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
   // const sessToken = Cookies.get('__session');
   // const

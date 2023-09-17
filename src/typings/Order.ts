@@ -4,9 +4,9 @@ import { User } from './User';
 export type Order = {
   _id: string;
   orderItems: CartItem[];
-  user: User;
   orderDetails: OrderDetails;
   paymentMethod: string;
+  user: User;
   createdAt: string;
   promoId: string;
   promoApplied: boolean;

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { redirect, useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
-import { useSession, useUser } from '@clerk/clerk-react';
+// import { useSession, useUser } from '@clerk/clerk-react';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import { Button, Grid, Input, InputLabel, TextField } from '@mui/material';
 import Layout from '../layouts/Layout';
@@ -25,14 +25,15 @@ export default function OrderDetailsPage({
   useTitle(title + subtitle);
   const navigate = useNavigate();
   const { state, dispatch } = useContext(Store);
-  const session = useSession();
-  const { user } = useUser();
-  const userJson = localStorage.getItem('userInfo');
-  const userData = userJson !== null ? JSON.parse(userJson) : '';
   const {
     userInfo,
     cart: { orderDetails, cartItems },
   } = state;
+  // const session = useSession();
+  // const { user } = useUser();
+  // const userJson = localStorage.getItem('userInfo');
+  // const userData = userJson !== null ? JSON.parse(userJson) : '';
+
 
   //TODO: Revisar lo de dayjs 19-7-2023
   dayjs().format();
@@ -40,16 +41,17 @@ export default function OrderDetailsPage({
   dayjs.locale('es');
 
   useEffect(() => {
-    if (!session.isSignedIn && session.isLoaded) {
+    if (!userInfo) {
       navigate('/sign-in/?redirect_url=/orderDetails');
     }
-  }, [session, navigate]);
-  const user_id = user?.id;
-  const [fullName, setFullName] = useState(userData.fullName || '');
-  const [email, setEmail] = useState(userData.email || '');
+  }, [userInfo, navigate]);
+
+  // const user_id = user?.id;
+  const [fullName, setFullName] = useState(orderDetails.fullName || '');
+  const [email, setEmail] = useState(userInfo!.email || '');
+  const [pickUpDate, setPickupDate] = useState(orderDetails.pickUpDate);
+  const [pickUpTime, setPickUpTime] = useState(orderDetails.pickUpTime);
   const [disableContinue, setDisableContinue] = useState(true)
-  const [pickUpDate, setPickupDate] = useState('');
-  const [pickUpTime, setPickUpTime] = useState('');
   const days = [
     t('days.monday'),
     t('days.tuesday'),
@@ -63,7 +65,7 @@ export default function OrderDetailsPage({
   // console.log('Nombre: ', fullName);
   // console.log(email);
 
-  const handleSetPickUpDate = (e) => {
+  const handleSetPickUpDate = (e: React.SyntheticEvent) => {
     const dateAsObject = e.$d as Date;
     setDateAsObj(dateAsObject)
     var parsedDate = `
@@ -93,11 +95,9 @@ export default function OrderDetailsPage({
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-
     dispatch({
       type: 'SAVE_ORDER_DETAILS',
       payload: {
-        user_id,
         fullName,
         email,
         pickUpDate,
@@ -107,7 +107,6 @@ export default function OrderDetailsPage({
     localStorage.setItem(
       'orderDetails',
       JSON.stringify({
-        user_id,
         fullName,
         email,
         pickUpDate,
@@ -147,7 +146,6 @@ export default function OrderDetailsPage({
                   disabled
                 ></TextField>
               </Grid>
-              {/* TODO: Hacer required datetimepicker */}
               <Grid item xs={12} md={12}>
                 <DateTimePicker
                   disablePast

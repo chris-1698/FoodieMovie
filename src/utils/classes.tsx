@@ -38,6 +38,10 @@ const classes = {
     marginLeft: '90%',
     marginBottom: '2%',
   },
+
+  smallContainer: {
+    maxWidth: '600px',
+  },
 };
 
 export default classes;

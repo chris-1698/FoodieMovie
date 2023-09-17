@@ -1,5 +1,8 @@
 export type UserInfo = {
-  fullName: string;
+  name: string;
+  lastName: string;
   email: string;
-  id: string;
+  isAdmin: boolean;
+  dateofBirth?: string;
+  token: string;
 };

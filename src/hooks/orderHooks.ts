@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import React from 'react';
 import { CartItem, OrderDetails } from '../typings/Cart';
 import apiClient from '../apiClient';
 import { Order } from '../typings/Order';
@@ -8,6 +7,24 @@ export const useGetOrderDetailsQuery = (id: string) =>
   useQuery({
     queryKey: ['orders', id],
     queryFn: async () => (await apiClient.get<Order>(`api/orders/${id}`)).data,
+  });
+
+export const useGetPaypalClientIdQuery = () =>
+  useQuery({
+    queryKey: ['paypal-clientId'],
+    queryFn: async () =>
+      (await apiClient.get<{ clientId: string }>(`/api/keys/paypal`)).data,
+  });
+
+export const usePayOrderMutation = () =>
+  useMutation({
+    mutationFn: async (details: { orderId: string }) =>
+      (
+        await apiClient.put<{ message: string; order: Order }>(
+          `api/orders/${details.orderId}/pay`,
+          details //Contains payment result. Email address and other info.
+        )
+      ).data,
   });
 
 export const useCreateOrderMutation = () =>
@@ -27,6 +44,7 @@ export const useCreateOrderMutation = () =>
         )
       ).data,
   });
+
 // {
 //   // data: {
 //   //   order: {

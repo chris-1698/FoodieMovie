@@ -13,6 +13,7 @@ import { useCreateOrderMutation } from '../hooks/orderHooks';
 import { CartItem } from '../typings/Cart';
 import { ApiError } from '../typings/ApiError';
 import { getError } from '../utils/utils';
+import { useTranslation } from 'react-i18next';
 
 export default function PlaceOrderPage({
   title,
@@ -21,15 +22,16 @@ export default function PlaceOrderPage({
   title: string;
   subtitle: string;
 }) {
-  const navigate = useNavigate();
   useTitle(title + subtitle);
+  // TODO:: Cambiar titulo
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const { state, dispatch } = useContext(Store)
   const { userInfo, cart } = state
-  // const orderDetails = JSON.parse(localStorage.getItem('orderDetails') || '')
-  // const cartItems = JSON.parse(localStorage.getItem('cartItems') ||)
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  //TODO: Bookmark: 3:38:54 ojo, en el video de Sanity
+  // const orderDetails = JSON.parse(localStorage.getItem('orderDetails') || '')
+  // const cartItems = JSON.parse(localStorage.getItem('cartItems') ||)
 
   // Redondea un número a dos decimales
   const roundTo2 = (num: number) => Math.round(num * 100 + Number.EPSILON) / 100
@@ -83,7 +85,9 @@ export default function PlaceOrderPage({
       dispatch({ type: 'CART_CLEAR' })
       localStorage.removeItem('cartItems')
       navigate(`/order/${data.order._id}`)
+
     } catch (err) {
+      //TODO: Snackbar with error message
       console.log(cart.orderDetails, cart.cartItems, cart.paymentMethod);
       console.log(getError(err as ApiError));
       // setOpenSnackbar(true)
@@ -94,7 +98,7 @@ export default function PlaceOrderPage({
     <Layout title='preview order' description='preview order'>
       <CheckoutRequirements activeStep={4}></CheckoutRequirements>
       <Typography component='h1' variant='h1'>
-        Place Order
+        {t('orders.placeOrder')}
       </Typography>
 
       <Grid container spacing={1}>
@@ -103,35 +107,34 @@ export default function PlaceOrderPage({
             <List>
               <ListItem>
                 <Typography component='h2' variant='h2'>
-                  Order Details
+                  {t('orders.orderDetails')}
                 </Typography>
               </ListItem>
               <ListItem>
                 <Stack direction='column'>
-                  <Typography>{`Nombre: ${cart.orderDetails?.fullName}\n`}</Typography>
-                  <Typography>{`Correo electrónico: ${cart.orderDetails?.email}`}</Typography>
-                  <Typography>{`Fecha de recogida: ${cart.orderDetails?.pickUpDate}`}</Typography>
-                  <Typography>{`Hora de recogida: ${cart.orderDetails?.pickUpTime}`}</Typography>
+                  <Typography>{t('orders.name')}{`${cart.orderDetails?.fullName}`}</Typography>
+                  <Typography>{t('orders.email')}{`${cart.orderDetails?.email}`}</Typography>
+                  <Typography>{t('orders.pickUpDate')}{`${cart.orderDetails?.pickUpDate}`}</Typography>
+                  <Typography>{t('orders.pickUpTime')}{`${cart.orderDetails?.pickUpTime}`}</Typography>
                 </Stack>
-                {/* TODO: Ver cómo poner saltos de línea y continuar con la página */}
-
               </ListItem>
               <ListItem>
                 <Button onClick={() => navigate('/orderDetails')} variant='contained' color='secondary'>
-                  Edit
+                  {t('orders.edit')}
                 </Button>
               </ListItem>
             </List>
           </Card>
+
           <Card sx={classes.section}>
             <List>
               <ListItem>
                 <Typography component='h2' variant='h2'>
-                  Payment
+                  {t('orders.payment')}
                 </Typography>
               </ListItem>
               <ListItem>
-                Method: {cart.paymentMethod}
+                {t('orders.paymentMethod')} {cart.paymentMethod}
               </ListItem>
               <ListItem>
                 <Button
@@ -139,16 +142,17 @@ export default function PlaceOrderPage({
                   variant='contained'
                   color='secondary'
                 >
-                  Edit
+                  {t('orders.edit')}
                 </Button>
               </ListItem>
             </List>
           </Card>
+
           <Card sx={classes.section}>
             <List>
               <ListItem>
                 <Typography component='h2' variant='h2'>
-                  Items
+                  {t('orders.items')}
                 </Typography>
               </ListItem>
               <ListItem>
@@ -156,10 +160,10 @@ export default function PlaceOrderPage({
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ paddingLeft: '9%' }}>Image</TableCell>
-                        <TableCell sx={{ paddingLeft: '9%' }}>Name</TableCell>
-                        <TableCell align='right'>Quantity</TableCell>
-                        <TableCell align='right'>Price</TableCell>
+                        <TableCell sx={{ paddingLeft: '9%' }}>{t('orders.image')}</TableCell>
+                        <TableCell sx={{ paddingLeft: '9%' }}>{t('orders.itemName')}</TableCell>
+                        <TableCell align='right'>{t('orders.quantity')}</TableCell>
+                        <TableCell align='right'>{t('orders.price')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -207,35 +211,35 @@ export default function PlaceOrderPage({
           <Card sx={classes.section}>
             <List>
               <ListItem>
-                <Typography variant='h2'>Order Summary</Typography>
+                <Typography variant='h2'>{t('orders.orderSummary')}</Typography>
               </ListItem>
               <ListItem>
                 <Grid container>
                   <Grid item xs={6}>
-                    <Typography>Items:</Typography>
+                    <Typography>{t('orders.itemsPrice')}</Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography align='right'>{cart.itemsPrice}€</Typography>
+                    <Typography align='right'>{cart.itemsPrice}{t('currency')}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
                   <Grid item xs={6}>
-                    Taxes:
+                    {t('orders.taxes')}
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography align='right'>{cart.taxPrice}€</Typography>
+                    <Typography align='right'>{cart.taxPrice}{t('currency')}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
                   <Grid item xs={6}>
-                    <strong>Total:</strong>
+                    <strong>{t('orders.total')}</strong>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography align='right'><strong>{cart.totalPrice}€</strong></Typography>
+                    <Typography align='right'><strong>{cart.totalPrice}{t('currency')}</strong></Typography>
                   </Grid>
                 </Grid>
               </ListItem>
@@ -248,7 +252,7 @@ export default function PlaceOrderPage({
                   fullWidth
                   disabled={cart.cartItems.length === 0 || isLoading}
                 >
-                  Place Order
+                  {t('orders.placeOrder')}
                 </Button>
               </ListItem>
               {isLoading && (
@@ -265,6 +269,7 @@ export default function PlaceOrderPage({
         action={closeSnackBar}
       >
         <Alert severity='error' onClose={handleCloseSnackBar}>
+          {/* TODO: Texto */}
           Ha ocurrido algún error, inténtelo de nuevo.
           {/* setLoading(false); */}
         </Alert>

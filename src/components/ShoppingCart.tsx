@@ -1,7 +1,7 @@
 import { Button, Link, Badge } from '@mui/material';
-import React, { useContext } from 'react';
-import { Store } from '../utils/Store';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useContext } from 'react';
+import { Store } from '../utils/Store';
 
 export default function ShoppingCart() {
   const { state } = useContext(Store);

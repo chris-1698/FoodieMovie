@@ -1,14 +1,21 @@
 import { Step, StepLabel, Stepper } from '@mui/material';
 import '../styles/App.css';
+import { useTranslation } from 'react-i18next';
 
 export default function CheckoutRequirements({ activeStep = 0 }) {
-  //   step1 Login
-  //   step2 Pick up details
-  //   step3 Payment method
-  //   step4 Place order
+  const { t } = useTranslation();
+  //   1 User has to be logged in
+  //   2 User has to input pick up details
+  //   3 User has to input payment method
+  //   4 User places order
   return (
     <Stepper activeStep={activeStep} alternativeLabel>
-      {['Login', 'Shipping Address', 'Paying Method', 'Place Order'].map(
+      {[
+        t('checkoutRequirements.login'),
+        t('checkoutRequirements.orderDetails'),
+        t('checkoutRequirements.paymentMethod'),
+        t('checkoutRequirements.placeOrder'),
+      ].map(
         (step) => (
           <Step key={step}>
             <StepLabel>{step}</StepLabel>

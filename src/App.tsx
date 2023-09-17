@@ -1,14 +1,3 @@
-// Clerk resources
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignIn,
-  SignUp,
-} from '@clerk/clerk-react';
-import { esES } from '@clerk/localizations';
-import { dark } from '@clerk/themes';
-
 // React-router-dom resources
 import {
   Routes,
@@ -23,7 +12,6 @@ import AllCombosPage from './pages/AllCombosPage';
 import ProductInfo from './pages/product/[slug]';
 import CartPage from './pages/CartPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
-import Profile from './pages/Profile';
 import PaymentPage from './pages/PaymentPage';
 
 import { ROUTING_MANAGER } from './navigation/Router';
@@ -38,78 +26,80 @@ import 'dayjs/locale/es';
 // Translation resources
 import { useTranslation } from 'react-i18next';
 
+import { PayPalScriptProvider } from '@paypal/react-paypal-js'
+
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderPage from './pages/OrderPage';
-
-//Public key for Clerk use
-const CLERK_PUB_KEY = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
+import SignIn from './pages/authentication/SignIn';
+import SignUp from './pages/authentication/SignUp';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const AppComponent = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  //TODO: User: TrialUser pass: sh-SHSH-sh email: letmechooseanemail1135@gmail.com
+
   return (
-    <ClerkProvider
-      localization={esES}
-      publishableKey={CLERK_PUB_KEY}
-      appearance={{
-        baseTheme: dark,
-        variables: {
-          colorPrimary: '#208080',
-          colorText: 'white',
-        },
-        layout: {
-          //TODO: Ver cómo poner texto o diseñar un logo guapo
-          logoImageUrl: '/src/assets/images/logo.png',
-          logoPlacement: 'inside',
-        },
-      }}
-      navigate={(to) => navigate(to)}
-    >
-      <Routes>
+    <Routes>
+      {/* Main page redirection. All products */}
+      <Route
+        path={ROUTING_MANAGER.ROOT}
+        element={<Navigate to={ROUTING_MANAGER.ALL_COMBOS} />}
+      />
+
+      {/* Main page. All products */}
+      <Route
+        path={ROUTING_MANAGER.ALL_COMBOS}
+        element={
+          <AllCombosPage
+            title={t('titles.brand')}
+            subtitle={t('titles.allCombos')}
+          />
+        }
+      />
+
+      {/* Sign in page */}
+      <Route path={ROUTING_MANAGER.SIGN_IN} element={<SignIn />} />
+
+      {/* Sign up page */}
+      <Route path={ROUTING_MANAGER.REGISTER} element={<SignUp />} />
+
+      {/* Single product page */}
+      <Route
+        path={ROUTING_MANAGER.COMBO}
+        element={<ProductInfo title={t('titles.brand')} subtitle={''} />}
+      />
+
+      {/* Cart page */}
+      <Route path={ROUTING_MANAGER.CART}
+        element={<CartPage title={t('titles.brand')} subtitle={t('titles.cart')} />}
+      />
+
+      {/* Protected routes */}
+      <Route path="" element={<ProtectedRoute />}>
+
+        {/* Payment page */}
         <Route
-          path={ROUTING_MANAGER.ROOT}
-          element={<Navigate to={ROUTING_MANAGER.ALL_COMBOS} />}
+          path={ROUTING_MANAGER.PAYMENT}
+          element={
+            <PaymentPage
+              title={t('titles.brand')}
+              subtitle={t('titles.paymentMethod')} />
+          }
         />
 
-        {/* Main page. All products */}
+        {/* Place order page */}
         <Route
-          path={ROUTING_MANAGER.ALL_COMBOS}
+          path={ROUTING_MANAGER.PLACE_ORDER}
           element={
-            <AllCombosPage
+            <PlaceOrderPage
               title={t('titles.brand')}
-              subtitle={t('titles.allCombos')}
+              subtitle={t('titles.paymentMethod')}
             />
           }
         />
 
-        {/* Sign in page */}
-        <Route
-          path={ROUTING_MANAGER.SIGN_IN}
-          element={<SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />}
-        />
-
-        {/* Sign up page */}
-        <Route
-          path={ROUTING_MANAGER.REGISTER}
-          element={<SignUp signInUrl={ROUTING_MANAGER.SIGN_IN} />}
-        />
-
-        {/* Single product page */}
-        <Route
-          path={ROUTING_MANAGER.COMBO}
-          element={<ProductInfo title={t('titles.brand')} subtitle={''} />}
-        />
-
-        {/* Cart page */}
-        <Route
-          path={ROUTING_MANAGER.CART}
-          element={
-            <CartPage title={t('titles.brand')} subtitle={t('titles.cart')} />
-          }
-        />
         {/* Order details page */}
         <Route
           path={ROUTING_MANAGER.ORDER_DETAILS}
@@ -121,79 +111,18 @@ const AppComponent = () => {
           }
         />
 
-        {/* User profile page */}
-        <Route
-          path={ROUTING_MANAGER.USER_PROFILE}
-          element={
-            <>
-              <SignedIn>
-                <Profile
-                  title={t('titles.brand')}
-                  subtitle={t('titles.profile')}
-                />
-              </SignedIn>
-              <SignedOut>
-                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
-              </SignedOut>
-            </>
-          }
-        />
-
-        {/* Payment page */}
-        <Route
-          path={ROUTING_MANAGER.PAYMENT}
-          element={
-            <>
-              <SignedIn>
-                <PaymentPage
-                  title={t('titles.brand')}
-                  subtitle={t('titles.paymentMethod')}
-                />
-              </SignedIn>
-              <SignedOut>
-                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
-              </SignedOut>
-            </>
-          }
-        />
-
-        {/* Place order page */}
-        <Route
-          path={ROUTING_MANAGER.PLACE_ORDER}
-          element={
-            <>
-              <SignedIn>
-                <PlaceOrderPage
-                  title={t('titles.brand')}
-                  subtitle={t('titles.paymentMethod')}
-                />
-              </SignedIn>
-              <SignedOut>
-                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
-              </SignedOut>
-            </>}
-        />
-
-
-        {/*  */}
+        {/* Place order */}
         <Route
           path={ROUTING_MANAGER.ORDER}
           element={
-            <>
-              <SignedIn>
-                <OrderPage
-                  title={t('titles.brand')}
-                  subtitle={t('titles.order')}
-                />
-              </SignedIn>
-              <SignedOut>
-                <SignIn signUpUrl={ROUTING_MANAGER.REGISTER} />
-              </SignedOut>
-            </>
+            <OrderPage
+              title={t('titles.brand')}
+              subtitle={t('titles.order')}
+            />
           }
         />
-      </Routes>
-    </ClerkProvider>
+      </Route>
+    </Routes>
   );
 };
 
@@ -204,12 +133,15 @@ const App = () => {
     <>
       <BrowserRouter>
         <StoreProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-            <QueryClientProvider client={queryClient}>
-              {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-              <AppComponent />
-            </QueryClientProvider>
-          </LocalizationProvider>
+          <PayPalScriptProvider options={{ 'clientId': 'AVuLXo6syrtx1op9D9_9IcIq7N901hT4txnrWf_NGYfnGBQS2It28f2SPSJ0QqGwCMBgWYzUY6ijmNqU' }}
+            deferLoading={true}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+              <QueryClientProvider client={queryClient}>
+                <ReactQueryDevtools initialIsOpen={false} />
+                <AppComponent />
+              </QueryClientProvider>
+            </LocalizationProvider>
+          </PayPalScriptProvider>
         </StoreProvider>
       </BrowserRouter>
     </>
@@ -217,4 +149,3 @@ const App = () => {
 };
 
 export default App;
-//Bookmark: 1:40:02

@@ -1,33 +1,42 @@
 import { Button, Menu, MenuItem, Link, Typography } from '@mui/material';
-import React from 'react';
-import {
-  SignOutButton,
-  UserButton,
-  useClerk,
-  useSession,
-  useUser,
-} from '@clerk/clerk-react';
-import { redirect, useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTING_MANAGER } from '../navigation/Router';
+import { Store } from '../utils/Store';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useTranslation } from 'react-i18next';
 
+// TODO: adaptar a nueva implementación.
 export default function ProfileSettings() {
-  const session = useSession();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { state, dispatch } = useContext(Store);
+  const { userInfo } = state;
+  const { t } = useTranslation();
+
   const open = Boolean(anchorEl);
-  const { user } = useUser();
-  const { signOut } = useClerk();
   const navigate = useNavigate();
 
+  // const { state, dispatch } = useContext(Store)
+  // const { userInfo } = state;
   const menuHandleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const signOutHandler = () => {
+    dispatch({ type: 'USER_SIGN_OUT' })
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('product-slug');
+    localStorage.removeItem('orderDetails');
+    localStorage.removeItem('paymentMethod');
+    window.location.href = '/signin'
+  }
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   return (
     <>
-      {/* <Divider sx={classes.divider}> */}
-      {!session.isSignedIn && session.isLoaded ? (
+      {!userInfo ? (
         <div>
           <Button
             id="basic-button"
@@ -37,7 +46,7 @@ export default function ProfileSettings() {
             onClick={menuHandleClick}
             sx={{ color: '#ffffff' }}
           >
-            Inicia sesión ▾
+            {t('settings.login')}
           </Button>
           <Menu
             id="basic-menu"
@@ -48,19 +57,16 @@ export default function ProfileSettings() {
               'aria-labelledby': 'basic-button',
             }}
           >
-            <Link href="/sign-in" sx={{ color: 'primary' }}>
-              <MenuItem>Iniciar sesión </MenuItem>
+            <Link href={ROUTING_MANAGER.SIGN_IN} sx={{ color: 'primary' }}>
+              <MenuItem>{t('settings.signIn')} </MenuItem>
             </Link>
 
             <Link href="/register" sx={{ color: 'primary' }}>
-              <MenuItem> Crear cuenta </MenuItem>
+              <MenuItem> {t('settings.createAccount')} </MenuItem>
             </Link>
           </Menu>
         </div>
       ) : (
-        // <Link href="/sign-in"> Iniciar sesión</Link>
-        // Aquí es donde iría lo del dibujo.
-        //  Menú desplegable con <UserButton> y el historial de pedidos
         <>
           <Button
             id="logged-button"
@@ -73,11 +79,12 @@ export default function ProfileSettings() {
             <a
               style={{
                 fontWeight: 'bold',
-                fontFamily: 'Fantasy',
+                fontFamily: 'inherit',
               }}
             >
               {' '}
-              Hola, {user?.firstName}! ▾{' '}
+              {t('settings.greeting')} {' '}
+              {userInfo.name}{t('settings.exclamation')}{' '}
             </a>
           </Button>
           <Menu
@@ -90,58 +97,41 @@ export default function ProfileSettings() {
             }}
           >
             <MenuItem disabled className="user-avatar">
-              <UserButton appearance={{}} />{' '}
-              <Typography className="user-fullname">
-                {user?.fullName}
+              <AccountCircleIcon fontSize='large' />
+              <Typography className="user-fullname" style={{ marginLeft: '2%' }}>
+                {userInfo.name + ' ' + userInfo.lastName}
               </Typography>
             </MenuItem>
             <MenuItem disabled>
               <Typography
                 style={{ fontWeight: 'bold' }}
-                fontSize={'12px'}
-              >{`${user?.emailAddresses[0]}`}</Typography>
+                fontSize={'12px'}>{userInfo.email}</Typography>
             </MenuItem>
-            <Link href={`/user/${user?.id}`}>
-              <MenuItem>
-                <Typography>Perfil</Typography>
-              </MenuItem>
-            </Link>
             <MenuItem>
-              <Link>Historial de pedidos</Link>
+              <Link>{t('settings.orderHistory')}</Link>
             </MenuItem>
             {/* TODO: Implementar borrar cuenta! */}
             <Link href="https://github.com/" className="delete-account">
               <MenuItem>
                 <Typography className="delete-account">
-                  Borrar cuenta
+                  {t('settings.deleteAccount')}
                 </Typography>
               </MenuItem>
             </Link>
             <MenuItem>
-              <SignOutButton>
-                <Button
-                  sx={{ paddingRight: '15%' }}
-                  onClick={() => {
-                    navigate('/combos');
-                    localStorage.clear();
-                    // localStorage.removeItem('userInfo');
-                    // localStorage.removeItem('cartItems');
-                    // localStorage.removeItem('product-slug');
-                    // localStorage.removeItem('orderDetails');
-                    // localStorage.removeItem('paymentMethod')
-                    window.location.reload();
-                  }}
-                  className="log-out"
-                  color="primary"
-                >
-                  Cerrar sesión
-                </Button>
-              </SignOutButton>
+              <Link
+                sx={{ paddingRight: '15%' }}
+                className="log-out"
+                href='#signout'
+                onClick={signOutHandler}
+              >
+                {t('settings.logOut')}
+              </Link>
             </MenuItem>
           </Menu>
         </>
-      )}
-      {/* </Divider> */}
+      )
+      }
     </>
   );
 }

@@ -33,7 +33,7 @@ export default function PaymentPage({
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   // const orderDetails = JSON.parse(localStorage.getItem('orderDetails')!);
   const [paymentMethodName, setPaymentMethodName] = useState(
-    paymentMethod || ''
+    paymentMethod || 'Stripe'
   );
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(false)
 
@@ -41,8 +41,6 @@ export default function PaymentPage({
   useEffect(() => {
     if (!orderDetails) {
       navigate('/orderDetails');
-    } else {
-      setPaymentMethodName(jsCookie.get('paymentMethod') || '')
     }
   }, [orderDetails, navigate]);
 
@@ -59,14 +57,10 @@ export default function PaymentPage({
     localStorage.setItem('paymentMethod', paymentMethodName);
     navigate('/placeOrder');
   };
-  //TODO: 06/08/2023 Revisar que funcione correctamente
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  // console.log('AAAAAAAAAAAAAA pago ', localStorage.getItem('orderDetails'));
-  // console.log('Nombre completo de la víctima: ', orderDetails?.fullName);
 
   return (
     <>
-      <Layout title="Payment method" description="payment method">
+      <Layout title="Payment method" description="choose payment method">
         <CheckoutRequirements activeStep={2} />
         <form onSubmit={submitHandler}>
           <Typography component="h1" variant="h1">
@@ -89,7 +83,7 @@ export default function PaymentPage({
                   <FormControlLabel
                     label="Stripe"
                     value="Stripe"
-                    control={<Radio />}
+                    control={<Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
                   ></FormControlLabel>
                   <FormControlLabel
                     label="Efectivo"
