@@ -1,16 +1,24 @@
 {
   "page_welcome_msg": "Bienvenido/a a FoodieMovie!",
   "currency": "€",
+  "continueButton": "Continuar",
+  "backButton": "Volver",
   "session": {
-    "startSession": "Iniciar sesión",
+    "signIn": "Iniciar sesión",
     "username": "Nombre de usuario",
+    "name": "Nombre",
+    "lastName": "Apellidos",
     "email": "Correo electrónico",
     "password": "Contraseña",
+    "noAccount": "¿No tienes una cuenta? ",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "goLogin": "Inicia sesión",
     "passwordForgor": "¿Has olvidado tu contraseña?",
     "repeatPassword": "Repita la contraseña",
     "login": "Iniciar sesión",
-    "signUpButton": "Crear cuenta",
-    "signUp": "Crea una cuenta"
+    "signUp": " Crear una cuenta",
+    "dayOfBirth": "Fecha de nacimiento",
+    "passwordsDontMatch": "Las contraseñas no coindicen."
   },
   "dashboard": {
     "pageName": "Foodie Movie",
@@ -35,7 +43,8 @@
     "placeOrder": " - Realizar pedido",
     "signIn": " - Iniciar sesión",
     "signUp": " - Registro",
-    "order": " - Tu pedido"
+    "order": " - Tu pedido",
+    "orderHistory": " - Historial de pedidos"
   },
   "days": {
     "monday": "Lunes",
@@ -102,5 +111,13 @@
     "checkout": "Hacer pedido",
     "subtotal": "Subtotal",
     "items": "prod."
+  },
+  "orderDetails": {
+    "fullName": "Nombre completo",
+    "email": "Correo electrónico",
+    "pickUpDate": "Fecha de recogida"
+  },
+  "paymentMethod": {
+    "choosePaymentMethod": "Elija un método de pago"
   }
 }
