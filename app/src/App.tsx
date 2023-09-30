@@ -35,6 +35,7 @@ import OrderPage from './pages/OrderPage';
 import SignIn from './pages/authentication/SignIn';
 import SignUp from './pages/authentication/SignUp';
 import ProtectedRoute from './components/ProtectedRoute';
+import OrderHistory from './pages/OrderHistory';
 
 const AppComponent = () => {
   const navigate = useNavigate();
@@ -121,6 +122,15 @@ const AppComponent = () => {
             />
           }
         />
+        <Route
+          path={ROUTING_MANAGER.ORDER_HISTORY}
+          element={
+            <OrderHistory
+              title={t('titles.brand')}
+              subtitle={t('titles.orderHistory')}
+            />
+          }
+        ></Route>
       </Route>
     </Routes>
   );

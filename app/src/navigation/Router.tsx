@@ -10,5 +10,6 @@ export const ROUTING_MANAGER = {
   USER_PROFILE: '/user/:id',
   PAYMENT: '/payment',
   PLACE_ORDER: '/placeOrder',
-  ORDER: '/order/:id'
+  ORDER: '/order/:id',
+  ORDER_HISTORY: '/orderHistory'
 };

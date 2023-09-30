@@ -12,11 +12,10 @@ import {
   Typography,
   List,
   ListItem,
-  Alert,
 } from '@mui/material';
 import useTitle from '../hooks/useTitle';
-import jsCookie from 'js-cookie';
 import { Snackbar } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentPage({
   title,
@@ -33,12 +32,14 @@ export default function PaymentPage({
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   // const orderDetails = JSON.parse(localStorage.getItem('orderDetails')!);
   const [paymentMethodName, setPaymentMethodName] = useState(
-    paymentMethod || 'Stripe'
+    paymentMethod || ''
   );
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(false)
+  const { t } = useTranslation()
 
   useTitle(title + subtitle);
   useEffect(() => {
+    console.log(paymentMethodName);
+
     if (!orderDetails) {
       navigate('/orderDetails');
     }
@@ -47,12 +48,10 @@ export default function PaymentPage({
 
   const handleSetPaymentMethodName = (paymentMethod: string) => {
     setPaymentMethodName(paymentMethod)
-    setSelectedPaymentMethod(true)
   }
 
   const submitHandler = (event: React.SyntheticEvent) => {
     event.preventDefault();
-
     dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethodName });
     localStorage.setItem('paymentMethod', paymentMethodName);
     navigate('/placeOrder');
@@ -64,31 +63,29 @@ export default function PaymentPage({
         <CheckoutRequirements activeStep={2} />
         <form onSubmit={submitHandler}>
           <Typography component="h1" variant="h1">
-            Payment Method
+            {t('paymentMethod.choosePaymentMethod')}
           </Typography>
           <List>
             <ListItem>
               <FormControl component="fieldset">
                 <RadioGroup
+                  defaultChecked={false}
                   aria-label='Payment Method'
                   name="paymentMethod"
                   value={paymentMethodName}
                   onChange={(e) => handleSetPaymentMethodName(e.target.value)}
                 >
-                  <FormControlLabel
-                    label="PayPal"
-                    value="PayPal"
-                    control={<Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
-                  ></FormControlLabel>
+
                   <FormControlLabel
                     label="Stripe"
                     value="Stripe"
                     control={<Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
                   ></FormControlLabel>
                   <FormControlLabel
-                    label="Efectivo"
-                    value="Efectivo"
-                    control={<Radio />}
+                    label="PayPal"
+                    value="PayPal"
+                    control={
+                      <Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
                   ></FormControlLabel>
                 </RadioGroup>
               </FormControl>
@@ -99,9 +96,9 @@ export default function PaymentPage({
                 type='submit'
                 variant='contained'
                 color='primary'
-                disabled={!selectedPaymentMethod}
+                disabled={localStorage.getItem('patmentMethod') === ''}
               >
-                Continue
+                {t('continueButton')}
               </Button>
             </ListItem>
             <ListItem>
@@ -112,85 +109,12 @@ export default function PaymentPage({
                 color='secondary'
                 onClick={() => navigate('/orderDetails')}
               >
-                Back
+                {t('backButton')}
               </Button>
             </ListItem>
           </List>
-
-
         </form>
-
-
-
-        {/* 
-          <Container maxWidth="md">
-            <form onSubmit={submitHandler}>
-              <Grid
-                container
-                spacing={1}
-                sx={{ border: '1px solid grey', borderRadius: '5px' }}
-              >
-                <RadioGroup name="paymentMethod">
-                  <Stack
-                    direction="column"
-                    sx={{
-                      marginLeft: '50%',
-                      marginTop: '30%',
-                      marginBottom: '30%',
-                    }}
-                  >
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        value="PayPal"
-                        checked={paymentMethodName === 'PayPal'}
-                        control={<Radio />}
-                        label="PayPal"
-                        onChange={(e) => setPaymentMethodName(e.target)}
-                      />
-                      <Button>a</Button>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        value="Stripe"
-                        checked={paymentMethodName === 'Stripe'}
-                        control={<Radio />}
-                        label="Stripe"
-                        onChange={(e) => setPaymentMethodName(e.target)}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        value="Efectivo"
-                        checked={paymentMethodName === 'Efectivo'}
-                        control={<Radio />}
-                        label="Efectivo"
-                        onChange={(e) => setPaymentMethodName(e.target)}
-                      />
-                    </Grid>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      onClick={() => redirect('/placeOrder')}
-                    >
-                      Continue
-                    </Button>
-                  </Stack>
-                </RadioGroup>
-              </Grid>
-            </form>
-          </Container>
-        </div> */}
       </Layout>
     </>
   );
-  //   const [paymentmethod, setPaymentMethod] = useState(paymentMethod || 'PayPal');
-
-  //   const submitHandler = (e: React.SyntheticEvent) => {
-  //     e.preventDefault();
-  //     dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentmethod });
-  //     localStorage.setItem('paymentMethod', paymentmethod);
-  //     navigate('/placingorder');
-  //   };
-
-  //   return <div></div>;
 }

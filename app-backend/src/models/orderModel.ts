@@ -8,6 +8,7 @@ import { CartItem } from '../types/CartItem';
 import { UserInfo } from '../types/UserInfo';
 import { OrderDetails } from '../types/OrderDetails';
 import { User } from './userModel';
+import { ObjectId } from 'mongoose';
 
 class Item {
   @prop({ required: true })
@@ -33,23 +34,25 @@ class PaymentResult {
   public emailAddress!: string;
 }
 
-modelOptions({ schemaOptions: { timestamps: true } });
+@modelOptions({ schemaOptions: { timestamps: true } })
 export class Order {
   public _id!: string;
+
   @prop()
   public orderItems!: Item[];
+
   @prop()
-  public orderDetails!: OrderDetails;
+  public orderDetails?: OrderDetails;
 
   @prop({ ref: 'User' })
   public user?: Ref<User>;
 
   @prop()
   public paymentMethod!: string;
+
   @prop()
   public paymentResult?: PaymentResult;
 
-  //TODO: Ver cómo generar automáticamente (o mejor pasar Date.now)
   @prop({ required: true })
   public createdAt!: Date;
 
@@ -76,29 +79,7 @@ export class Order {
 
   @prop({ required: true })
   public pickUpCode!: string;
-  //4:39:25
+  //TODO: 4:39:25
 }
 
 export const OrderModel = getModelForClass(Order);
-
-/*
-import { CartItem } from './Cart';
-
-export type Order = {
-  _id: string;  -----
-  orderItems: CartItem[]; -------------
-  clientFullName: string; --------------
-  clientEmail: string;  ------------------
-  pickUpDate: string; ----------------------
-  pickUptime: string; -----------------------
-  paymentMethod: string; ---------------------
-  createdAt: string; ---------------------
-  promoId: string; ---------------------
-  promoApplied: boolean;---------------------
-  isPaid: boolean; ---------------------
-  taxPrice: number; ---------------------
-  itemsPrice: number; ---------------------
-  totalPrice: number; ---------------------
-  pickUpCode: string;
-};
-*/

@@ -23,7 +23,7 @@ const initialState: AppState = {
 			: {},
 		paymentMethod: localStorage.getItem('paymentMethod')
 			? localStorage.getItem('paymentMethod')!
-			: 'PayPal',
+			: '',
 		itemsPrice: 0,
 		taxPrice: 0,
 		totalPrice: 0

@@ -1,4 +1,7 @@
+// Tanstack resources
 import { useMutation, useQuery } from '@tanstack/react-query';
+
+// Project resources
 import { CartItem, OrderDetails } from '../typings/Cart';
 import apiClient from '../apiClient';
 import { Order } from '../typings/Order';
@@ -14,6 +17,13 @@ export const useGetPaypalClientIdQuery = () =>
     queryKey: ['paypal-clientId'],
     queryFn: async () =>
       (await apiClient.get<{ clientId: string }>(`/api/keys/paypal`)).data,
+  });
+
+export const useGetOrderHistoryQuery = () =>
+  useQuery({
+    queryKey: ['order-history'],
+    queryFn: async () =>
+      (await apiClient.get<Order[]>(`/api/orders/mine/orderHistory`)).data,
   });
 
 export const usePayOrderMutation = () =>
@@ -44,11 +54,3 @@ export const useCreateOrderMutation = () =>
         )
       ).data,
   });
-
-// {
-//   // data: {
-//   //   order: {
-//   //     _id: '9902234';
-//   //   }
-//   // }
-// }

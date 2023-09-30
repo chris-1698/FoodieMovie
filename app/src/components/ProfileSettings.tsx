@@ -28,6 +28,7 @@ export default function ProfileSettings() {
     localStorage.removeItem('product-slug');
     localStorage.removeItem('orderDetails');
     localStorage.removeItem('paymentMethod');
+    localStorage.removeItem('dateAsObj');
     window.location.href = '/signin'
   }
   const handleClose = () => {
@@ -108,7 +109,7 @@ export default function ProfileSettings() {
                 fontSize={'12px'}>{userInfo.email}</Typography>
             </MenuItem>
             <MenuItem>
-              <Link>{t('settings.orderHistory')}</Link>
+              <Link href={ROUTING_MANAGER.ORDER_HISTORY}>{t('settings.orderHistory')}</Link>
             </MenuItem>
             {/* TODO: Implementar borrar cuenta! */}
             <Link href="https://github.com/" className="delete-account">

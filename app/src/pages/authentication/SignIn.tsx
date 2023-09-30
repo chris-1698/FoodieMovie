@@ -13,20 +13,17 @@ import {
   ListItem,
   Snackbar,
   TextField,
-  Typography
+  Typography,
+  Button
 } from "@mui/material";
-import { Controller, useForm } from 'react-hook-form'
-import classes from '../utils/classes';
-import { Button } from "@material-ui/core";
 import { getError } from "../../utils/utils";
 import { ApiError } from "../../typings/ApiError";
 import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from "react-i18next";
 
 export default function SignIn() {
   const navigate = useNavigate()
   const { search } = useLocation()
-
-  // const { handleSubmit, control, formState: { errors } } = useForm()
 
   const redirectInUrl = new URLSearchParams(search).get('redirect')
   const redirect = redirectInUrl ? redirectInUrl : '/'
@@ -38,8 +35,8 @@ export default function SignIn() {
 
   const { state, dispatch } = useContext(Store)
   const { userInfo } = state
-
   const { mutateAsync: signin, isLoading } = useSigninMutation()
+  const { t } = useTranslation()
 
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -47,6 +44,8 @@ export default function SignIn() {
       const data = await signin({
         email, password,
       })
+      // TODO: Revisar aquí. Al crear usuario el apellido como que no se guarda
+      // y en ProfileSettings sale como undefined
       dispatch({ type: 'USER_SIGN_IN', payload: data })
       localStorage.setItem('userInfo', JSON.stringify(data))
       navigate(redirect)
@@ -59,13 +58,12 @@ export default function SignIn() {
       //función que modifique una variable de estado y esta misma se reinicie cuando se
       //cierra el snackbar¿
     }
-    console.log('Email: ', email, '\nPassword: ', password);
+    // console.log('Email: ', email, '\nPassword: ', password);
 
   }
 
   useEffect(() => {
-    console.log(userInfo);
-
+    // console.log('user info: ', userInfo);
     if (userInfo) {
       navigate(redirect)
     }
@@ -93,14 +91,12 @@ export default function SignIn() {
       <Container maxWidth="sm" >
         <form onSubmit={submitHandler}>
           <Typography component="h1" variant="h1">
-            {/* TODO: Texto */}
-            Sign in
+            {t('session.signIn')}
           </Typography>
           <List>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Email"
+                label={t('session.email')}
                 fullWidth
                 required
                 type="email"
@@ -108,9 +104,8 @@ export default function SignIn() {
               ></TextField>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Password"
+                label={t('session.password')}
                 fullWidth
                 required
                 type="password"
@@ -118,22 +113,19 @@ export default function SignIn() {
               ></TextField>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
               <Button
                 disabled={isLoading}
                 variant="contained"
                 type="submit"
                 color="primary"
               >
-                {/* TODO: Texto */}
-                Login
+                {t('session.signIn')}
               </Button>
               {isLoading && <CircularProgress />}
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
-              Don't have an account?{' '}
-              <Link href={`/register?redirect=${redirect}`}> Register</Link>
+              {t('session.noAccount')}
+              <Link style={{ paddingLeft: '5px' }} href={`/register?redirect=${redirect}`}>{t('session.signUp')}</Link>
             </ListItem>
           </List>
         </form>

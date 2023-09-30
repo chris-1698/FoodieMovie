@@ -128,7 +128,7 @@ export default function OrderDetailsPage({
             <Grid sx={{ marginTop: '10%' }} container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  label="Full Name"
+                  label={t('orderDetails.fullName')}
                   fullWidth
                   required
                   type="text"
@@ -140,7 +140,7 @@ export default function OrderDetailsPage({
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Email"
+                  label={t('orderDetails.email')}
                   fullWidth
                   value={email}
                   disabled
@@ -173,7 +173,7 @@ export default function OrderDetailsPage({
                   variant="contained"
                   onClick={() => redirect('/payment')}
                 >
-                  Continue
+                  {t('continueButton')}
                 </Button>
               </Grid>
             </Grid>

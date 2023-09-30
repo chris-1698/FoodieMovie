@@ -11,15 +11,8 @@ import { Alert, CircularProgress, Grid } from '@mui/material';
 import DashboardProduct from './DashboardProduct';
 import { Store } from '../utils/Store';
 
-// Clerk resources
-// import { useSession, useUser } from '@clerk/clerk-react';
-
-
 export default function Combos() {
 
-	// const thisSession = useSession();
-
-	// const [obtainedToken, setObtainedToken] = useState('')
 	const [productState, setProductState] = useState({
 		products: [],
 		error: '',
@@ -30,35 +23,19 @@ export default function Combos() {
 	const { products, error, loading } = productState;
 	const { state, dispatch } = useContext(Store);
 	const { userInfo } = state
-	//TODO: Ver dónde crear y guardar el token. 
-	//No puedo hacerlo de esta manera porque se queda esperando
-	// const userToken = thisSession.session?.getToken({
-	//   template: 'foodie-movie-jwt',
-	// }).then((tokenResponse) => {
-	//   setObtainedToken(tokenResponse!);
-	// });
-	// const userToken = thisSession.session?.getToken({
-	//   template: 'foodie-movie-jwt',
-	// })
+
 	useEffect(() => {
-		// console.log('La sesion es: ', thisSession);
 		console.log(userInfo);
 
 		const fetchData = async () => {
 			try {
 				const products = await client.fetch(`*[_type == "product"]`);
 				setProductState({ products, loading: false, error: '' });
-				// console.log('Dentro del try: ', thisSession);
 			} catch (err) {
 				setProductState({ products: [], loading: false, error: err.message });
 			}
 		};
 		fetchData();
-		// const userToken = thisSession.session?.getToken({
-		//   template: 'foodie-movie-jwt',
-		// })
-
-		// setObtainedToken(userToken!);
 	}, []);
 
 	// Almacenamos en el estado la información del usuario para orderDetails

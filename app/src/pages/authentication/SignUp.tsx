@@ -4,6 +4,7 @@ import { Store } from "../../utils/Store";
 import { useSignupMutation } from "../../hooks/userHooks";
 import { Button, Container, Link, List, ListItem, TextField, Typography } from "@mui/material";
 import Layout from "../../layouts/Layout";
+import { useTranslation } from "react-i18next";
 
 export default function SignUp() {
 
@@ -21,6 +22,7 @@ export default function SignUp() {
 
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (userInfo) {
@@ -53,21 +55,18 @@ export default function SignUp() {
       //TODO: SnackBar with the error message
       console.log(err);
     }
-  } //TODO: 4:11:59 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir
-  //TODO: No se guardan los usuarios en la BBDD?
+  }
   return (
     <Layout title="Sign up" description="sign up page">
       <Container maxWidth="sm">
         <form onSubmit={submitHandler}>
           <Typography component='h1' variant='h1'>
-            {/* TODO: Texto */}
-            Sign up
+            {t('session.signUp')}
           </Typography>
           <List>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Name"
+                label={t('session.name')}
                 fullWidth
                 required
                 type="text"
@@ -75,9 +74,8 @@ export default function SignUp() {
               ></TextField>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Lastname"
+                label={t('session.lastName')}
                 fullWidth
                 required
                 type="text"
@@ -85,9 +83,8 @@ export default function SignUp() {
               ></TextField>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Email"
+                label={t('session.email')}
                 fullWidth
                 required
                 type="email"
@@ -95,9 +92,8 @@ export default function SignUp() {
               ></TextField>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Day of birth"
+                label={t('session.dayOfBirth')}
                 fullWidth
                 required
                 type="date"
@@ -105,9 +101,8 @@ export default function SignUp() {
               ></TextField>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Password"
+                label={t('session.password')}
                 fullWidth
                 required
                 type="password"
@@ -115,9 +110,8 @@ export default function SignUp() {
               ></TextField>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
-                label="Confirm password"
+                label={t('session.repeatPassword')}
                 fullWidth
                 required
                 type="password"
@@ -130,19 +124,21 @@ export default function SignUp() {
                 disabled={isLoading}
                 variant="contained"
                 color="primary"
+                onClick={() => {
+                  console.log(lastName);
+
+                }}
               >
-                {/* TODO: Texto */}
-                Sign up
+                {t('session.signUp')}
               </Button>
             </ListItem>
             <ListItem>
-              {/* TODO: Texto */}
-              Already have an account? {' '}
-              <Link href={`signin?redirect=${redirect}`}>Sign in</Link>
+              {t('session.hasAccount')} {' '}
+              <Link style={{ paddingLeft: '5px' }} href={`signin?redirect=${redirect}`}>{t('session.goLogin')}</Link>
             </ListItem>
           </List>
         </form>
       </Container>
-    </Layout>
+    </Layout >
   )
 }

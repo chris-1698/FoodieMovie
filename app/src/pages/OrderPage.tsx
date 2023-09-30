@@ -28,6 +28,8 @@ import { urlForCart } from '../utils/image';
 import Layout from '../layouts/Layout';
 import { useTranslation } from 'react-i18next';
 import { PayPalButtons, PayPalButtonsComponentProps, SCRIPT_LOADING_STATE, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import QRCode from 'react-qr-code'
+
 
 export default function OrderPage({ title, subtitle }: { title: string, subtitle: string }) {
   useTitle(title + subtitle)
@@ -51,6 +53,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
     payOrder({ orderId: orderId! })
     refetch()
     alert('Order is paid')
+
   }
 
   const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer()
@@ -106,7 +109,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
       })
     },
     onError: (err) => {
-      // error as ApiError snackbar
+      //TODO: error as ApiError snackbar
     },
   }
 
@@ -260,7 +263,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                   </Grid>
                 </ListItem>
                 {!order.isPaid && (
-                  <ListItem>
+                  <ListItem style={{ width: '100%' }}>
                     {isPending ? (
                       <CircularProgress />
                     ) : isRejected ? (
@@ -280,6 +283,26 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                     {loadingPay && <CircularProgress />}
                   </ListItem>
                 )}
+                <ListItem>
+                  <Stack direction='column' alignContent='center'>
+                    <Typography align='center'>Código de recogida</Typography>
+                    <QRCode
+                      size={200}
+                      bgColor='white'
+                      fgColor='black'
+                      value={order.pickUpCode}
+                    >
+                    </QRCode>
+                    <Typography
+                      align='center'
+                      fontFamily='monospace'
+                      fontSize='30px'
+                    >
+                      {order.pickUpCode}
+                    </Typography>
+                  </Stack>
+
+                </ListItem>
               </List>
             </Card>
           </Grid>

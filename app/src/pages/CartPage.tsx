@@ -94,7 +94,6 @@ export default function CartPage({
                     <TableRow>
                       <TableCell>
                         <Typography sx={{ fontWeight: 'bold' }}>
-                          {/*TODO: Texto */}
                           {t('cart.image')}
                         </Typography>
                       </TableCell>
@@ -219,6 +218,15 @@ export default function CartPage({
                       variant="contained"
                       onClick={checkOutHandler}
                     >
+                      {/* TODO: 
+                      1. La fecha de recogida tiene que borrarse al cerrar sesión, sino se queda para otros usuarios - Hecho
+                      2. Texto del botón CONTINUE en: método de pago, datos del pedido, iniciar sesión, crear cuenta - Hecho
+                      3. Quitar método de pago en efectivo - Hecho
+                      4. Revisar no se guarda el apellido???? (Mirar profilesettings)
+                      5. PaymentPage - Cómo hacer que paypal no salga seleccionado por defecto - Hecho                      6. Ver cómo hacer datetimepicker en OrderDetailsPage required
+                      6. ¿Login con nombre de usuario?
+                      7. Localziación con Sanity
+                      */}
                       {/*TODO: Texto */}
                       {t('cart.checkout')}
                     </Button>

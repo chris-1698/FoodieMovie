@@ -51,6 +51,7 @@ userRouter.post(
     res.json({
       _id: user._id,
       name: user.name,
+      lastName: user.lastName,
       email: user.email,
       isAdmin: user.isAdmin,
       dateOfBirth: user.dateOfBirth,
