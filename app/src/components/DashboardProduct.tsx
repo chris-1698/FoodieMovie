@@ -17,9 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { urlForThumbnail } from '../utils/image';
 import { Store } from '../utils/Store';
 import { convertProductToCartitem } from '../utils/utils';
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { useUser } from '@clerk/clerk-react';
 import { ROUTING_MANAGER } from '../navigation/Router';
 
 /* eslint-disable */

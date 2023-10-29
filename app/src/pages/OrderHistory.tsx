@@ -5,6 +5,9 @@ import Layout from "../layouts/Layout"
 import { ApiError } from "../typings/ApiError"
 import { getError } from "../utils/utils"
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import QRCode from "react-qr-code"
+import POC from "../components/POC"
 
 export default function OrderHistory(
   { title, subtitle }:
@@ -14,11 +17,26 @@ export default function OrderHistory(
 
   const { data: orders, isLoading, error } = useGetOrderHistoryQuery()
   const navigate = useNavigate()
+  const [isOver, setIsOver] = useState(false);
+
+  // const handleMouseHover = () => {
+  //   console.log('Por encima, por encima!');
+  //   setIsOver(true)
+  //   console.log(isOver);
+  // }
+
+  // const handleMouseHoverOff = () => {
+  //   console.log('Por debajo, por debajo!');
+  //   setIsOver(false)
+  //   console.log(isOver);
+  // }
+
   return (
     <>
-      {/* TODO 24/9/2023: 
-    1. Implementar.
-    2. Traducciones! */}
+      {/* TODO 30/9/2023: 
+    1. Cambiar id por código de entrega.
+    2. Ver si se puede poner el cursor por encima y que se vea el QR
+    3. Traducciones! */}
       <Layout title="order history" description="order history of the user">
         <Typography variant="h1">Order history</Typography>
         {isLoading ? (
@@ -32,7 +50,7 @@ export default function OrderHistory(
                 <TableHead>
                   <TableRow>
                     <TableCell>
-                      <Typography>ID</Typography>
+                      <Typography>CODE</Typography>
                       {/* TODO: Mostrar codigo de recogida, y ver si puedo mostrar
                       QR */}
                     </TableCell>
@@ -53,7 +71,16 @@ export default function OrderHistory(
                 <TableBody>
                   {orders!.map((order) => (
                     <TableRow key={order._id}>
-                      <TableCell>{order._id}</TableCell>
+                      {/* Hacer componente?
+                      Podría pasarle un texto como parámetro y, cuando se pase el ratón por encima, 
+                      que muestre el código QR correspondiente
+                      Quizá sea mejor con un botón, de modo que al pulsar
+                      */}
+                      <TableCell><POC text={order.pickUpCode}></POC></TableCell>
+                      {/* <TableCell onMouseOver={handleMouseHover} onMouseOut={handleMouseHoverOff}>{order.pickUpCode}</TableCell> */}
+                      {/* { isOver && ( */}
+                      {/* // <QRCode value={order._id}></QRCode> */}
+                      {/* ) } */}
                       <TableCell>{order.createdAt.substring(0, 10)}</TableCell>
                       <TableCell>{order.totalPrice.toFixed(2)}</TableCell>
                       <TableCell>{order.isPaid ? order.paidAt.substring(0, 10) : ' No'}</TableCell>
