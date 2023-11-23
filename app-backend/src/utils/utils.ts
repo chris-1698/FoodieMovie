@@ -26,8 +26,6 @@ export const generateToken = (user: User) => {
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
-  // TODO: borrar log
-  console.log('Token: ', authorization);
 
   if (authorization) {
     const token = authorization.slice(7, authorization.length);
@@ -42,12 +40,15 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
       isAdmin: boolean;
       token: string;
     };
-    // TODO: Borrar log
-    console.log('\nReq.user: ', req.user);
     next();
   } else {
     res.status(401).json({ message: 'No Token' });
-    // TODO: Borrar log
-    console.log('Aaaa ', res.status(401).statusMessage);
   }
 };
+
+export const baseUrl = () =>
+  process.env.MAIL_BASE_URL
+    ? process.env.MAIL_BASE_URL
+    : process.env.NODE_ENV !== 'production'
+    ? 'http://localhost:5173'
+    : 'https://dominio.com';

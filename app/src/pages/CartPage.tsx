@@ -25,7 +25,6 @@ import {
   Typography,
 } from '@mui/material';
 import { urlForCart } from '../utils/image';
-// import { useUser } from '@clerk/clerk-react';
 import useTitle from '../hooks/useTitle';
 import { useTranslation } from 'react-i18next';
 
@@ -47,9 +46,8 @@ export default function CartPage({
   } = useContext(Store);
 
   const updateCartItemsHandler = (item: CartItem, quantity: number) => {
-    // console.log(user?.firstName);
     if (item.countInStock < quantity) {
-      //TODO: cambiar esto?
+      //TODO: cambiar esto
       alert('Lo sentimos. No contamos con stock de ese producto.');
       return;
     }
@@ -60,7 +58,6 @@ export default function CartPage({
       payload: { ...item, quantity },
     });
   };
-  //TODO Adaptar todo al nuevo login
   const checkOutHandler = () => {
     navigate('/orderDetails');
   };
@@ -74,13 +71,11 @@ export default function CartPage({
       <Layout title="Carro" description="a">
         <Typography component="h1" variant="h1">
           {' '}
-          {/*TODO: Texto */}
           {t('cart.cart')}
         </Typography>
         {cartItems.length === 0 ? (
           <Box>
             <Typography>
-              {/*TODO: Texto */}
               {t('cart.emptyCart')}{' '}
               <Link href="/combos">{t('cart.productLink')}</Link>
             </Typography>
@@ -101,26 +96,22 @@ export default function CartPage({
                         <Typography
                           sx={{ fontWeight: 'bold', paddingLeft: '15px' }}
                         >
-                          {/*TODO: Texto */}
                           {t('cart.name')}
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ paddingLeft: '35px' }}>
                         <Typography sx={{ fontWeight: 'bold' }}>
-                          {/*TODO: Texto */}
                           {t('cart.quantity')}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Typography sx={{ fontWeight: 'bold' }}>
-                          {/*TODO: Texto */}
                           {t('cart.price')}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Typography sx={{ fontWeight: 'bold' }}>
                           {t('cart.delete')}
-                          {/*TODO: Texto */}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -128,17 +119,17 @@ export default function CartPage({
                   <TableBody>
                     {cartItems.map((item) => (
                       <TableRow
-                        key={item.slug.current}
+                        key={item.slug}
                         className="align-items-center"
                       >
                         <TableCell>
                           <Link
-                            href={`/combos/${item.slug.current}`}
+                            href={`/combos/${item.slug}`}
                             onClick={() => {
-                              localStorage.setItem('product-slug', item.slug.current)
+                              localStorage.setItem('product-slug', item.slug)
                             }}
                             onAuxClick={() => {
-                              localStorage.setItem('product-slug', item.slug.current);
+                              localStorage.setItem('product-slug', item.slug);
                             }}
                           >
                             <CardMedia
@@ -151,12 +142,12 @@ export default function CartPage({
                           </Link>
                         </TableCell>
                         <TableCell>
-                          <Link href={`/combos/${item.slug.current}`}
+                          <Link href={`/combos/${item.slug}`}
                             onClick={() => {
-                              localStorage.setItem('product-slug', item.slug.current)
+                              localStorage.setItem('product-slug', item.slug)
                             }}
                             onAuxClick={() => {
-                              localStorage.setItem('product-slug', item.slug.current);
+                              localStorage.setItem('product-slug', item.slug);
                             }}>
                             <Typography>{item.name}</Typography>
                           </Link>
@@ -203,13 +194,10 @@ export default function CartPage({
                 <List>
                   <ListItem>
                     <Typography variant="h2" align="center">
-                      {/*TODO: Texto */}
                       {t('cart.subtotal')} ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}
                       {t('cart.items')}):{' '}
                       {cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}{t('currency')}{' '}
                     </Typography>
-                    {/* TODO: cadenas de texto en translation
-                    y seguir con el tutorial  */}
                   </ListItem>
                   <ListItem>
                     <Button
@@ -218,16 +206,11 @@ export default function CartPage({
                       variant="contained"
                       onClick={checkOutHandler}
                     >
-                      {/* TODO: 
-                      1. La fecha de recogida tiene que borrarse al cerrar sesión, sino se queda para otros usuarios - Hecho
-                      2. Texto del botón CONTINUE en: método de pago, datos del pedido, iniciar sesión, crear cuenta - Hecho
-                      3. Quitar método de pago en efectivo - Hecho
-                      4. Revisar no se guarda el apellido???? (Mirar profilesettings)
-                      5. PaymentPage - Cómo hacer que paypal no salga seleccionado por defecto - Hecho                      6. Ver cómo hacer datetimepicker en OrderDetailsPage required
-                      6. ¿Login con nombre de usuario?
+                      {/* TODO 18/11/2023: 
+                      5. PaymentPage - Cómo hacer que paypal no salga seleccionado por defecto - Hecho
+                      6. Ver cómo hacer datetimepicker en OrderDetailsPage required
                       7. Localziación con Sanity
                       */}
-                      {/*TODO: Texto */}
                       {t('cart.checkout')}
                     </Button>
                   </ListItem>

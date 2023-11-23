@@ -1,15 +1,25 @@
 {
   "page_welcome_msg": "Welcome to FoodieMovie!",
+  "currency": "$",
+  "continueButton": "Continue",
+  "backButton": "Return",
   "session": {
-    "startSession": "Login",
+    "signIn": "Sign in",
     "username": "Username",
+    "name": "Name",
+    "lastName": "Lastname",
     "email": "Email",
     "password": "Password",
+    "noAccount": "Don't have an account? ",
+    "hasAccount": "Already have an account?",
+    "goLogin": "Login",
     "passwordForgor": "Forgot your password?",
     "repeatPassword": "Repeat your password",
     "login": "Login",
-    "signUpButton": "Sign up",
-    "signUp": "Sign up"
+    "signUp": " Create a new account",
+    "dayOfBirth": "Birth date",
+    "passwordsDontMatch": "Passwords don't match.",
+    "passwordChanged": "Pasword has been changed!"
   },
   "dashboard": {
     "pageName": "Foodie Movie",
@@ -22,7 +32,8 @@
     "brand": "Brand: ",
     "category": "Category: ",
     "productAvailable": "Available",
-    "productUnavailable": "Not available"
+    "productUnavailable": "Not available",
+    "addedToCart": " was added to cart."
   },
   "titles": {
     "brand": "Foodie Movie",
@@ -34,7 +45,9 @@
     "placeOrder": " - Place Order",
     "signIn": " - Sign in",
     "signUp": " - Sign up",
-    "order": " - Your order"
+    "forgotPassword": " - Forgot password",
+    "order": " - Your order",
+    "orderHistory": " - Order History"
   },
   "days": {
     "monday": "Monday",
@@ -44,5 +57,84 @@
     "friday": "Friday",
     "saturday": "Saturday",
     "sunday": "Sunday"
+  },
+  "checkoutRequirements": {
+    "login": "Login",
+    "orderDetails": "Order Details",
+    "paymentMethod": "Payment Method",
+    "placeOrder": "Place Order"
+  },
+  "orders": {
+    "placeOrder": "Place Order",
+    "orderDetails": "Order Details",
+    "name": "Name: ",
+    "email": "Email: ",
+    "pickUpDate": "Pickup date: ",
+    "pickUpTime": "Pickup time: ",
+    "payment": "Payment details",
+    "paymentMethod": "Payment method: ",
+    "items": "Items",
+    "image": "Image",
+    "itemName": "Name",
+    "quantity": "Quantity",
+    "price": "Price",
+    "orderSummary": "Order summary",
+    "itemsPrice": "Items:",
+    "taxes": "Taxes:",
+    "total": "Total:",
+    "edit": "Edit",
+    "orderNotFound": "Order not found.",
+    "status": "Status: ",
+    "orderItems": "Items summary",
+    "order": "Order ",
+    "paid": "Order is paid.",
+    "notPaid": "Order isn't paid.",
+    "delivered": "Order was collected.",
+    "notDelivered": "Order hasn't been collected.",
+    "error": "There seems to be an error. Please try again.",
+    "payPalError": "There was an error tryingto connect to PayPal.",
+    "pickupCode": "Pickup code"
+  },
+  "settings": {
+    "login": "Login ▾",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "greeting": "Hello, ",
+    "exclamation": "! ▾",
+    "orderHistory": "Order history",
+    "deleteAccount": "Delete account",
+    "logOut": "Log out"
+  },
+  "cart": {
+    "cart": "Cart",
+    "emptyCart": "Your cart it's empty. ",
+    "productLink": "How about we change that?",
+    "image": "Image",
+    "name": "Name",
+    "quantity": "Quantity",
+    "price": "Price",
+    "delete": "Delete",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "items": "items"
+  },
+  "orderDetails": {
+    "fullName": "Name",
+    "email": "Email",
+    "pickUpDate": "Pickup date"
+  },
+  "paymentMethod": {
+    "choosePaymentMethod": "Choose a payment method"
+  },
+  "orderHistory": {
+    "orderHistory": "Order history",
+    "code": "Code",
+    "date": "Date",
+    "total": "Total",
+    "paid": "Paid",
+    "details": "Details"
+  },
+  "resetPassword": {
+    "notMatch": "Passwords don't match."
   }
 }

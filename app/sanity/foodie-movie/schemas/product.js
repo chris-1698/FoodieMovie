@@ -60,6 +60,10 @@ export default {
             title: 'CountInStock',
             type: 'number',
         },
-
+        {
+            name: 'language',
+            title: 'Language',
+            type: 'string'
+        }
     ],
 }

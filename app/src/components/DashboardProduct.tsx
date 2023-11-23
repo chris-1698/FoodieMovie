@@ -10,9 +10,10 @@ import {
   Alert,
   Snackbar,
   IconButton,
-  Link
+  Link,
+  Divider,
+  Grid
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { urlForThumbnail } from '../utils/image';
 import { Store } from '../utils/Store';
@@ -24,6 +25,7 @@ import { ROUTING_MANAGER } from '../navigation/Router';
 /* eslint-disable */
 export default function DashboardProduct({ product }) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
   const { t } = useTranslation();
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
@@ -32,10 +34,13 @@ export default function DashboardProduct({ product }) {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     if (product.countInStock < quantity) {
-      alert('Lo sentimos. El producto no tiene stock.');
+      setOpenSnackBar(true)
+      // TODO: Texto
+      setSnackBarMessage('Lo sentimos. El producto no tiene stock.')
       return;
     }
     setOpenSnackBar(true);
+    setSnackBarMessage(`${product.name} ${t('dashboard.addedToCart')}`)
     dispatch({
       type: 'CART_ADD_ITEM',
       payload: { ...convertProductToCartitem(product), quantity },
@@ -62,8 +67,6 @@ export default function DashboardProduct({ product }) {
   return (
     <Card>
       <Link
-        // color="primary"
-        // href={ROUTING_MANAGER.COMBO.replace(':slug', product.slug.current)}
         href={ROUTING_MANAGER.ALL_COMBOS + `/${product.slug.current}`}
         onClick={() => {
           localStorage.setItem('product-slug', product.slug.current);
@@ -81,15 +84,18 @@ export default function DashboardProduct({ product }) {
           <CardContent>
             <Typography>{product.name}</Typography>
             <Typography>
+              {/* TODO: Texto */}
               <Rating value={product.rating} readOnly></Rating> (
-              {product.numReviews} reviews)
+              {product.numReviews} {t('dashboard.reviews')})
             </Typography>
           </CardContent>
         </CardActionArea>
       </Link>
       <CardActions>
-        <Typography>{product.price}€</Typography>
-        <p></p>
+        <Typography variant='h2'>
+          {product.price} {t('currency')}
+        </Typography>
+        <Grid sx={{ paddingRight: '40%' }}></Grid>
         {product.countInStock === 0 ? (
           <Button size="small" disabled>
             {t('dashboard.addCart')}
@@ -109,11 +115,17 @@ export default function DashboardProduct({ product }) {
               autoHideDuration={6000}
               onClose={handleCloseSnackBar}
               action={closeSnackBar}
+              anchorOrigin={{
+                horizontal: 'center',
+                vertical: 'top'
+              }}
             >
               <Alert
                 onClose={handleCloseSnackBar}
                 severity="success"
-              >{`${product.name} se ha añadido al carro.`}</Alert>
+              >
+                {snackBarMessage}
+              </Alert>
             </Snackbar>
           </>
         )}

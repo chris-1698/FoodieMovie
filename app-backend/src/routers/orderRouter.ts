@@ -6,10 +6,7 @@ import asyncHandler from 'express-async-handler';
 import { OrderModel } from '../models/orderModel';
 import { CartItem } from '../types/CartItem';
 import { isAuth } from '../utils/utils';
-import { ObjectId } from 'mongodb';
 import generator from 'generate-password-ts';
-import mongoose from 'mongoose';
-import { Types } from 'mongoose';
 
 export const orderRouter = express.Router();
 
@@ -27,15 +24,6 @@ orderRouter.get(
     }
   })
 );
-//TODO: se puede borrar
-// orderRouter.get(
-//   '/',
-//   // isAuth,
-//   asyncHandler(async (req, res) => {
-//     const orders = await OrderModel.find();
-//     res.json(orders);
-//   })
-// );
 
 orderRouter.post(
   '/',
@@ -55,8 +43,6 @@ orderRouter.post(
         taxPrice: req.body.taxPrice,
         totalPrice: req.body.totalPrice,
         createdAt: Date.now(),
-        //TODO: Bookmark at 5:04:50
-        //TODO: Poner valores vacíos a los atributos que faltan aquí?
         pickUpCode: generator.generate({
           length: 12,
           numbers: true,
@@ -91,8 +77,7 @@ orderRouter.put(
 );
 
 orderRouter.get(
-  // TODO: Si aquí pongo "/mine", peta.
-  // TODO: 27/09/2023
+  // 27/09/2023
   // Fallaba porque estaba siguiendo el formato de
   // api/orders/:id, por lo que estaba tomando "mine" como id y fallaba al hacer
   // el casteo a Order, porque mine no es un ObjectId válido.
@@ -100,18 +85,9 @@ orderRouter.get(
   '/mine/orderHistory',
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
-    // var mongoose = require('mongoose');
-    // var id = mongoose.Types.ObjectId(req.user._id);
-    // TODO: Revisar esto. ¿Usuario como undefined?
-    // var id = new Types.ObjectId(req.user._id);
-    // console.log('El id castrado?????? ', id);
-
-    // if(mongoose.Types.ObjectId.isValid(req.user._id)) {
     const orders = await OrderModel.find({
       user: req.user._id,
     });
     res.json(orders);
-    // } else { return}
   })
 );
-// Bookmark: 5:38:36 14-9-2023

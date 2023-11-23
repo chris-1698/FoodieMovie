@@ -29,6 +29,7 @@ export default function PlaceOrderPage({
   const { state, dispatch } = useContext(Store)
   const { userInfo, cart } = state
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   // const orderDetails = JSON.parse(localStorage.getItem('orderDetails') || '')
   // const cartItems = JSON.parse(localStorage.getItem('cartItems') ||)
@@ -72,6 +73,7 @@ export default function PlaceOrderPage({
       </IconButton>
     </React.Fragment>
   )
+
   const placeOrderHandler = async () => {
     try {
       const data = await createOrder({
@@ -87,10 +89,8 @@ export default function PlaceOrderPage({
       navigate(`/order/${data.order._id}`)
 
     } catch (err) {
-      //TODO: Snackbar with error message
-      console.log(cart.orderDetails, cart.cartItems, cart.paymentMethod);
-      console.log(getError(err as ApiError));
-      // setOpenSnackbar(true)
+      setSnackBarMessage(getError(err as ApiError))
+      setOpenSnackbar(true)
     }
   }
 
@@ -106,7 +106,7 @@ export default function PlaceOrderPage({
           <Card sx={classes.section}>
             <List>
               <ListItem>
-                <Typography component='h2' variant='h2'>
+                <Typography component='h1' variant='h1'>
                   {t('orders.orderDetails')}
                 </Typography>
               </ListItem>
@@ -129,7 +129,7 @@ export default function PlaceOrderPage({
           <Card sx={classes.section}>
             <List>
               <ListItem>
-                <Typography component='h2' variant='h2'>
+                <Typography component='h1' variant='h1'>
                   {t('orders.payment')}
                 </Typography>
               </ListItem>
@@ -171,8 +171,6 @@ export default function PlaceOrderPage({
                         <TableRow key={item.slug.current}>
                           <TableCell>
                             {/* TODO: 3:46:16  https://www.youtube.com/watch?v=FcRWgWQale4&ab_channel=CodingwithBasir*/}
-                            {/* <Link href={`/combos/${item.slug.current}`}> */}
-                            {/* <Typography variant='h1'>Paco</Typography> Esta línea se puede borrar */}
                             <CardMedia
                               component='img'
                               image={urlForCart(item.image)}
@@ -269,9 +267,7 @@ export default function PlaceOrderPage({
         action={closeSnackBar}
       >
         <Alert severity='error' onClose={handleCloseSnackBar}>
-          {/* TODO: Texto */}
-          Ha ocurrido algún error, inténtelo de nuevo.
-          {/* setLoading(false); */}
+          {snackBarMessage}
         </Alert>
       </Snackbar>
     </Layout >

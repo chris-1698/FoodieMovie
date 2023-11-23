@@ -9,6 +9,8 @@ export class User {
   public lastName!: string;
   @prop({ required: true })
   public password!: string;
+  @prop({ required: false })
+  public resetToken?: string;
   @prop({ required: true, unique: true })
   public email!: string;
   @prop({ required: true, default: false })

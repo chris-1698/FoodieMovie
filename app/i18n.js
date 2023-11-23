@@ -9,7 +9,7 @@ const resources = {
     en: {
         translation: translationEN,
     },
-    es : {
+    es: {
         translation: translationESP
     }
 }
@@ -17,7 +17,7 @@ const resources = {
 const availableLanguages = ['eng', 'esp'];
 
 const options = {
-    order : ['localStorage', 'querystring', 'navigator'],
+    order: ['localStorage', 'querystring', 'navigator'],
 }
 
 i18n
@@ -32,7 +32,7 @@ i18n
         supportedLanguages: ['es', 'en'],
         whitelist: availableLanguages,
         interpolation: {
-        escapeValue: false, // not needed for react as it escapes by default
+            escapeValue: false,
         },
         resources,
     });

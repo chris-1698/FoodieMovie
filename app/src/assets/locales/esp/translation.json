@@ -18,7 +18,8 @@
     "login": "Iniciar sesión",
     "signUp": " Crear una cuenta",
     "dayOfBirth": "Fecha de nacimiento",
-    "passwordsDontMatch": "Las contraseñas no coindicen."
+    "passwordsDontMatch": "Las contraseñas no coindicen.",
+    "passwordChanged": "¡La contraseña ha sido cambiada correctamente!"
   },
   "dashboard": {
     "pageName": "Foodie Movie",
@@ -31,7 +32,8 @@
     "brand": "Marca: ",
     "category": "Categoría: ",
     "productAvailable": "Disponible",
-    "productUnavailable": "No disponible"
+    "productUnavailable": "No disponible",
+    "addedToCart": " se ha añadido al carro."
   },
   "titles": {
     "brand": "Foodie Movie",
@@ -43,6 +45,7 @@
     "placeOrder": " - Realizar pedido",
     "signIn": " - Iniciar sesión",
     "signUp": " - Registro",
+    "forgotPassword": " - Contraseña olvidada",
     "order": " - Tu pedido",
     "orderHistory": " - Historial de pedidos"
   },
@@ -87,7 +90,10 @@
     "paid": "El pedido ha sido pagado.",
     "notPaid": "El pedido no ha sido pagado.",
     "delivered": "El pedido ha sido entregado.",
-    "notDelivered": "El pedido no ha sido entregado."
+    "notDelivered": "El pedido no ha sido entregado.",
+    "error": "Ha ocurrido algún error, inténtelo de nuevo.",
+    "payPalError": "Error al conectarse a PayPal.",
+    "pickupCode": "Código de recogida"
   },
   "settings": {
     "login": "Inicia sesión ▾",
@@ -119,5 +125,16 @@
   },
   "paymentMethod": {
     "choosePaymentMethod": "Elija un método de pago"
+  },
+  "orderHistory": {
+    "orderHistory": "Historial de pedidos",
+    "code": "Código",
+    "date": "Fecha",
+    "total": "Total",
+    "paid": "Pagado",
+    "details": "Detalles"
+  },
+  "resetPassword": {
+    "notMatch": "Las contraseñas no coinciden."
   }
 }

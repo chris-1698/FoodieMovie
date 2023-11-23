@@ -45,3 +45,32 @@ export const useSignupMutation = () =>
         })
       ).data,
   });
+// TODO: Revisar,
+// https://www.youtube.com/watch?v=EirJor7TgXQ&ab_channel=CodingwithBasir
+// 8:28
+export const useForgotPasswordMutation = () =>
+  useMutation({
+    mutationFn: async ({ email }: { email: string }) =>
+      (
+        await apiClient.post<string>(`api/users/forgot-password`, {
+          email,
+        })
+      ).data,
+  });
+
+export const useResetPasswordMutation = () =>
+  useMutation({
+    mutationFn: async ({
+      password,
+      token,
+    }: {
+      password: string;
+      token: string;
+    }) =>
+      (
+        await apiClient.post<string>(`api/users/reset-password`, {
+          password,
+          token,
+        })
+      ).data,
+  });

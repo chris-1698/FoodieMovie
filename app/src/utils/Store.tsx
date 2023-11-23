@@ -2,11 +2,13 @@ import Cookies from 'js-cookie';
 import React, { createContext, useReducer } from 'react';
 import { Cart, CartItem, OrderDetails } from '../typings/Cart';
 import { UserInfo } from '../typings/UserInfo';
+import { ForgotPasswordInfo } from '../typings/ForgotPasswordInfo';
 
 type AppState = {
 	darkMode: boolean
 	cart: Cart
 	userInfo?: UserInfo
+	forgotPasswordInfo?: ForgotPasswordInfo
 }
 
 const initialState: AppState = {
@@ -27,7 +29,10 @@ const initialState: AppState = {
 		itemsPrice: 0,
 		taxPrice: 0,
 		totalPrice: 0
-	}
+	},
+	forgotPasswordInfo: localStorage.getItem('forgotPasswordInfo')
+		? JSON.parse(localStorage.getItem('forgotPasswordInfo')!)
+		: null
 }
 
 type Action =
@@ -38,6 +43,7 @@ type Action =
 	| { type: 'CART_CLEAR', }
 	| { type: 'USER_SIGN_IN'; payload: UserInfo }
 	| { type: 'USER_SIGN_OUT' }
+	| { type: 'USER_FORGOT_PASSWORD'; payload: ForgotPasswordInfo }
 	| { type: 'SAVE_ORDER_DETAILS', payload: OrderDetails }
 	| { type: 'SAVE_PAYMENT_METHOD', payload: string }
 
@@ -92,6 +98,8 @@ function reducer(state: AppState, action: Action): AppState {
 					totalPrice: 0
 				}
 			}
+		case 'USER_FORGOT_PASSWORD':
+			return { ...state, forgotPasswordInfo: action.payload }
 		case 'SAVE_ORDER_DETAILS':
 			return {
 				...state,

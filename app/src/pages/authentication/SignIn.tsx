@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Store } from "../../utils/Store";
 import { useSigninMutation } from "../../hooks/userHooks";
 import Layout from "../../layouts/Layout";
@@ -14,14 +14,27 @@ import {
   Snackbar,
   TextField,
   Typography,
-  Button
+  Button,
+  OutlinedInput,
+  InputAdornment,
+  InputLabel,
+  FormControl
 } from "@mui/material";
 import { getError } from "../../utils/utils";
 import { ApiError } from "../../typings/ApiError";
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from "react-i18next";
+import useTitle from "../../hooks/useTitle";
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
-export default function SignIn() {
+export default function SignIn({
+  title,
+  subtitle
+}: {
+  title: string;
+  subtitle: string;
+}) {
   const navigate = useNavigate()
   const { search } = useLocation()
 
@@ -32,11 +45,27 @@ export default function SignIn() {
   const [password, setPassword] = useState('')
   const [snackBarMessage, setSnackBarMessage] = useState('')
   const [openSnackBar, setOpenSnackBar] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const { state, dispatch } = useContext(Store)
   const { userInfo } = state
   const { mutateAsync: signin, isLoading } = useSigninMutation()
   const { t } = useTranslation()
+
+  const fpInfo = {
+    token: '',
+    name: '',
+    link: ''
+  }
+  const { changedPassword } = useParams();
+
+  useTitle(title + subtitle)
+
+  const handleClickShowPassword = () => setShowPassword((show => !show))
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -44,29 +73,23 @@ export default function SignIn() {
       const data = await signin({
         email, password,
       })
-      // TODO: Revisar aquí. Al crear usuario el apellido como que no se guarda
-      // y en ProfileSettings sale como undefined
       dispatch({ type: 'USER_SIGN_IN', payload: data })
       localStorage.setItem('userInfo', JSON.stringify(data))
       navigate(redirect)
     } catch (error) {
-      // console.error('Error es: ', getError(error as ApiError))
       setSnackBarMessage(getError(error as ApiError))
       setOpenSnackBar(true)
-
-      //Mostrar error en un snackbar de esos como los de cart
-      //función que modifique una variable de estado y esta misma se reinicie cuando se
-      //cierra el snackbar¿
     }
-    // console.log('Email: ', email, '\nPassword: ', password);
-
   }
 
   useEffect(() => {
-    // console.log('user info: ', userInfo);
     if (userInfo) {
       navigate(redirect)
     }
+    if (localStorage.getItem('forgotPasswordInfo')) {
+      localStorage.setItem('forgotPasswordInfo', JSON.stringify(fpInfo))
+    }
+
   }, [navigate, redirect, userInfo])
 
   const handleCloseSnackBar = () => {
@@ -86,6 +109,11 @@ export default function SignIn() {
     </React.Fragment>
   );
 
+  // TODO: 22/11/2023
+  // Cambiar los literales de SignIn y ResetPassword. Revisar si hay más
+  // Snackbar cuando forgot password: "Hemos enviado un correo"
+  // Funcionalidad borrar cuenta
+  // Página de admin?
   return (
     <Layout title="sign in" description="sign in" >
       <Container maxWidth="sm" >
@@ -104,13 +132,31 @@ export default function SignIn() {
               ></TextField>
             </ListItem>
             <ListItem>
-              <TextField
-                label={t('session.password')}
-                fullWidth
-                required
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-              ></TextField>
+              <FormControl sx={{ width: '100%' }} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">{t('session.password')}</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  fullWidth
+                  required
+                  type={
+                    showPassword ? "text" : "password"
+                  }
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label={t('session.password')}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </FormControl>
             </ListItem>
             <ListItem>
               <Button
@@ -127,6 +173,13 @@ export default function SignIn() {
               {t('session.noAccount')}
               <Link style={{ paddingLeft: '5px' }} href={`/register?redirect=${redirect}`}>{t('session.signUp')}</Link>
             </ListItem>
+            <ListItem>
+              <Typography fontSize={'small'}>
+                <Link href={`/forgot-password`}>
+                  {t('session.passwordForgor')}
+                </Link>
+              </Typography>
+            </ListItem>
           </List>
         </form>
       </Container>
@@ -140,67 +193,30 @@ export default function SignIn() {
           horizontal: 'center'
         }}
       >
-        <Alert
-          onClose={handleCloseSnackBar}
-          severity="error"
-        >
+        <Alert onClose={handleCloseSnackBar} severity='error'>
           {snackBarMessage}
         </Alert>
       </Snackbar>
+      {/* If password has been changed: */}
+      {changedPassword
+        ? <Snackbar
+          open={true}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackBar}
+          action={toCloseSnackBar}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center'
+          }}
+        >
+          <Alert onClose={handleCloseSnackBar} severity='success'>
+            {t('session.passwordChanged')}
+          </Alert>
+        </Snackbar>
+        : <></>
+      }
+
     </Layout>
   )
 
 }
-
-// <ListItem>
-{/* <Controller name="email" control={control}
-defaultValue=""
-rules={{
-  required: true,
-  pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
-}}
-render={({ field }) => (
-  <TextField
-    variant="outlined"
-    fullWidth id="email"
-    label="Email"
-    inputProps={{ type: "email" }}
-    error={Boolean(errors.email)}
-    helperText={errors.email
-      ? errors.email.type === 'pattern'
-        ? 'Email not valid'
-        : 'email is required'
-      : ''
-    }
-    {...field}
-    onChange={(e) => setEmail(e.target.value)}
-  ></TextField>
-)}
-></Controller>
-</ListItem>
-<ListItem>
-<Controller name="password" control={control}
-defaultValue=""
-rules={{
-  required: true,
-  minLength: 6
-}}
-render={({ field }) => (
-  <TextField
-    variant="outlined"
-    fullWidth id="password"
-    label="Password"
-    inputProps={{ type: "password" }}
-    error={Boolean(errors.password)}
-    helperText={errors.password
-      ? errors.password.type === 'minLength'
-        ? 'Password length has to be more than 5 characters'
-        : 'Password is required'
-      : ''
-    }
-    {...field}
-    onChange={(e) => setPassword(e.target.value)}
-  ></TextField>
-)}
-></Controller>
-</ListItem> */}

@@ -5,8 +5,16 @@ import { useSignupMutation } from "../../hooks/userHooks";
 import { Button, Container, Link, List, ListItem, TextField, Typography } from "@mui/material";
 import Layout from "../../layouts/Layout";
 import { useTranslation } from "react-i18next";
+import useTitle from "../../hooks/useTitle";
 
-export default function SignUp() {
+export default function SignUp({
+  title,
+  subtitle
+}: {
+  title: string;
+  subtitle: string;
+}
+) {
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -24,6 +32,8 @@ export default function SignUp() {
   const { userInfo } = state;
   const { t } = useTranslation();
 
+  useTitle(title + subtitle)
+
   useEffect(() => {
     if (userInfo) {
       navigate(redirect)
@@ -35,7 +45,7 @@ export default function SignUp() {
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (password !== confirmPassword) {
-      //TODO: Passwords do not match with SnackBar
+      //TODO: Snackbar Passwords do not match with SnackBar
       console.log('passwords do not match');
 
       return

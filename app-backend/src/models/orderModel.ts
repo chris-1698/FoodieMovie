@@ -8,7 +8,6 @@ import { CartItem } from '../types/CartItem';
 import { UserInfo } from '../types/UserInfo';
 import { OrderDetails } from '../types/OrderDetails';
 import { User } from './userModel';
-import { ObjectId } from 'mongoose';
 
 class Item {
   @prop({ required: true })
@@ -79,7 +78,6 @@ export class Order {
 
   @prop({ required: true })
   public pickUpCode!: string;
-  //TODO: 4:39:25
 }
 
 export const OrderModel = getModelForClass(Order);

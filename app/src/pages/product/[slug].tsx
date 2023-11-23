@@ -1,4 +1,3 @@
-// TODO: Cambiar literales por valor del JSON translation
 // MUI resources
 import {
   Alert,
@@ -79,7 +78,7 @@ export default function ProductInfo({
       (x: { _id: any }) => x._id === product?._id
     );
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    if (product.countInStock < quantity) {
+    if (product!.countInStock < quantity) {
       return;
     }
     setOpenSnackBar(true);

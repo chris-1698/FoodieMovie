@@ -3,14 +3,18 @@ import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import { User, UserModel } from '../models/userModel';
 import { sampleUsers } from '../data';
-import { generateToken } from '../utils/utils';
+import { baseUrl, generateToken } from '../utils/utils';
+import jwt from 'jsonwebtoken';
+import emailjs from '@emailjs/browser';
+import { XMLHttpRequest } from 'xmlhttprequest-ts';
 
 export const userRouter = express.Router();
 
+var xhr = new XMLHttpRequest();
 userRouter.get(
   '/',
   asyncHandler(async (req: Request, res: Response) => {
-    await UserModel.deleteMany({});
+    // await UserModel.deleteMany({});
     const createdUsers = await UserModel.insertMany(sampleUsers);
 
     res.json({ createdUsers });
@@ -35,6 +39,7 @@ userRouter.post(
         return;
       }
     }
+
     res.status(401).send({ message: 'Invalid email or password' });
   })
 );
@@ -56,7 +61,75 @@ userRouter.post(
       isAdmin: user.isAdmin,
       dateOfBirth: user.dateOfBirth,
       token: generateToken(user),
-      // Bookmark: 4:04:21 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir
     });
+  })
+);
+
+userRouter.post(
+  '/forgot-password',
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await UserModel.findOne({
+      email: req.body.email,
+    });
+    if (user) {
+      const token = jwt.sign(
+        { _id: user._id },
+        process.env.JWT_SECRET || 'secretkey',
+        {
+          expiresIn: '2h',
+        }
+      );
+      // TODO: Revisar error al cambiar contraseña con el enlace del correo
+      // En el correo se manda otro token distinto al que
+      // se imprime por pantalla en VSC
+      // Update: Solucionado. Estaba mandando un token anterior.
+      user.resetToken = token;
+      await user.save();
+      // Reset link
+      const link = `${baseUrl()}/reset-password/${token}/`;
+      // For reset password trial
+      // console.log(link);
+
+      res.json({
+        token: token,
+        name: user.name,
+        link: link,
+      });
+      // res.send({ message: 'We sent reset password link to your email.' });
+    } else {
+      res.status(404).send({ message: 'User not found.' });
+    }
+  })
+);
+
+userRouter.post(
+  '/reset-password',
+  asyncHandler(async (req: Request, res: Response) => {
+    jwt.verify(
+      req.body.token,
+      process.env.JWT_SECRET || 'secretkey',
+      async (err: any, decode: any) => {
+        if (err) {
+          res.status(401).send({ message: 'Invalid token.' });
+        } else {
+          const user = await UserModel.findOne({ resetToken: req.body.token });
+          console.log('Usuario: ', user);
+
+          if (user) {
+            if (req.body.password) {
+              user.password = bcrypt.hashSync(req.body.password, 8);
+              await user.save();
+              res.send({
+                message: 'Password reseted successfully.',
+              });
+              user.resetToken = '';
+              await user.save();
+            }
+          } else {
+            res.status(404).send({ message: 'User not found.' });
+          }
+        }
+      }
+    );
   })
 );

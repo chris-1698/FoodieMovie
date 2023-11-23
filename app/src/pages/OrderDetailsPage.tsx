@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { redirect, useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
-// import { useSession, useUser } from '@clerk/clerk-react';
 import CheckoutRequirements from '../components/CheckoutRequirements';
-import { Button, Grid, Input, InputLabel, TextField } from '@mui/material';
+import { Button, Grid, TextField } from '@mui/material';
 import Layout from '../layouts/Layout';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import '../styles/App.css';
@@ -29,13 +28,7 @@ export default function OrderDetailsPage({
     userInfo,
     cart: { orderDetails, cartItems },
   } = state;
-  // const session = useSession();
-  // const { user } = useUser();
-  // const userJson = localStorage.getItem('userInfo');
-  // const userData = userJson !== null ? JSON.parse(userJson) : '';
 
-
-  //TODO: Revisar lo de dayjs 19-7-2023
   dayjs().format();
   dayjs.extend(customParseFormat);
   dayjs.locale('es');
@@ -62,8 +55,6 @@ export default function OrderDetailsPage({
     t('days.sunday'),
   ]
   const [dateAsObj, setDateAsObj] = useState(new Date() || null);
-  // console.log('Nombre: ', fullName);
-  // console.log(email);
 
   const handleSetPickUpDate = (e: React.SyntheticEvent) => {
     const dateAsObject = e.$d as Date;
@@ -87,11 +78,6 @@ export default function OrderDetailsPage({
     })
     setPickUpTime(parsedTime)
   }
-  // console.log('Valores pickup date y time: ', pickUpDate, pickUpTime);
-
-  //   const today = dayjs();
-  //   const twoPM = dayjs().set('hour', 14).startOf('hour');
-  //   const twelveAM = dayjs().set('hour', 0).startOf('hour');
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -116,7 +102,6 @@ export default function OrderDetailsPage({
     localStorage.setItem('dateAsObj', dateAsObj.toString())
     navigate('/payment');
   };
-  // console.log('frcha:', dayjs(pickUpDate).get('hour'), 'aaaaaaa: ', pickUpTime);
 
   return (
     <>
@@ -182,12 +167,4 @@ export default function OrderDetailsPage({
       </Layout>
     </>
   );
-}
-// TODO: Seguir con la página. Falta diseño. Falta gestionar los datos. Falta funcionalidad
-// Video: 4:25:50
-{
-  /* TODO: Ver el tema de realizar pedido. Obtener info de usuario,
-además continuar con la página de detalles de pedido: fecha y hora
- Nombre y apellido? correo, fecha, hora, método de pago, detalle de precios
- y cantidades etc. */
 }

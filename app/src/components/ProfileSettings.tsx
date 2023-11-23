@@ -6,7 +6,6 @@ import { Store } from '../utils/Store';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useTranslation } from 'react-i18next';
 
-// TODO: adaptar a nueva implementación.
 export default function ProfileSettings() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { state, dispatch } = useContext(Store);
@@ -16,8 +15,6 @@ export default function ProfileSettings() {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
-  // const { state, dispatch } = useContext(Store)
-  // const { userInfo } = state;
   const menuHandleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };

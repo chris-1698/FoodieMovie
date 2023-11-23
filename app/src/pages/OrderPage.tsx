@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import { useGetOrderDetailsQuery, useGetPaypalClientIdQuery, usePayOrderMutation } from '../hooks/orderHooks';
@@ -35,16 +35,16 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
   useTitle(title + subtitle)
 
   const navigate = useNavigate()
+  const params = useParams();
+
+  const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer()
+
+  const { data: paypalConfig } = useGetPaypalClientIdQuery()
   const { state } = useContext(Store);
   const { userInfo } = state;
-  // TODO: 5:28:06 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir
-  const params = useParams();
   const { id: orderId } = params;
   const { data: order, isLoading, error, refetch } = useGetOrderDetailsQuery(orderId!);
   const { t } = useTranslation();
-
-  // console.log(order);
-
   const { mutateAsync: payOrder, isLoading: loadingPay } = usePayOrderMutation()
 
   // 5:49:06
@@ -53,13 +53,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
     payOrder({ orderId: orderId! })
     refetch()
     alert('Order is paid')
-
   }
-
-  const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer()
-
-  const { data: paypalConfig } = useGetPaypalClientIdQuery()
-
 
   useEffect(() => {
     if (paypalConfig && paypalConfig.clientId) {
@@ -115,7 +109,6 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
 
   return (
     <Layout title='order' description='order'>
-      {/* TODO: Pedido */}
       <Typography component='h2' variant='h2'>{t('orders.order')} {order?._id}</Typography>
       {isLoading ? (
         <CircularProgress></CircularProgress>
@@ -130,7 +123,6 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
               <List>
                 <ListItem>
                   <Typography component='h2' variant='h2'>
-                    {/* TODO: Texto */}
                     {t('orders.orderDetails')}
                   </Typography>
                 </ListItem>
@@ -141,10 +133,8 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                     <Typography>{t('orders.pickUpTime')}{order.orderDetails.pickUpTime}</Typography>
                   </Stack>
                   {/* TODO: Bookmark 5:28:53 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir*/}
-                  {/* {userInfo!.name + ' ' + userInfo!.lastName}, */}
                 </ListItem>
                 <ListItem>
-                  {/* TODO: Texto */}
                   {/* Estado del pedido. */}
                   {order.isPaid ?
                     <Alert severity="success" variant='filled' sx={{ width: '100%' }}>{t('orders.delivered')}</Alert> :
@@ -158,7 +148,6 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
               <List>
                 <ListItem>
                   <Typography component='h2' variant='h2'>
-                    {/* TODO: Texto */}
                     {t('orders.payment')}
                   </Typography>
                 </ListItem>
@@ -176,7 +165,6 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
               <List>
                 <ListItem>
                   <Typography component='h2' variant='h2'>
-                    {/* TODO: Texto */}
                     {t('orders.orderItems')}
                   </Typography>
                 </ListItem>
@@ -185,7 +173,6 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                     <Table>
                       <TableHead>
                         <TableRow>
-                          {/* TODO: Texto */}
                           <TableCell sx={{ paddingLeft: '9%' }}>{t('orders.image')}</TableCell>
                           <TableCell sx={{ paddingLeft: '9%' }}>{t('orders.itemName')}</TableCell>
                           <TableCell align='right'>{t('orders.quantity')}</TableCell>
@@ -253,8 +240,6 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                 <ListItem>
                   <Grid container>
                     <Grid item xs={6}>
-                      {/*TODO: Texto */}
-
                       <Typography><strong>{t('orders.total')}</strong></Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -269,7 +254,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                     ) : isRejected ? (
                       <Alert severity='error'>
                         {/* TODO: Texto */}
-                        Error al conectarse a paypal
+                        {t('orders.payPalError')}
                       </Alert>
                     ) : (
                       <div>
@@ -285,7 +270,10 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                 )}
                 <ListItem>
                   <Stack direction='column' alignContent='center'>
-                    <Typography align='center'>Código de recogida</Typography>
+                    {/* TODO: Texto */}
+                    <Typography align='center'>
+                      {t('orders.pickupCode')}
+                    </Typography>
                     <QRCode
                       size={200}
                       bgColor='white'
@@ -301,7 +289,6 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                       {order.pickUpCode}
                     </Typography>
                   </Stack>
-
                 </ListItem>
               </List>
             </Card>

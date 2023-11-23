@@ -13,6 +13,14 @@ import ProductInfo from './pages/product/[slug]';
 import CartPage from './pages/CartPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import PaymentPage from './pages/PaymentPage';
+import PlaceOrderPage from './pages/PlaceOrderPage';
+import OrderPage from './pages/OrderPage';
+import SignIn from './pages/authentication/SignIn';
+import SignUp from './pages/authentication/SignUp';
+import ProtectedRoute from './components/ProtectedRoute';
+import OrderHistory from './pages/OrderHistory';
+import ForgotPassword from './pages/authentication/ForgotPassword';
+import ResetPassword from './pages/authentication/ResetPassword';
 
 import { ROUTING_MANAGER } from './navigation/Router';
 import { StoreProvider } from './utils/Store';
@@ -26,16 +34,13 @@ import 'dayjs/locale/es';
 // Translation resources
 import { useTranslation } from 'react-i18next';
 
+// PayPal resources
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 
+// Tanstack resources (or queries)
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import PlaceOrderPage from './pages/PlaceOrderPage';
-import OrderPage from './pages/OrderPage';
-import SignIn from './pages/authentication/SignIn';
-import SignUp from './pages/authentication/SignUp';
-import ProtectedRoute from './components/ProtectedRoute';
-import OrderHistory from './pages/OrderHistory';
+
 
 const AppComponent = () => {
   const navigate = useNavigate();
@@ -61,10 +66,19 @@ const AppComponent = () => {
       />
 
       {/* Sign in page */}
-      <Route path={ROUTING_MANAGER.SIGN_IN} element={<SignIn />} />
+      <Route path={ROUTING_MANAGER.SIGN_IN} element={<SignIn title={t('titles.brand')} subtitle={t('titles.signIn')} />} />
+
+      {/* Sign in page after changing password */}
+      <Route path={ROUTING_MANAGER.SIGN_IN_PASSWORD} element={<SignIn title={t('titles.brand')} subtitle={t('titles.signIn')} />} />
 
       {/* Sign up page */}
-      <Route path={ROUTING_MANAGER.REGISTER} element={<SignUp />} />
+      <Route path={ROUTING_MANAGER.REGISTER} element={<SignUp title={t('titles.brand')} subtitle={t('titles.signUp')} />} />
+
+      {/* Forgot password page */}
+      <Route path={ROUTING_MANAGER.FORGOT_PASSWORD} element={<ForgotPassword title={t('titles.brand')} subtitle={t('titles.forgotPassword')} />} />
+
+      {/* Reset password page */}
+      <Route path={ROUTING_MANAGER.RESET_PASSWORD} element={<ResetPassword title={t('titles.brand')} subtitle={t('titles.resetPassword')} />} />
 
       {/* Single product page */}
       <Route
@@ -96,7 +110,7 @@ const AppComponent = () => {
           element={
             <PlaceOrderPage
               title={t('titles.brand')}
-              subtitle={t('titles.paymentMethod')}
+              subtitle={t('titles.placeOrder')}
             />
           }
         />
