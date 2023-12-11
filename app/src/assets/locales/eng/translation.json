@@ -3,6 +3,7 @@
   "currency": "$",
   "continueButton": "Continue",
   "backButton": "Return",
+  "taxes": "Taxes: ",
   "session": {
     "signIn": "Sign in",
     "username": "Username",
@@ -19,7 +20,8 @@
     "signUp": " Create a new account",
     "dayOfBirth": "Birth date",
     "passwordsDontMatch": "Passwords don't match.",
-    "passwordChanged": "Pasword has been changed!"
+    "passwordChanged": "Pasword has been changed!",
+    "passwordFormtat": "Password must have between 6 and 18 characters. \nOnly alphanumeric characters, - and _ are allowed."
   },
   "dashboard": {
     "pageName": "Foodie Movie",
@@ -33,7 +35,9 @@
     "category": "Category: ",
     "productAvailable": "Available",
     "productUnavailable": "Not available",
-    "addedToCart": " was added to cart."
+    "xAddedToCart": " was added to cart.",
+    "addedToCart": "The appetized was added to your cart.",
+    "noStock": "Sorry. There's currently no stock for that product."
   },
   "titles": {
     "brand": "Foodie Movie",
@@ -46,8 +50,10 @@
     "signIn": " - Sign in",
     "signUp": " - Sign up",
     "forgotPassword": " - Forgot password",
+    "resetPassword": "- Reset Password",
     "order": " - Your order",
-    "orderHistory": " - Order History"
+    "orderHistory": " - Order History",
+    "admin": " - Administrator"
   },
   "days": {
     "monday": "Monday",
@@ -73,6 +79,7 @@
     "pickUpTime": "Pickup time: ",
     "payment": "Payment details",
     "paymentMethod": "Payment method: ",
+    "stripe": "Stripe (coming soon!)",
     "items": "Items",
     "image": "Image",
     "itemName": "Name",
@@ -92,8 +99,12 @@
     "delivered": "Order was collected.",
     "notDelivered": "Order hasn't been collected.",
     "error": "There seems to be an error. Please try again.",
-    "payPalError": "There was an error tryingto connect to PayPal.",
-    "pickupCode": "Pickup code"
+    "payPalError": "There was an error trying to connect to PayPal.",
+    "pickupCode": "Pickup code",
+    "emailSent": "We've sent an email with the details of your order.",
+    "showCode": "Show code",
+    "hideCode": "Hide code",
+    "seeCode": "You'll be able to see the pickup code once the payment is completed."
   },
   "settings": {
     "login": "Login ▾",
@@ -103,7 +114,13 @@
     "exclamation": "! ▾",
     "orderHistory": "Order history",
     "deleteAccount": "Delete account",
-    "logOut": "Log out"
+    "logOut": "Log out",
+    "enterCode": "Enter code",
+    "wrongCode": "Wrong code, please try again.",
+    "deleteText1": "Do you really want to delete your account?",
+    "deleteText2": "This step is irreversible. To be sure, write the following code:",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   },
   "cart": {
     "cart": "Cart",
@@ -118,10 +135,11 @@
     "subtotal": "Subtotal",
     "items": "items"
   },
-  "orderDetails": {
+  "pickupDetails": {
     "fullName": "Name",
     "email": "Email",
-    "pickUpDate": "Pickup date"
+    "pickUpDate": "Pickup date",
+    "nameFormat": "Name must be between 3 and 18 characters long. Only alphanumeric characters are accepted."
   },
   "paymentMethod": {
     "choosePaymentMethod": "Choose a payment method"
@@ -132,9 +150,33 @@
     "date": "Date",
     "total": "Total",
     "paid": "Paid",
-    "details": "Details"
+    "details": "Details",
+    "delivered": "Delivered",
+    "yes": "Yes",
+    "no": "No"
   },
   "resetPassword": {
-    "notMatch": "Passwords don't match."
+    "notMatch": "Passwords don't match.",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "changePassword": "Change password",
+    "passwordFormat": "The password must be between 6 and 18 characters long. \nOnly alphanumeric characters, - and _ are allowed."
+  },
+  "allOrders": {
+    "code": "Pickup code",
+    "time": "Pickup date",
+    "isPaid": "Paid",
+    "isDelivered": "Delivered",
+    "noOrders": "No orders found with that pickup code.",
+    "deliver": "Delivered",
+    "delivered": "Yes",
+    "notDelivered": "No",
+    "removeFilter": "Remove filters",
+    "verifySearch": "Only alphanumeric characters are allowed. In addition, the search term cannot be longer than 12 characters."
+  },
+  "forgotPassword": {
+    "sentEmail": "Perfect, we have sent an email to your account.",
+    "inputEmail": "Please enter your email address",
+    "resetPassword": "Reset password"
   }
 }

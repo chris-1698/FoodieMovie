@@ -3,6 +3,7 @@
   "currency": "€",
   "continueButton": "Continuar",
   "backButton": "Volver",
+  "taxes": "IVA: ",
   "session": {
     "signIn": "Iniciar sesión",
     "username": "Nombre de usuario",
@@ -19,7 +20,8 @@
     "signUp": " Crear una cuenta",
     "dayOfBirth": "Fecha de nacimiento",
     "passwordsDontMatch": "Las contraseñas no coindicen.",
-    "passwordChanged": "¡La contraseña ha sido cambiada correctamente!"
+    "passwordChanged": "¡La contraseña ha sido cambiada correctamente!",
+    "passwordFormat": "La contraseña debe tener entre 6 y 18 caracteres.\nSólo se admiten caracteres alfanuméricos, - y _"
   },
   "dashboard": {
     "pageName": "Foodie Movie",
@@ -33,7 +35,9 @@
     "category": "Categoría: ",
     "productAvailable": "Disponible",
     "productUnavailable": "No disponible",
-    "addedToCart": " se ha añadido al carro."
+    "xAddedToCart": " se ha añadido al carro.",
+    "addedToCart": "El aperitivo se ha añadido al carro.",
+    "noStock": "Lo sentimos. El producto no tiene stock."
   },
   "titles": {
     "brand": "Foodie Movie",
@@ -46,8 +50,10 @@
     "signIn": " - Iniciar sesión",
     "signUp": " - Registro",
     "forgotPassword": " - Contraseña olvidada",
+    "resetPassword": " - Restablecer contraseña",
     "order": " - Tu pedido",
-    "orderHistory": " - Historial de pedidos"
+    "orderHistory": " - Historial de pedidos",
+    "admin": " - Administrador"
   },
   "days": {
     "monday": "Lunes",
@@ -73,6 +79,7 @@
     "pickUpTime": "Hora de recogida: ",
     "payment": "Detalles de pago",
     "paymentMethod": "Método de pago: ",
+    "stripe": "Stripe (próximamente)",
     "items": "Productos",
     "image": "Imagen",
     "itemName": "Nombre",
@@ -93,7 +100,11 @@
     "notDelivered": "El pedido no ha sido entregado.",
     "error": "Ha ocurrido algún error, inténtelo de nuevo.",
     "payPalError": "Error al conectarse a PayPal.",
-    "pickupCode": "Código de recogida"
+    "pickupCode": "Código de recogida",
+    "emailSent": "Te hemos mandado un correo con los detalles de tu pedido.",
+    "showCode": "Mostrar código",
+    "hideCode": "Ocultar código",
+    "seeCode": "Podrás ver el código de recogida una vez finalizado el pago"
   },
   "settings": {
     "login": "Inicia sesión ▾",
@@ -103,7 +114,13 @@
     "exclamation": "! ▾",
     "orderHistory": "Historial de pedidos",
     "deleteAccount": "Borrar cuenta",
-    "logOut": "Cerrar sesión"
+    "logOut": "Cerrar sesión",
+    "enterCode": "Introduce el código",
+    "wrongCode": "Código incorrecto, por favor inténtalo de nuevo.",
+    "deleteText1": "¿De verdad quieres borrar tu cuenta?",
+    "deleteText2": "Este paso es irreversible. Para estar seguros, escribe el siguiente código:",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
   },
   "cart": {
     "cart": "Carro",
@@ -118,10 +135,11 @@
     "subtotal": "Subtotal",
     "items": "prod."
   },
-  "orderDetails": {
+  "pickupDetails": {
     "fullName": "Nombre completo",
     "email": "Correo electrónico",
-    "pickUpDate": "Fecha de recogida"
+    "pickUpDate": "Fecha de recogida",
+    "nameFormat": "El nombre debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos."
   },
   "paymentMethod": {
     "choosePaymentMethod": "Elija un método de pago"
@@ -132,9 +150,33 @@
     "date": "Fecha",
     "total": "Total",
     "paid": "Pagado",
-    "details": "Detalles"
+    "details": "Detalles",
+    "delivered": "Entregado",
+    "yes": "Sí",
+    "no": "No"
   },
   "resetPassword": {
-    "notMatch": "Las contraseñas no coinciden."
+    "notMatch": "Las contraseñas no coinciden.",
+    "newPassword": "Nueva contraseña",
+    "confirmNewPassword": "Confirma la nueva contraseña",
+    "changePassword": "Cambiar contraseña",
+    "passwordFormat": "La contraseña debe tener entre 6 y 18 caracteres.\nSólo se admiten caracteres alfanuméricos, - y _"
+  },
+  "allOrders": {
+    "code": "Código de recogida",
+    "time": "Fecha de recogida",
+    "isPaid": "Pagado",
+    "isDelivered": "Entregado",
+    "noOrders": "No se han encontrado pedidos con ese código de recogida.",
+    "deliver": "Entregado",
+    "delivered": "Sí",
+    "notDelivered": "No",
+    "removeFilter": "Quitar filtros",
+    "verifySearch": "Sólo se admiten caracteres alfanuméricos. Además, el término de búsqueda no puede ocupar más de 12 caracteres."
+  },
+  "forgotPassword": {
+    "sentEmail": "Perfecto, hemos enviado un correo a tu cuenta",
+    "inputEmail": "Por favor, introduzca su email",
+    "resetPassword": "Restablecer contraseña"
   }
 }
