@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import { useGetOrderDetailsQuery, useGetPaypalClientIdQuery, usePayOrderMutation } from '../hooks/orderHooks';
@@ -17,7 +17,9 @@ import {
   TableRow,
   Typography,
   Stack,
-  Button
+  Button,
+  Snackbar,
+  IconButton
 } from '@mui/material';
 import { getError } from '../utils/utils';
 import { ApiError } from '../typings/ApiError';
@@ -29,6 +31,8 @@ import Layout from '../layouts/Layout';
 import { useTranslation } from 'react-i18next';
 import { PayPalButtons, PayPalButtonsComponentProps, SCRIPT_LOADING_STATE, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import QRCode from 'react-qr-code'
+import emailjs from '@emailjs/browser'
+import CloseIcon from '@mui/icons-material/Close'
 
 
 export default function OrderPage({ title, subtitle }: { title: string, subtitle: string }) {
@@ -37,18 +41,32 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
   const navigate = useNavigate()
   const params = useParams();
 
-  const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer()
-
+  const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer();
+  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [result, setResult] = useState(false);
+  const [showQR, setShowQR] = useState(false);
   const { data: paypalConfig } = useGetPaypalClientIdQuery()
   const { state } = useContext(Store);
   const { userInfo } = state;
   const { id: orderId } = params;
   const { data: order, isLoading, error, refetch } = useGetOrderDetailsQuery(orderId!);
   const { t } = useTranslation();
-  const { mutateAsync: payOrder, isLoading: loadingPay } = usePayOrderMutation()
+  const { mutateAsync: payOrder, isLoading: loadingPay, status } = usePayOrderMutation()
 
-  // 5:49:06
-  // TODO: Revisar. Se paga a la segunda pulsación del botón
+  const cartItemsDetail = () => {
+    let details = "";
+    order?.orderItems.map((item) => {
+      details += `${item.name} x ${item.quantity} ${item.price}${t('currency')}\n`
+    })
+    details += `
+    \n ${t('taxes')}  ${order?.taxPrice}${t('currency')}
+    \n Total:  ${order?.totalPrice}${t('currency')}`
+
+    return details
+  }
+  // Se paga a la segunda pulsación del botón
+  // Se paga bien, pero tiene que volver a renderizarse para verlo
   const testPayHandler = () => {
     payOrder({ orderId: orderId! })
     refetch()
@@ -72,7 +90,30 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
       }
       loadPaypalScript()
     }
-  }, [paypalConfig]);
+
+    if (order && order.isPaid == true) {
+      try {
+        emailjs.send(
+          'service_rpirl1w',
+          'template_oprezrr',
+          {
+            to_name: userInfo?.name,
+            pickup_code: order?.pickUpCode,
+            to_email: userInfo?.email,
+            order_details: cartItemsDetail(),
+          },
+          'ElU7Zz_Kk2wIl9-bY'
+        )
+        setSnackBarMessage(`${t('orders.emailSent')}`);
+        setShowSnackBar(true);
+        setResult(true);
+      } catch (err) {
+        setSnackBarMessage(getError(err as ApiError));
+        setShowSnackBar(true);
+        setResult(false);
+      }
+    }
+  }, [paypalConfig, order]);
 
   const paypalbuttonTransactionProps: PayPalButtonsComponentProps = {
     style: { layout: 'vertical' },
@@ -95,17 +136,35 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
       return actions.order!.capture().then(async (details) => {
         try {
           payOrder({ orderId: orderId!, ...details })
+
           refetch()
-          //TODO: Snackbar success
         } catch (err) {
-          //TODO: Snackbar error
+          alert(getError(err as ApiError))
         }
       })
     },
     onError: (err) => {
+      alert(getError(err as ApiError))
       //TODO: error as ApiError snackbar
     },
   }
+
+  const handleCloseSnackBar = () => {
+    setShowSnackBar(false);
+  }
+
+  const toCloseSnackBar = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="Close"
+        color="inherit"
+        onClick={handleCloseSnackBar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  )
 
   return (
     <Layout title='order' description='order'>
@@ -132,12 +191,12 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                     <Typography>{t('orders.pickUpDate')}{order.orderDetails.pickUpDate}</Typography>
                     <Typography>{t('orders.pickUpTime')}{order.orderDetails.pickUpTime}</Typography>
                   </Stack>
-                  {/* TODO: Bookmark 5:28:53 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir*/}
                 </ListItem>
                 <ListItem>
-                  {/* Estado del pedido. */}
-                  {order.isPaid ?
-                    <Alert severity="success" variant='filled' sx={{ width: '100%' }}>{t('orders.delivered')}</Alert> :
+                  {/* Estado del pedido. No entregado por defecto.*/}
+                  {order.isDelivered ?
+                    <Alert severity="success" variant='filled' sx={{ width: '100%' }}>{t('orders.delivered')}</Alert>
+                    :
                     <Alert severity="warning" variant='filled' sx={{ width: '100%' }}>{t('orders.notDelivered')}</Alert>
                   }
                 </ListItem>
@@ -153,8 +212,10 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                 </ListItem>
                 <ListItem>{t('orders.paymentMethod')}{order.paymentMethod}</ListItem>
                 <ListItem>
-                  {order.isPaid ?
-                    <Alert severity="success" variant='filled' sx={{ width: '100%' }}>{t('orders.paid')}</Alert> :
+                  {order.isPaid === true
+                    ?
+                    <Alert severity="success" variant='filled' sx={{ width: '100%' }}>{t('orders.paid')}</Alert>
+                    :
                     <Alert severity="warning" variant='filled' sx={{ width: '100%' }}>{t('orders.notPaid')}</Alert>
                   }
                 </ListItem>
@@ -181,8 +242,8 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                       </TableHead>
                       <TableBody>
                         {order.orderItems.map((item) => (
-                          <TableRow key={item.slug}>
-                            <TableCell>
+                          <TableRow key={item.slug.current}>
+                            <TableCell >
                               <CardMedia
                                 component='img'
                                 image={urlForCart(item.image)}
@@ -253,16 +314,14 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                       <CircularProgress />
                     ) : isRejected ? (
                       <Alert severity='error'>
-                        {/* TODO: Texto */}
                         {t('orders.payPalError')}
                       </Alert>
                     ) : (
                       <div>
                         <PayPalButtons
                           {...paypalbuttonTransactionProps}
-                        ></PayPalButtons>
-                        {/* TODO: Texto */}
-                        <Button onClick={testPayHandler}>Test Pay</Button>
+                        />
+                        <Button onClick={testPayHandler}>Test</Button>
                       </div>
                     )}
                     {loadingPay && <CircularProgress />}
@@ -270,24 +329,50 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                 )}
                 <ListItem>
                   <Stack direction='column' alignContent='center'>
-                    {/* TODO: Texto */}
                     <Typography align='center'>
                       {t('orders.pickupCode')}
                     </Typography>
-                    <QRCode
-                      size={200}
-                      bgColor='white'
-                      fgColor='black'
-                      value={order.pickUpCode}
-                    >
-                    </QRCode>
-                    <Typography
-                      align='center'
-                      fontFamily='monospace'
-                      fontSize='30px'
-                    >
-                      {order.pickUpCode}
-                    </Typography>
+                    {
+                      showQR === true
+                        ? (
+                          <>
+                            <QRCode
+                              size={200}
+                              bgColor='white'
+                              fgColor='black'
+                              value={order.pickUpCode}
+                            >
+                            </QRCode>
+                            <Typography
+                              align='center'
+                              fontFamily='monospace'
+                              fontSize='30px'
+                            >
+                              {order.pickUpCode}
+                            </Typography>
+                          </>
+                        ) : (
+                          <>
+                            {showQR === false ?
+                              (
+                                <Typography>
+                                  {t('orders.seeCode')}
+                                </Typography>) : (
+                                <></>
+                              )
+                            }
+                          </>
+                        )
+                    }
+                    <Button
+                      disabled={!order.isPaid}
+                      onClick={() => setShowQR((show => !show))}
+                      variant='contained'>
+                      {showQR === true ?
+                        t('orders.hideCode')
+                        : t('orders.showCode')
+                      }
+                    </Button>
                   </Stack>
                 </ListItem>
               </List>
@@ -295,6 +380,21 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
           </Grid>
         </Grid>
       )}
+      <Snackbar
+        open={showSnackBar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackBar}
+        action={toCloseSnackBar}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}>
+        <Alert
+          onClose={handleCloseSnackBar}
+          severity={result ? 'success' : 'error'}>
+          {snackBarMessage}
+        </Alert>
+      </Snackbar>
     </Layout>
 
   )

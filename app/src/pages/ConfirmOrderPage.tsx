@@ -15,7 +15,7 @@ import { ApiError } from '../typings/ApiError';
 import { getError } from '../utils/utils';
 import { useTranslation } from 'react-i18next';
 
-export default function PlaceOrderPage({
+export default function ConfirmOrderPage({
   title,
   subtitle
 }: {
@@ -23,16 +23,12 @@ export default function PlaceOrderPage({
   subtitle: string;
 }) {
   useTitle(title + subtitle);
-  // TODO:: Cambiar titulo
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { state, dispatch } = useContext(Store)
-  const { userInfo, cart } = state
+  const { cart } = state
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
-
-  // const orderDetails = JSON.parse(localStorage.getItem('orderDetails') || '')
-  // const cartItems = JSON.parse(localStorage.getItem('cartItems') ||)
 
   // Redondea un número a dos decimales
   const roundTo2 = (num: number) => Math.round(num * 100 + Number.EPSILON) / 100
@@ -83,6 +79,8 @@ export default function PlaceOrderPage({
         itemsPrice: cart.itemsPrice,
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
+        isPaid: false,
+        isDelivered: false,
       })
       dispatch({ type: 'CART_CLEAR' })
       localStorage.removeItem('cartItems')
@@ -170,7 +168,6 @@ export default function PlaceOrderPage({
                       {cart.cartItems.map((item) => (
                         <TableRow key={item.slug.current}>
                           <TableCell>
-                            {/* TODO: 3:46:16  https://www.youtube.com/watch?v=FcRWgWQale4&ab_channel=CodingwithBasir*/}
                             <CardMedia
                               component='img'
                               image={urlForCart(item.image)}
@@ -197,11 +194,6 @@ export default function PlaceOrderPage({
                   </Table>
                 </TableContainer>
               </ListItem>
-              {/* https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir */}
-              {/* Bookmark: 5:07:38 */}
-
-              {/* https://www.youtube.com/watch?v=FcRWgWQale4&ab_channel=CodingwithBasir */}
-              {/* 3:39:25 */}
             </List>
           </Card>
         </Grid>

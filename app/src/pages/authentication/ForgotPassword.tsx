@@ -1,13 +1,28 @@
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  List,
+  ListItem,
+  Snackbar,
+  TextField,
+  Typography
+} from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Store } from "../../utils/Store";
 import { useForgotPasswordMutation } from "../../hooks/userHooks";
 import Layout from "../../layouts/Layout";
-import { Alert, Button, CircularProgress, Container, IconButton, List, ListItem, Snackbar, TextField, Typography } from "@mui/material";
 import useTitle from "../../hooks/useTitle";
 import emailjs from "@emailjs/browser"
 import { getError } from "../../utils/utils";
 import { ApiError } from "../../typings/ApiError";
+import { useTranslation } from "react-i18next";
+import CloseIcon from '@mui/icons-material/Close'
+
+const EMAIL_REGEXP = new RegExp('^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-]+)(\\.[a-zA-Z]{2,5}){1,2}$')
 
 export default function ForgotPassword({
   title,
@@ -25,7 +40,7 @@ export default function ForgotPassword({
 
   const { state } = useContext(Store);
   const { userInfo } = state;
-  const EMAIL_REGEXP = new RegExp('^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-]+)(\\.[a-zA-Z]{2,5}){1,2}$')
+  const { t } = useTranslation();
 
   const { mutateAsync: forgotPassword, isLoading } = useForgotPasswordMutation()
 
@@ -56,14 +71,13 @@ export default function ForgotPassword({
             console.log(`Resultado: ${result.text}`);
           },
           function (error) {
-            console.log(`Error: ${error}`);
+            console.log(`Error: ${getError(error as ApiError)}`);
           }
         );
     } catch (mailError) {
       setSnackBarMessage(getError(mailError as ApiError));
       setResult(false);
       setOpenSnackBar(true);
-      // console.log("MailError: ", mailError);
     }
   }
 
@@ -80,8 +94,7 @@ export default function ForgotPassword({
         info.name,
         info.link,
         email)
-      // TODO: Texto
-      setSnackBarMessage('Hemos enviado un correo a tu cuenta');
+      setSnackBarMessage(`${t('forgotPassword.sentEmail')}`);
       setResult(true);
       setOpenSnackBar(true);
 
@@ -101,7 +114,6 @@ export default function ForgotPassword({
     if (EMAIL_REGEXP.test(email)) {
       setValid(true)
     } else {
-
       setValid(false)
     }
   }
@@ -113,25 +125,21 @@ export default function ForgotPassword({
         aria-label="Close"
         color="inherit"
         onClick={handleCloseSnackBar}
-      ></IconButton>
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
     </React.Fragment>
   )
 
-  // Hecho! Ahora a ponerse con la lógica para cambio de contraseña.
-  // Bueno, y trasladarlo al botón que corresponde.
-
-  // TODO 12/11/2023
   return (
     <Layout title="Forgot password" description="forgot password page">
       <Container maxWidth="sm">
         <form onSubmit={handleSubmit}>
           <Typography>
-            {/* TODO: Texto */}
-            Hola pon tu email
+            {t('forgotPassword.inputEmail')}
           </Typography>
           <List>
             <ListItem>
-              {/* TODO: Texto */}
               <TextField
                 label={'Email'}
                 fullWidth
@@ -151,8 +159,7 @@ export default function ForgotPassword({
                 variant="contained"
                 color="primary"
               >
-                {/* TODO: Texto */}
-                Reestablecer contraseña
+                {t('forgotPassword.resetPassword')}
               </Button>
             </ListItem>
           </List>
@@ -176,22 +183,4 @@ export default function ForgotPassword({
       </Snackbar>
     </Layout>
   )
-  //   const form = useRef()
-
-  //   const sendEmail = (e: React.SyntheticEvent) => {
-  //     e.preventDefault();
-  //     // Probar. Enviar correo desde frontend y hacer cambios en backend?
-  //     emailjs.sendForm("SERVICE_ID", "TEMPLATE_ID", form.current || 'form',
-  //       "PUBLIC_KEY").then(
-  //         (result) => {
-  //           console.log(result.text);
-  //         },
-  //         (error) => {
-  //           console.log(error.text);
-
-  //         }
-  //       )
-  //   }
-  // }
-
 }

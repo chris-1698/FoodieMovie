@@ -14,7 +14,6 @@ import {
   ListItem,
 } from '@mui/material';
 import useTitle from '../hooks/useTitle';
-import { Snackbar } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
 export default function PaymentPage({
@@ -38,7 +37,6 @@ export default function PaymentPage({
 
   useTitle(title + subtitle);
   useEffect(() => {
-    console.log(paymentMethodName);
 
     if (!orderDetails) {
       navigate('/orderDetails');
@@ -77,7 +75,8 @@ export default function PaymentPage({
                 >
 
                   <FormControlLabel
-                    label="Stripe"
+                    disabled
+                    label={t('orders.stripe')}
                     value="Stripe"
                     control={<Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
                   ></FormControlLabel>
@@ -96,7 +95,7 @@ export default function PaymentPage({
                 type='submit'
                 variant='contained'
                 color='primary'
-                disabled={localStorage.getItem('patmentMethod') === ''}
+                disabled={localStorage.getItem('paymentMethod') === ''}
               >
                 {t('continueButton')}
               </Button>

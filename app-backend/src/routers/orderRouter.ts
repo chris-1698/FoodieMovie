@@ -5,12 +5,11 @@ import asyncHandler from 'express-async-handler';
 //Project resources
 import { OrderModel } from '../models/orderModel';
 import { CartItem } from '../types/CartItem';
-import { isAuth } from '../utils/utils';
+import { isAuth, isAuthAsAdmin } from '../utils/utils';
 import generator from 'generate-password-ts';
 
 export const orderRouter = express.Router();
 
-// TODO: 5:18:21 https://www.youtube.com/watch?v=-ifcPnXHn8Q&ab_channel=CodingwithBasir
 orderRouter.get(
   // /api/orders/:id
   '/:id',
@@ -43,6 +42,8 @@ orderRouter.post(
         taxPrice: req.body.taxPrice,
         totalPrice: req.body.totalPrice,
         createdAt: Date.now(),
+        isPaid: false,
+        isDelivered: false,
         pickUpCode: generator.generate({
           length: 12,
           numbers: true,
@@ -87,7 +88,49 @@ orderRouter.get(
   asyncHandler(async (req: Request, res: Response) => {
     const orders = await OrderModel.find({
       user: req.user._id,
-    });
+    }).sort({ createdAt: -1, paidAt: -1 });
     res.json(orders);
+  })
+);
+
+orderRouter.get(
+  '/all/allOrders',
+  isAuthAsAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const orders = await OrderModel.find({});
+    res.json(orders);
+  })
+);
+
+orderRouter.get(
+  '/orders/searchOrder/:searchTerm',
+  isAuthAsAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const orders = await OrderModel.find({
+      pickUpCode: { $regex: req.params.searchTerm || '' },
+    });
+    if (orders) {
+      res.json(orders);
+    } else {
+      res.status(404).send({ message: 'No orders found' });
+    }
+  })
+);
+
+orderRouter.put(
+  '/order/deliverOrder',
+  isAuthAsAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const order = await OrderModel.findById(req.body.id);
+
+    if (order && order.isDelivered === false) {
+      order.isDelivered = true;
+      const updatedOrder = await order.save();
+      res.send({ order: updatedOrder, message: 'Order delivered!' });
+    } else if (order && order?.isDelivered === true) {
+      res.status(412).send({ message: 'Order already delivered!' });
+    } else {
+      res.status(404).send({ message: 'Order not found' });
+    }
   })
 );

@@ -2,18 +2,16 @@
 import {
   Routes,
   Route,
-  useNavigate,
   BrowserRouter,
   Navigate,
 } from 'react-router-dom';
 
 // Project resources
-import AllCombosPage from './pages/AllCombosPage';
+import AllProductsPage from './pages/AllProductsPage';
 import ProductInfo from './pages/product/[slug]';
 import CartPage from './pages/CartPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import PaymentPage from './pages/PaymentPage';
-import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderPage from './pages/OrderPage';
 import SignIn from './pages/authentication/SignIn';
 import SignUp from './pages/authentication/SignUp';
@@ -21,6 +19,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import OrderHistory from './pages/OrderHistory';
 import ForgotPassword from './pages/authentication/ForgotPassword';
 import ResetPassword from './pages/authentication/ResetPassword';
+import AdminPage from './pages/AdminPage';
 
 import { ROUTING_MANAGER } from './navigation/Router';
 import { StoreProvider } from './utils/Store';
@@ -40,10 +39,12 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 // Tanstack resources (or queries)
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import Search from './pages/Search';
+import PickupDetailsPage from './pages/PickupDetailsPage';
+import ConfirmOrderPage from './pages/ConfirmOrderPage';
 
 
 const AppComponent = () => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   return (
@@ -51,19 +52,23 @@ const AppComponent = () => {
       {/* Main page redirection. All products */}
       <Route
         path={ROUTING_MANAGER.ROOT}
-        element={<Navigate to={ROUTING_MANAGER.ALL_COMBOS} />}
+        element={<Navigate to={ROUTING_MANAGER.ALL_PRODUCTS} />}
       />
 
       {/* Main page. All products */}
       <Route
-        path={ROUTING_MANAGER.ALL_COMBOS}
+        path={ROUTING_MANAGER.ALL_PRODUCTS}
         element={
-          <AllCombosPage
+          <AllProductsPage
             title={t('titles.brand')}
             subtitle={t('titles.allCombos')}
           />
         }
       />
+      {/* Admin page */}
+      <Route path={ROUTING_MANAGER.ADMIN_PAGE} element={<AdminPage title={t('titles.brand')} subtitle={t('titles.admin')}></AdminPage>}></Route>
+
+      <Route path={ROUTING_MANAGER.ADMIN_PAGE_SEARCH} element={<Search title={t('titles.brand')} subtitle={t('titles.admin')}></Search>}></Route>
 
       {/* Sign in page */}
       <Route path={ROUTING_MANAGER.SIGN_IN} element={<SignIn title={t('titles.brand')} subtitle={t('titles.signIn')} />} />
@@ -82,7 +87,7 @@ const AppComponent = () => {
 
       {/* Single product page */}
       <Route
-        path={ROUTING_MANAGER.COMBO}
+        path={ROUTING_MANAGER.PRODUCT}
         element={<ProductInfo title={t('titles.brand')} subtitle={''} />}
       />
 
@@ -106,18 +111,29 @@ const AppComponent = () => {
 
         {/* Place order page */}
         <Route
-          path={ROUTING_MANAGER.PLACE_ORDER}
+          path={ROUTING_MANAGER.CONFIRM_ORDER}
           element={
-            <PlaceOrderPage
+            <ConfirmOrderPage
               title={t('titles.brand')}
               subtitle={t('titles.placeOrder')}
             />
           }
         />
 
-        {/* Order details page */}
+        {/* Pickup details page */}
         <Route
           path={ROUTING_MANAGER.ORDER_DETAILS}
+          element={
+            <PickupDetailsPage
+              title={t('titles.brand')}
+              subtitle={t('titles.orderDetails')}
+            />
+          }
+        />
+        {/* este y el de arriba itenen igual redirección cambiar uno */}
+        {/* Single order page */}
+        <Route
+          path={ROUTING_MANAGER.SINGLE_ORDER}
           element={
             <OrderDetailsPage
               title={t('titles.brand')}

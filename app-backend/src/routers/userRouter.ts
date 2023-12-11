@@ -3,23 +3,28 @@ import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import { User, UserModel } from '../models/userModel';
 import { sampleUsers } from '../data';
-import { baseUrl, generateToken } from '../utils/utils';
+import { baseUrl, generateToken, isAuth } from '../utils/utils';
 import jwt from 'jsonwebtoken';
-import emailjs from '@emailjs/browser';
-import { XMLHttpRequest } from 'xmlhttprequest-ts';
 
 export const userRouter = express.Router();
 
-var xhr = new XMLHttpRequest();
 userRouter.get(
   '/',
   asyncHandler(async (req: Request, res: Response) => {
-    // await UserModel.deleteMany({});
     const createdUsers = await UserModel.insertMany(sampleUsers);
 
     res.json({ createdUsers });
   })
 );
+
+userRouter.get(
+  '/allUsers',
+  asyncHandler(async (req: Request, res: Response) => {
+    const allUsers = await UserModel.find();
+    res.json({ allUsers });
+  })
+);
+
 //POST /api/users/signin
 userRouter.post(
   '/signin',
@@ -79,7 +84,7 @@ userRouter.post(
           expiresIn: '2h',
         }
       );
-      // TODO: Revisar error al cambiar contraseña con el enlace del correo
+      // Revisar error al cambiar contraseña con el enlace del correo
       // En el correo se manda otro token distinto al que
       // se imprime por pantalla en VSC
       // Update: Solucionado. Estaba mandando un token anterior.
@@ -87,7 +92,7 @@ userRouter.post(
       await user.save();
       // Reset link
       const link = `${baseUrl()}/reset-password/${token}/`;
-      // For reset password trial
+      // For reset password trials
       // console.log(link);
 
       res.json({
@@ -95,7 +100,6 @@ userRouter.post(
         name: user.name,
         link: link,
       });
-      // res.send({ message: 'We sent reset password link to your email.' });
     } else {
       res.status(404).send({ message: 'User not found.' });
     }
@@ -113,8 +117,7 @@ userRouter.post(
           res.status(401).send({ message: 'Invalid token.' });
         } else {
           const user = await UserModel.findOne({ resetToken: req.body.token });
-          console.log('Usuario: ', user);
-
+          // User info
           if (user) {
             if (req.body.password) {
               user.password = bcrypt.hashSync(req.body.password, 8);
@@ -131,5 +134,21 @@ userRouter.post(
         }
       }
     );
+  })
+);
+
+userRouter.delete(
+  '/delete-user',
+  isAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await UserModel.findOne({ email: req.body.email });
+    if (user) {
+      await UserModel.findByIdAndDelete(user._id);
+      res.send({
+        message: 'User deleted successfully.',
+      });
+    } else {
+      res.status(404).send({ message: 'User not found.' });
+    }
   })
 );

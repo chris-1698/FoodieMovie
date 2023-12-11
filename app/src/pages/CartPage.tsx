@@ -47,16 +47,15 @@ export default function CartPage({
 
   const updateCartItemsHandler = (item: CartItem, quantity: number) => {
     if (item.countInStock < quantity) {
-      //TODO: cambiar esto
       alert('Lo sentimos. No contamos con stock de ese producto.');
       return;
+    } else {
+      dispatch({
+        type: 'CART_ADD_ITEM',
+        //Mantenemos el item y modificamos sólo la cantidad.
+        payload: { ...item, quantity },
+      });
     }
-
-    dispatch({
-      type: 'CART_ADD_ITEM',
-      //Mantenemos el item y modificamos sólo la cantidad.
-      payload: { ...item, quantity },
-    });
   };
   const checkOutHandler = () => {
     navigate('/orderDetails');
@@ -77,7 +76,7 @@ export default function CartPage({
           <Box>
             <Typography>
               {t('cart.emptyCart')}{' '}
-              <Link href="/combos">{t('cart.productLink')}</Link>
+              <Link href="/products">{t('cart.productLink')}</Link>
             </Typography>
           </Box>
         ) : (
@@ -119,12 +118,12 @@ export default function CartPage({
                   <TableBody>
                     {cartItems.map((item) => (
                       <TableRow
-                        key={item.slug}
+                        key={item.slug.current}
                         className="align-items-center"
                       >
                         <TableCell>
                           <Link
-                            href={`/combos/${item.slug}`}
+                            href={`/products/${item.slug}`}
                             onClick={() => {
                               localStorage.setItem('product-slug', item.slug)
                             }}
@@ -142,7 +141,7 @@ export default function CartPage({
                           </Link>
                         </TableCell>
                         <TableCell>
-                          <Link href={`/combos/${item.slug}`}
+                          <Link href={`/products/${item.slug}`}
                             onClick={() => {
                               localStorage.setItem('product-slug', item.slug)
                             }}
@@ -206,11 +205,6 @@ export default function CartPage({
                       variant="contained"
                       onClick={checkOutHandler}
                     >
-                      {/* TODO 18/11/2023: 
-                      5. PaymentPage - Cómo hacer que paypal no salga seleccionado por defecto - Hecho
-                      6. Ver cómo hacer datetimepicker en OrderDetailsPage required
-                      7. Localziación con Sanity
-                      */}
                       {t('cart.checkout')}
                     </Button>
                   </ListItem>

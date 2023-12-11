@@ -38,9 +38,6 @@ app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/keys', keyRouter);
 
-// app.get('/api/orders', (req: Request, res: Response) => {
-//   res.json(sampleProducts);
-// });
 const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`server started at http://localhost:${PORT}`);

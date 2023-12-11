@@ -26,11 +26,12 @@ import classes from '../../utils/classes';
 import { getImageUrl } from '../../utils/image';
 import { Store } from '../../utils/Store';
 import { CartItem } from '../../typings/Cart';
-import { convertProductToCartitem } from '../../utils/utils';
+import { convertProductToCartitem, getError } from '../../utils/utils';
 
 // Translation resources
 import { useTranslation } from 'react-i18next';
 import useTitle from '../../hooks/useTitle';
+import { ApiError } from '../../typings/ApiError';
 
 export default function ProductInfo({
   title,
@@ -48,7 +49,7 @@ export default function ProductInfo({
   } = useContext(Store);
 
   const [openSnackBar, setOpenSnackBar] = useState(false);
-  const [state, setState] = useState({
+  const [state, setState] = useState<any>({
     product: null,
     loading: true,
     error: '',
@@ -63,11 +64,11 @@ export default function ProductInfo({
         // Devuelve un array del que sólo queremos el primer elemento.
         const product = await client.fetch(
           `*[_type == "product" && slug.current == "` + slug + `"][0]`
-        );
+        ).then();
         //Se modifica el estado actual
         setState({ ...state, product, loading: false });
       } catch (err) {
-        setState({ ...state, error: err.message, loading: false });
+        setState({ ...state, error: getError(err as ApiError), loading: false });
       }
     };
     fetchData();
@@ -78,7 +79,7 @@ export default function ProductInfo({
       (x: { _id: any }) => x._id === product?._id
     );
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    if (product!.countInStock < quantity) {
+    if (product.countInStock < quantity) {
       return;
     }
     setOpenSnackBar(true);
@@ -114,7 +115,7 @@ export default function ProductInfo({
         <Box>
           <Box sx={classes.section}>
             <Link
-              href="/combos"
+              href="/products"
               onClick={() => {
                 if (localStorage.getItem('product-slug') !== '') {
                   localStorage.removeItem('product-slug');
@@ -208,12 +209,13 @@ export default function ProductInfo({
                           autoHideDuration={6000}
                           onClose={handleCloseSnackBar}
                           action={closeSnackBar}
+                          anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
                         >
                           <Alert
                             onClose={handleCloseSnackBar}
                             severity="success"
                           >
-                            {`El aperitivo se ha añadido al carro.`}
+                            {t('dashboard.addedToCart')}
                           </Alert>
                         </Snackbar>{' '}
                       </>

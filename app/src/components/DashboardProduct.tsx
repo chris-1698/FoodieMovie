@@ -11,7 +11,6 @@ import {
   Snackbar,
   IconButton,
   Link,
-  Divider,
   Grid
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -35,12 +34,11 @@ export default function DashboardProduct({ product }) {
     const quantity = existItem ? existItem.quantity + 1 : 1;
     if (product.countInStock < quantity) {
       setOpenSnackBar(true)
-      // TODO: Texto
-      setSnackBarMessage('Lo sentimos. El producto no tiene stock.')
+      setSnackBarMessage(`${t('dashboard.noStock')}`)
       return;
     }
     setOpenSnackBar(true);
-    setSnackBarMessage(`${product.name} ${t('dashboard.addedToCart')}`)
+    setSnackBarMessage(`${product.name} ${t('dashboard.xAddedToCart')}`)
     dispatch({
       type: 'CART_ADD_ITEM',
       payload: { ...convertProductToCartitem(product), quantity },
@@ -67,7 +65,7 @@ export default function DashboardProduct({ product }) {
   return (
     <Card>
       <Link
-        href={ROUTING_MANAGER.ALL_COMBOS + `/${product.slug.current}`}
+        href={ROUTING_MANAGER.ALL_PRODUCTS + `/${product.slug.current}`}
         onClick={() => {
           localStorage.setItem('product-slug', product.slug.current);
         }}
@@ -84,7 +82,6 @@ export default function DashboardProduct({ product }) {
           <CardContent>
             <Typography>{product.name}</Typography>
             <Typography>
-              {/* TODO: Texto */}
               <Rating value={product.rating} readOnly></Rating> (
               {product.numReviews} {t('dashboard.reviews')})
             </Typography>
@@ -96,6 +93,7 @@ export default function DashboardProduct({ product }) {
           {product.price} {t('currency')}
         </Typography>
         <Grid sx={{ paddingRight: '40%' }}></Grid>
+        {/* If there's no stock for the product, disable "add to cart" button */}
         {product.countInStock === 0 ? (
           <Button size="small" disabled>
             {t('dashboard.addCart')}

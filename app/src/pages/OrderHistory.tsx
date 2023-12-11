@@ -5,13 +5,9 @@ import Layout from "../layouts/Layout"
 import { ApiError } from "../typings/ApiError"
 import { getError } from "../utils/utils"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import QRHover from "../components/QRHover"
 
-// TODO:
-// Carrusel para menús -(y promos?)
-// https://learus.github.io/react-material-ui-carousel/
 export default function OrderHistory(
   { title, subtitle }:
     { title: string, subtitle: string }) {
@@ -54,6 +50,12 @@ export default function OrderHistory(
                       <Typography>{t('orderHistory.paid')}</Typography>
                     </TableCell>
                     <TableCell>
+                      <Typography>{t('orderHistory.delivered')}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography>Fecha recogida</Typography>
+                    </TableCell>
+                    <TableCell>
                       <></>
                     </TableCell>
                   </TableRow>
@@ -68,13 +70,15 @@ export default function OrderHistory(
                       </TableCell>
                       <TableCell>{order.createdAt.substring(0, 10)}</TableCell>
                       <TableCell>{order.totalPrice.toFixed(2)}{t('currency')}</TableCell>
-                      <TableCell>{order.isPaid ? order.paidAt.substring(0, 10) : ' No'}</TableCell>
+                      <TableCell>{order.isPaid ? order.paidAt.substring(0, 10) : `${t('orderHistory.no')}`}</TableCell>
+                      <TableCell>{order.isDelivered ? `${t('orderHistory.yes')}` : `${t('orderHistory.no')}`}</TableCell>
+                      <TableCell>{order.orderDetails.pickUpDate}</TableCell>
                       <TableCell>
                         <Button
                           type="button"
                           variant="contained"
                           onClick={() => {
-                            navigate(`/order/${order._id}`)
+                            navigate(`/orderSummary/${order._id}`)
                           }}
                         >{t('orderHistory.details')}</Button>
                       </TableCell>
@@ -85,9 +89,7 @@ export default function OrderHistory(
             </TableContainer>
           </Grid>
         )
-
         }
-
       </Layout>
     </>
   )

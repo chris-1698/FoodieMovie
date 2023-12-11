@@ -1,3 +1,17 @@
+import {
+  Alert,
+  Button,
+  Container,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  List,
+  ListItem,
+  OutlinedInput,
+  Snackbar,
+  Typography
+} from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Store } from "../../utils/Store";
@@ -5,12 +19,13 @@ import { useResetPasswordMutation } from "../../hooks/userHooks";
 import { useTranslation } from "react-i18next";
 import Layout from "../../layouts/Layout";
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Button, Container, FormControl, IconButton, InputAdornment, InputLabel, List, ListItem, OutlinedInput, Snackbar, TextField, Typography } from "@mui/material";
 import { getError } from "../../utils/utils";
 import { ApiError } from "../../typings/ApiError";
 import useTitle from "../../hooks/useTitle";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
+
+const REGEXP_PASSWORD = new RegExp('^[a-z0-9_-]{6,18}$')
 
 export default function ResetPassword({
   title,
@@ -31,8 +46,7 @@ export default function ResetPassword({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { state } = useContext(Store);
-  const { mutateAsync: resetPassword, isLoading } = useResetPasswordMutation()
-
+  const { mutateAsync: resetPassword } = useResetPasswordMutation()
   const { userInfo } = state;
   const { t } = useTranslation();
 
@@ -45,14 +59,62 @@ export default function ResetPassword({
   const handleClickShowConfirmPassword = () => setShowConfirmPassword((showConfirm => !showConfirm))
 
 
-  const handleCloseSnackBar = () => {
-    setOpenSnackBar(false)
-  }
-  // TODO: Revisar el tema de parámetros por URL en signin. 
-  // changedPassword
   // https://www.youtube.com/watch?v=mHDZBGa8mHg&ab_channel=jonmircha
   // https://www.youtube.com/watch?v=Wi7np3E_3q8&ab_channel=jonmircha
   useTitle(title + subtitle)
+
+  // Prevent users to access this page by checking whether they
+  // are already logged in or they don't have a token.
+  useEffect(() => {
+    if (userInfo || !token) {
+      navigate('/')
+    }
+  }, [navigate, userInfo, token]);
+
+  // Handle data submit. After checking if both passwords match,
+  // call the reset password endpoint to change the previous password 
+  // with the new one and then redirect the user back to the sign in page.
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setOpenSnackBar(true);
+      setSnackBarMessage(`${t('resetPassword.notMatch')}`);
+      return;
+    }
+    if (verifyPassword(password)) {
+      try {
+        //Endpoint call /api/users/reset-password
+        await resetPassword({
+          password,
+          token,
+        })
+        navigate('/signin/changedPassword=true')
+      } catch (err) {
+        setOpenSnackBar(true);
+        setSnackBarMessage(getError(err as ApiError));
+      }
+    }
+    setOpenSnackBar(true);
+    setSnackBarMessage(`${t('resetPassword.passwordFormat')}`)
+
+  }
+
+  const comparePasswords = (confirmPassword: string) => {
+    if (confirmPassword === '') {
+      setValid(true);
+    } else {
+      setValid(false);
+      setConfirmPassword(confirmPassword);
+    }
+  }
+
+  const verifyPassword = (password: string) => {
+    return REGEXP_PASSWORD.test(password);
+  }
+
+  const handleCloseSnackBar = () => {
+    setOpenSnackBar(false)
+  }
 
   const closeSnackBar = (
     <React.Fragment>
@@ -67,48 +129,6 @@ export default function ResetPassword({
     </React.Fragment>
   )
 
-  // Prevent users to access this page by checking whether they
-  // are already logged in or they don't have a token.
-  useEffect(() => {
-    if (userInfo || !token) {
-      navigate('/')
-    }
-  }, [navigate, userInfo, token]);
-
-  // TODO 18/11/2023: Implementar funcionalidad junto con la vista de esta página.
-  // Handle data submit. After checking if both passwords match,
-  // call the reset password endpoint to change the previous password 
-  // with the new one and then redirect the user back to the sign in page.
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setOpenSnackBar(true);
-      setSnackBarMessage(`${t('resetPassword.notMatch')}`);
-      return;
-    }
-    try {
-      //Llamada al endpoint /api/users/reset-password
-      await resetPassword({
-        password,
-        token,
-      })
-      navigate('/signin/changedPassword=true')
-    } catch (err) {
-      setOpenSnackBar(true);
-      setSnackBarMessage(getError(err as ApiError));
-    }
-  }
-
-  const comparePasswords = (confirmPassword: string) => {
-    if (confirmPassword === '') {
-      setValid(true);
-    } else {
-      setValid(false);
-      setConfirmPassword(confirmPassword);
-    }
-
-  }
-
   return (
     <Layout title="reset password" description="reset password">
       <Container maxWidth='sm'>
@@ -117,15 +137,14 @@ export default function ResetPassword({
           <List>
             <ListItem>
               <Typography>
-                {/* TODO: Texto */}
-                Nueva contraseña
+                {t('resetPassword.newPassword')}
               </Typography>
             </ListItem>
             <ListItem>
               <FormControl sx={{ width: '100%' }} variant="outlined">
-                {/* TODO: Texto */}
-                <InputLabel htmlFor="outlined-new-password">Nueva contraseña</InputLabel>
-                {/* TODO: Cambiar para poder mostrar constraseña */}
+                <InputLabel htmlFor="outlined-new-password">
+                  {t('resetPassword.newPassword')}
+                </InputLabel>
                 <OutlinedInput
                   id="outlined-new-password"
                   fullWidth
@@ -145,26 +164,22 @@ export default function ResetPassword({
                       </IconButton>
                     </InputAdornment>
                   }
-                  // TODO: Texto
-                  label="Nueva contraseña"
+                  label={t('resetPassword.newPassword')}
                   onChange={(e) => setPassword(e.target.value)} />
               </FormControl>
 
             </ListItem>
             <ListItem>
               <Typography>
-                {/* Texto */}
-                Confirma la nueva contraseña
+                {t('resetPassword.confirmNewPassword')}
               </Typography>
             </ListItem>
             <ListItem>
               <FormControl sx={{ width: '100%' }} variant="outlined">
-                {/* TODO: Texto */}
-                <InputLabel htmlFor="outlined-confirm-password">Confirma la nueva contraseña</InputLabel>
+                <InputLabel htmlFor="outlined-confirm-password">{t('resetPassword.confirmNewPassword')}</InputLabel>
                 <OutlinedInput
                   id="outlined-confirm-password"
-                  // TODO: Texto
-                  label={'Confirma la nueva contraseña'}
+                  label={t('resetPassword.confirmNewPassword')}
                   fullWidth
                   required
                   type={
@@ -178,7 +193,7 @@ export default function ResetPassword({
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -194,8 +209,7 @@ export default function ResetPassword({
                 color="primary"
                 onClick={handleSubmit}
               >
-                {/* TODO: Texto */}
-                Cambiar contraseña
+                {t('resetPassword.changePassword')}
               </Button>
             </ListItem>
           </List>

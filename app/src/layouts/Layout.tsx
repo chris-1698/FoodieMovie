@@ -13,7 +13,6 @@ import {
 	Stack,
 } from '@mui/material';
 import classes from '../utils/classes';
-import Head from 'next/head';
 import { useTranslation } from 'react-i18next';
 import { useContext } from 'react';
 import { Store } from '../utils/Store';
@@ -22,6 +21,7 @@ import ProfileSettings from '../components/ProfileSettings';
 import ShoppingCart from '../components/ShoppingCart';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { Popcorn } from '@phosphor-icons/react'
 
 function Layout({
 	title,
@@ -35,7 +35,7 @@ function Layout({
 }) {
 	const { t } = useTranslation();
 	const { state, dispatch } = useContext(Store);
-	const { darkMode } = state;
+	const { darkMode, userInfo } = state;
 	const theme = createTheme({
 		components: {
 			MuiLink: {
@@ -66,40 +66,48 @@ function Layout({
 			},
 		},
 	});
-	//TODO: User: UsuarioPrueba letmechooseanemail1135@gmail.com Pass:Password1234
 
 	const darkModeChangeHandler = () => {
 		dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
 		const newDarkMode = !darkMode;
 		jsCookie.set('darkMode', newDarkMode ? 'ON' : 'OFF',);
-		console.log(darkMode);
-
 	};
 
 	return (
 		<>
-			<Head>
-				<title>{title ? `${title} - Foodie Movie` : 'Foodie Movie'}</title>
-				{description && <meta name="description" content={description} />}
-			</Head>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
 				<AppBar position="static" sx={classes.appbar}>
 					<Toolbar sx={classes.toolbar}>
 						<Box display="flex" alignItems="center">
-							<Link href="/">
+							<Link
+								aria-label={title}
+								aria-details={description}
+								href={
+									userInfo && userInfo.isAdmin === true
+										?
+										'/adminPage'
+										:
+										'/'}>
 								<Typography sx={classes.brand}>
-									{t('dashboard.pageName')}
+									{t('dashboard.pageName')}{' '}
+									<Popcorn size={22} weight="duotone" />
 								</Typography>
+
 							</Link>
 						</Box>
 						<Stack direction="row">
 							<Divider sx={classes.divider}>
 								<ProfileSettings />
 							</Divider>
-							<Divider>
-								<ShoppingCart />
-							</Divider>
+							{
+								userInfo && userInfo.isAdmin === true
+									?
+									<Divider></Divider> :
+									<Divider>
+										<ShoppingCart />
+									</Divider>
+							}
 						</Stack>
 					</Toolbar>
 				</AppBar>

@@ -1,5 +1,5 @@
 // React resources
-import { useContext, useEffect, useState } from 'react';
+import { Key, useContext, useEffect, useState } from 'react';
 
 // Sanity client
 import client from '../utils/client';
@@ -9,27 +9,21 @@ import { Alert, CircularProgress, Grid } from '@mui/material';
 
 // Project resources
 import DashboardProduct from './DashboardProduct';
-import { Store } from '../utils/Store';
 import { getError } from '../utils/utils';
 import { ApiError } from '../typings/ApiError';
 import i18n from '../../i18n';
 
 export default function Combos() {
 
-	const [productState, setProductState] = useState({
+	const [productState, setProductState] = useState<any>({
 		products: [],
 		error: '',
 		loading: true,
 	});
 
 	const { products, error, loading } = productState;
-	const { state, dispatch } = useContext(Store);
-	const { userInfo } = state
 
 	useEffect(() => {
-		console.log(userInfo);
-		console.log(i18n.language);
-
 		const fetchData = async () => {
 			try {
 				var products
@@ -40,7 +34,7 @@ export default function Combos() {
 				}
 				setProductState({ products, loading: false, error: '' });
 			} catch (err) {
-				setProductState({ products: [], loading: false, error: err.message });
+				setProductState({ products: [], loading: false, error: getError(err as ApiError) });
 			}
 		};
 		fetchData();
@@ -54,7 +48,7 @@ export default function Combos() {
 				<Alert severity="error"> {getError(error as unknown as ApiError)} </Alert>
 			) : (
 				<Grid container spacing={3}>
-					{products.map((product) => (
+					{products.map((product: { slug: { current: Key | null | undefined; }; }) => (
 						<Grid item md={4} key={product.slug.current}>
 							{/* Productos: */}
 							<DashboardProduct product={product}></DashboardProduct>

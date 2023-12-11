@@ -28,6 +28,8 @@ import useTitle from "../../hooks/useTitle";
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
+const REGEXP_PASSWORD = new RegExp('^[a-z0-9_-]{6,18}$')
+
 export default function SignIn({
   title,
   subtitle
@@ -37,7 +39,6 @@ export default function SignIn({
 }) {
   const navigate = useNavigate()
   const { search } = useLocation()
-
   const redirectInUrl = new URLSearchParams(search).get('redirect')
   const redirect = redirectInUrl ? redirectInUrl : '/'
 
@@ -67,19 +68,35 @@ export default function SignIn({
     event.preventDefault();
   };
 
+  const verifyPassword = (password: string) => {
+    return REGEXP_PASSWORD.test(password);
+  }
+
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
-    try {
-      const data = await signin({
-        email, password,
-      })
-      dispatch({ type: 'USER_SIGN_IN', payload: data })
-      localStorage.setItem('userInfo', JSON.stringify(data))
-      navigate(redirect)
-    } catch (error) {
-      setSnackBarMessage(getError(error as ApiError))
+    if (verifyPassword(password)) {
+      try {
+        const data = await signin({
+          email, password,
+        })
+        dispatch({ type: 'USER_SIGN_IN', payload: data })
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+        if (JSON.parse(localStorage.getItem('userInfo')!).isAdmin === true) {
+          navigate('/adminPage')
+        } else {
+          navigate(redirect)
+
+        }
+      } catch (error) {
+        setSnackBarMessage(getError(error as ApiError))
+        setOpenSnackBar(true)
+      }
+    } else {
+      setSnackBarMessage(`${t('session.passwordFormat')}`)
       setOpenSnackBar(true)
     }
+
   }
 
   useEffect(() => {
@@ -89,7 +106,6 @@ export default function SignIn({
     if (localStorage.getItem('forgotPasswordInfo')) {
       localStorage.setItem('forgotPasswordInfo', JSON.stringify(fpInfo))
     }
-
   }, [navigate, redirect, userInfo])
 
   const handleCloseSnackBar = () => {
@@ -109,11 +125,6 @@ export default function SignIn({
     </React.Fragment>
   );
 
-  // TODO: 22/11/2023
-  // Cambiar los literales de SignIn y ResetPassword. Revisar si hay más
-  // Snackbar cuando forgot password: "Hemos enviado un correo"
-  // Funcionalidad borrar cuenta
-  // Página de admin?
   return (
     <Layout title="sign in" description="sign in" >
       <Container maxWidth="sm" >
@@ -215,8 +226,6 @@ export default function SignIn({
         </Snackbar>
         : <></>
       }
-
     </Layout>
   )
-
 }

@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import apiClient from '../apiClient';
 import { UserInfo } from '../typings/UserInfo';
-import { stringToPath } from 'sanity';
 
 export const useSigninMutation = () =>
   useMutation({
@@ -45,9 +44,7 @@ export const useSignupMutation = () =>
         })
       ).data,
   });
-// TODO: Revisar,
-// https://www.youtube.com/watch?v=EirJor7TgXQ&ab_channel=CodingwithBasir
-// 8:28
+
 export const useForgotPasswordMutation = () =>
   useMutation({
     mutationFn: async ({ email }: { email: string }) =>
@@ -71,6 +68,18 @@ export const useResetPasswordMutation = () =>
         await apiClient.post<string>(`api/users/reset-password`, {
           password,
           token,
+        })
+      ).data,
+  });
+
+export const useDeleteUserMutation = () =>
+  useMutation({
+    mutationFn: async ({ email }: { email: string }) =>
+      (
+        await apiClient.delete<string>(`api/users/delete-user`, {
+          data: {
+            email,
+          },
         })
       ).data,
   });

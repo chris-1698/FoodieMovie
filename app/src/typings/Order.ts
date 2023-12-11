@@ -11,6 +11,7 @@ export type Order = {
   promoId: string;
   promoApplied: boolean;
   isPaid: boolean;
+  isDelivered: boolean;
   paidAt: string;
   taxPrice: number;
   itemsPrice: number;

@@ -1,11 +1,27 @@
-import { useContext, useEffect, useState } from "react";
+import {
+  Alert,
+  Button,
+  Container,
+  IconButton,
+  Link,
+  List,
+  ListItem,
+  Snackbar,
+  TextField,
+  Typography
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Store } from "../../utils/Store";
 import { useSignupMutation } from "../../hooks/userHooks";
-import { Button, Container, Link, List, ListItem, TextField, Typography } from "@mui/material";
 import Layout from "../../layouts/Layout";
 import { useTranslation } from "react-i18next";
 import useTitle from "../../hooks/useTitle";
+import CloseIcon from '@mui/icons-material/Close'
+import { getError } from "../../utils/utils";
+import { ApiError } from "../../typings/ApiError";
+
+const REGEXP_PASSWORD = new RegExp('^[a-z0-9_-]{6,18}$')
 
 export default function SignUp({
   title,
@@ -27,6 +43,8 @@ export default function SignUp({
   const [password, setPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
@@ -42,30 +60,58 @@ export default function SignUp({
 
   const { mutateAsync: signup, isLoading } = useSignupMutation()
 
+  const verifyPassword = (password: string) => {
+    return REGEXP_PASSWORD.test(password);
+  }
+
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (password !== confirmPassword) {
-      //TODO: Snackbar Passwords do not match with SnackBar
-      console.log('passwords do not match');
+      setSnackBarMessage(`${t('session.passwordsDontMatch')}`)
+      setOpenSnackBar(true)
 
       return
     }
-    try {
-      const data = await signup({
-        name,
-        lastName,
-        email,
-        password,
-        dateOfBirth,
-      })
-      dispatch({ type: 'USER_SIGN_IN', payload: data })
-      localStorage.setItem('userInfo', JSON.stringify(data))
-      navigate(redirect || '/')
-    } catch (err) {
-      //TODO: SnackBar with the error message
-      console.log(err);
+    if (verifyPassword(password)) {
+      try {
+        const data = await signup({
+          name,
+          lastName,
+          email,
+          password,
+          dateOfBirth,
+        })
+        dispatch({ type: 'USER_SIGN_IN', payload: data })
+        localStorage.setItem('userInfo', JSON.stringify(data))
+        navigate(redirect || '/')
+      } catch (err) {
+        setSnackBarMessage(getError(err as ApiError))
+        setOpenSnackBar(true)
+      }
+    } else {
+      setSnackBarMessage(`${t('session.passwordFormat')}`)
+      setOpenSnackBar(true)
     }
+
   }
+
+  const handleCloseSnackBar = () => {
+    setOpenSnackBar(false);
+  };
+
+  const toCloseSnackBar = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="Close"
+        color="inherit"
+        onClick={handleCloseSnackBar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
   return (
     <Layout title="Sign up" description="sign up page">
       <Container maxWidth="sm">
@@ -134,10 +180,6 @@ export default function SignUp({
                 disabled={isLoading}
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                  console.log(lastName);
-
-                }}
               >
                 {t('session.signUp')}
               </Button>
@@ -148,6 +190,20 @@ export default function SignUp({
             </ListItem>
           </List>
         </form>
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackBar}
+          action={toCloseSnackBar}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center'
+          }}
+        >
+          <Alert onClose={handleCloseSnackBar} severity='error'>
+            {snackBarMessage}
+          </Alert>
+        </Snackbar>
       </Container>
     </Layout >
   )
