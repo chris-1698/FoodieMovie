@@ -82,8 +82,8 @@ export default function SignIn({
         dispatch({ type: 'USER_SIGN_IN', payload: data })
         localStorage.setItem('userInfo', JSON.stringify(data))
 
-        if (JSON.parse(localStorage.getItem('userInfo')!).isAdmin === true) {
-          navigate('/adminPage')
+        if (JSON.parse(localStorage.getItem('userInfo')!).isEmployee === true) {
+          navigate('/employeePage')
         } else {
           navigate(redirect)
 

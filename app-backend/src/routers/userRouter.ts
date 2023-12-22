@@ -37,7 +37,7 @@ userRouter.post(
           name: user.name,
           lastName: user.lastName,
           email: user.email,
-          isAdmin: user.isAdmin,
+          isEmployee: user.isEmployee,
           dateOfBirth: user.dateOfBirth,
           token: generateToken(user),
         });
@@ -63,7 +63,7 @@ userRouter.post(
       name: user.name,
       lastName: user.lastName,
       email: user.email,
-      isAdmin: user.isAdmin,
+      isEmployee: user.isEmployee,
       dateOfBirth: user.dateOfBirth,
       token: generateToken(user),
     });

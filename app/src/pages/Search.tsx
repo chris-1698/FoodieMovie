@@ -79,7 +79,7 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
             onChange={(e) => setSearchTerm(e.target.value)} />
           <IconButton onClick={() => {
             if (REGEXP.test(searchTerm)) {
-              navigate(`/adminPage/search/?filter=${searchTerm}`)
+              navigate(`/employeePage/search/?filter=${searchTerm}`)
             } else {
               setSnackBarMessage(`${t('allOrders.verifySearch')}`)
               setOpenSnackBar(true)
@@ -92,7 +92,7 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
               { marginLeft: '25%' }
             }
             variant='contained' onClick={() => {
-              navigate('/adminPage')
+              navigate('/employeePage')
             }}>{t('allOrders.removeFilter')}</Button>
         </Grid>
         <Grid container spacing={2}>

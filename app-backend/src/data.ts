@@ -5,16 +5,16 @@ export const sampleUsers: User[] = [
   {
     name: 'Joe',
     lastName: 'Cornell',
-    email: 'admin@example.com',
+    email: 'employee1@foodiemovie.com',
     password: bcrypt.hashSync('123456'),
-    isAdmin: true,
+    isEmployee: true,
     dateOfBirth: '06/03/1995',
   },
   {
     name: 'Jade',
     lastName: 'Crawford',
-    email: 'notadmin@example.com',
+    email: 'notemployee@example.com',
     password: bcrypt.hashSync('123456'),
-    isAdmin: false,
+    isEmployee: false,
   },
 ];

@@ -30,7 +30,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 const REGEXP = new RegExp('^[A-Za-z0-9]{1,12}$')
 
-export default function AdminPage(
+export default function EmployeePage(
   { title, subtitle }
     : { title: string, subtitle: string }
 ) {
@@ -72,7 +72,7 @@ export default function AdminPage(
   )
 
   return (
-    <Layout title='admin page' description='page for user with admin rights'>
+    <Layout title='employee page' description='page for user with employee rights'>
       {isLoading ? (
         <CircularProgress />
       ) : error ? (
@@ -83,7 +83,7 @@ export default function AdminPage(
             <TextField size='small' sx={{ width: '90%' }} onChange={(e) => setSearchTerm(e.target.value)}></TextField>
             <IconButton disabled={searchTerm === ''} onClick={() => {
               if (REGEXP.test(searchTerm)) {
-                navigate(`/adminPage/search/?filter=${searchTerm}`)
+                navigate(`/employeePage/search/?filter=${searchTerm}`)
               } else {
                 setSnackBarMessage(`${t('allOrders.verifySearch')}`)
                 setOpenSnackBar(true)

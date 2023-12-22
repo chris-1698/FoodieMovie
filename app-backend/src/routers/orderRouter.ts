@@ -5,7 +5,7 @@ import asyncHandler from 'express-async-handler';
 //Project resources
 import { OrderModel } from '../models/orderModel';
 import { CartItem } from '../types/CartItem';
-import { isAuth, isAuthAsAdmin } from '../utils/utils';
+import { isAuth, isAuthAsEmployee } from '../utils/utils';
 import generator from 'generate-password-ts';
 
 export const orderRouter = express.Router();
@@ -95,7 +95,7 @@ orderRouter.get(
 
 orderRouter.get(
   '/all/allOrders',
-  isAuthAsAdmin,
+  isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
     const orders = await OrderModel.find({});
     res.json(orders);
@@ -104,7 +104,7 @@ orderRouter.get(
 
 orderRouter.get(
   '/orders/searchOrder/:searchTerm',
-  isAuthAsAdmin,
+  isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
     const orders = await OrderModel.find({
       pickUpCode: { $regex: req.params.searchTerm || '' },
@@ -119,7 +119,7 @@ orderRouter.get(
 
 orderRouter.put(
   '/order/deliverOrder',
-  isAuthAsAdmin,
+  isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
     const order = await OrderModel.findById(req.body.id);
 

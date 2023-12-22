@@ -5,7 +5,7 @@ declare namespace Express {
       name: string;
       lastName: string;
       email: string;
-      isAdmin: boolean;
+      isEmployee: boolean;
       dateOfBirth?: string;
       token: string;
     };

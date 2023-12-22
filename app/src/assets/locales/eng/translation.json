@@ -27,6 +27,7 @@
     "pageName": "Foodie Movie",
     "copyright": "All rights reserved. Foodie Movie",
     "addCart": "Add to cart",
+    "noStockProduct": "No stock",
     "status": "Status",
     "price": "Price",
     "reviews": " reviews",
@@ -53,7 +54,7 @@
     "resetPassword": "- Reset Password",
     "order": " - Your order",
     "orderHistory": " - Order History",
-    "admin": " - Administrator"
+    "employee": " - Employee"
   },
   "days": {
     "monday": "Monday",

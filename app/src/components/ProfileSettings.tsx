@@ -117,8 +117,8 @@ export default function ProfileSettings() {
             </Link>
           </Menu>
         </div>
-        // User is logged in and has admin rights
-      ) : userInfo && userInfo.isAdmin === true ? (
+        // User is logged in and has employee rights
+      ) : userInfo && userInfo.isEmployee === true ? (
         <>
           <Button
             id="logged-button"
@@ -177,7 +177,7 @@ export default function ProfileSettings() {
         </>
 
 
-        // User is logged in and has no admin rights
+        // User is logged in and has no employee rights
       ) :
         <>
           <Button

@@ -5,6 +5,8 @@ import {
   Grid,
   Typography,
   Link,
+  List,
+  ListItem,
   CircularProgress,
   CardMedia,
   Rating,
@@ -13,7 +15,6 @@ import {
   Snackbar,
   IconButton,
 } from '@mui/material';
-import { List, ListItem } from '@material-ui/core';
 import CloseIcon from '@mui/icons-material/Close';
 
 // React resources

@@ -17,4 +17,6 @@ export type Order = {
   itemsPrice: number;
   totalPrice: number;
   pickUpCode: string;
+  row: string;
+  seat: number;
 };

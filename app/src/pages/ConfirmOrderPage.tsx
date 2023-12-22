@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Store } from '../utils/Store';
-import { Alert, Button, Card, CardMedia, Grid, List, ListItem, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Alert, Button, Card, CardMedia, CircularProgress, Grid, IconButton, List, ListItem, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import Layout from '../layouts/Layout';
 import classes from '../utils/classes';
 import { urlForCart } from '../utils/image';
 import useTitle from '../hooks/useTitle';
-import { CircularProgress, IconButton } from '@material-ui/core';
 import CloseIcon from '@mui/icons-material/Close';
 import { useCreateOrderMutation } from '../hooks/orderHooks';
 import { CartItem } from '../typings/Cart';

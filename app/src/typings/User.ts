@@ -4,6 +4,6 @@ export type User = {
   lastName: string;
   email: string;
   dateOfBirth?: string;
-  isAdmin: boolean;
+  isEmployee: boolean;
   token: string;
 };

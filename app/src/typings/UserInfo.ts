@@ -2,7 +2,7 @@ export type UserInfo = {
   name: string;
   lastName: string;
   email: string;
-  isAdmin: boolean;
+  isEmployee: boolean;
   dateofBirth?: string;
   token: string;
 };

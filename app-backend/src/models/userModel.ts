@@ -14,7 +14,7 @@ export class User {
   @prop({ required: true, unique: true })
   public email!: string;
   @prop({ required: true, default: false })
-  public isAdmin!: boolean;
+  public isEmployee!: boolean;
   @prop({ required: false })
   public dateOfBirth?: string;
 }

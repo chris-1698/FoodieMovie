@@ -89,14 +89,19 @@ export default function DashboardProduct({ product }) {
         </CardActionArea>
       </Link>
       <CardActions>
-        <Typography variant='h2'>
+        <Typography variant='h2' fontSize='large'>
           {product.price} {t('currency')}
         </Typography>
         <Grid sx={{ paddingRight: '40%' }}></Grid>
         {/* If there's no stock for the product, disable "add to cart" button */}
         {product.countInStock === 0 ? (
-          <Button size="small" disabled>
-            {t('dashboard.addCart')}
+          <Button
+            size="small"
+            disabled
+            variant='contained'
+            sx={{ width: '140px' }}
+          >
+            {t('dashboard.noStockProduct')}
           </Button>
         ) : (
           <>

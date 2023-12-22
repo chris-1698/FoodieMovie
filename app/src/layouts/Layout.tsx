@@ -84,9 +84,9 @@ function Layout({
 								aria-label={title}
 								aria-details={description}
 								href={
-									userInfo && userInfo.isAdmin === true
+									userInfo && userInfo.isEmployee === true
 										?
-										'/adminPage'
+										'/employeePage'
 										:
 										'/'}>
 								<Typography sx={classes.brand}>
@@ -101,7 +101,7 @@ function Layout({
 								<ProfileSettings />
 							</Divider>
 							{
-								userInfo && userInfo.isAdmin === true
+								userInfo && userInfo.isEmployee === true
 									?
 									<Divider></Divider> :
 									<Divider>

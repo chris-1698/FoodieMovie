@@ -19,7 +19,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import OrderHistory from './pages/OrderHistory';
 import ForgotPassword from './pages/authentication/ForgotPassword';
 import ResetPassword from './pages/authentication/ResetPassword';
-import AdminPage from './pages/AdminPage';
+import EmployeePage from './pages/EmployeePage';
 
 import { ROUTING_MANAGER } from './navigation/Router';
 import { StoreProvider } from './utils/Store';
@@ -65,10 +65,11 @@ const AppComponent = () => {
           />
         }
       />
-      {/* Admin page */}
-      <Route path={ROUTING_MANAGER.ADMIN_PAGE} element={<AdminPage title={t('titles.brand')} subtitle={t('titles.admin')}></AdminPage>}></Route>
+      {/*TODO:  Cambiar todo lo de admin por employee*/}
+      {/* Employee page */}
+      <Route path={ROUTING_MANAGER.EMPLOYEE_PAGE} element={<EmployeePage title={t('titles.brand')} subtitle={t('titles.employee')}></EmployeePage>}></Route>
 
-      <Route path={ROUTING_MANAGER.ADMIN_PAGE_SEARCH} element={<Search title={t('titles.brand')} subtitle={t('titles.admin')}></Search>}></Route>
+      <Route path={ROUTING_MANAGER.EMPLOYEE_PAGE_SEARCH} element={<Search title={t('titles.brand')} subtitle={t('titles.employee')}></Search>}></Route>
 
       {/* Sign in page */}
       <Route path={ROUTING_MANAGER.SIGN_IN} element={<SignIn title={t('titles.brand')} subtitle={t('titles.signIn')} />} />
@@ -130,7 +131,6 @@ const AppComponent = () => {
             />
           }
         />
-        {/* este y el de arriba itenen igual redirección cambiar uno */}
         {/* Single order page */}
         <Route
           path={ROUTING_MANAGER.SINGLE_ORDER}

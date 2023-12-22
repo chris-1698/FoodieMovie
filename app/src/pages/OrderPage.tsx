@@ -6,7 +6,6 @@ import {
   CircularProgress,
   Alert,
   CardMedia,
-  Grid,
   List,
   ListItem,
   Table,
@@ -18,6 +17,7 @@ import {
   Typography,
   Stack,
   Button,
+  Grid,
   Snackbar,
   IconButton
 } from '@mui/material';
@@ -70,7 +70,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
   const testPayHandler = () => {
     payOrder({ orderId: orderId! })
     refetch()
-    alert('Order is paid')
+    alert(t('orders.paid'))
   }
 
   useEffect(() => {
@@ -337,6 +337,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
                         ? (
                           <>
                             <QRCode
+                              // id='pickUpQR'
                               size={200}
                               bgColor='white'
                               fgColor='black'

@@ -15,7 +15,7 @@ export const generateToken = (user: User) => {
       lastName: user.lastName,
       email: user.email,
       dateOfBirth: user.dateOfBirth,
-      isAdmin: user.isAdmin,
+      isEmployee: user.isEmployee,
     },
     process.env.JWT_SECRET || 'secretkey',
     {
@@ -37,7 +37,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
       lastName: string;
       email: string;
       dateOfBirth: string;
-      isAdmin: boolean;
+      isEmployee: boolean;
       token: string;
     };
 
@@ -47,7 +47,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const isAuthAsAdmin = (
+export const isAuthAsEmployee = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -64,10 +64,10 @@ export const isAuthAsAdmin = (
       lastName: string;
       email: string;
       dateOfBirth: string;
-      isAdmin: boolean;
+      isEmployee: boolean;
       token: string;
     };
-    if (req.user.isAdmin === true) {
+    if (req.user.isEmployee === true) {
       next();
     } else {
       res.status(401).json({ message: 'User has no privileges.' });
