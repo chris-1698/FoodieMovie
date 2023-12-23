@@ -2,7 +2,10 @@
   "dependencies": {
     "@sanity/client": "^6.1.3",
     "@tanstack/react-query": "^4.32.0",
-    "@tanstack/react-query-devtools": "^4.32.0"
+    "@tanstack/react-query-devtools": "^4.32.0",
+    "qrcode": "^1.5.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5"
+  }
 }

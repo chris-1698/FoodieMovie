@@ -102,7 +102,7 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
             to_email: userInfo?.email,
             order_details: cartItemsDetail(),
           },
-          'ElU7Zz_Kk2wIl9-bY'
+          'ElU7Zz_Kk2wIl9-bY',
         )
         setSnackBarMessage(`${t('orders.emailSent')}`);
         setShowSnackBar(true);
