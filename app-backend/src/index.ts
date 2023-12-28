@@ -6,8 +6,10 @@ import { orderRouter } from './routers/orderRouter';
 import { userRouter } from './routers/userRouter';
 import { keyRouter } from './routers/keyRouter';
 
+// .env configurations
 dotenv.config();
 
+// Mongoose configuration
 const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://localhost/foodie-movie-db';
 mongoose.set('strictQuery', true);
@@ -21,6 +23,7 @@ mongoose
     console.log('Error mongodb');
   });
 
+// Express configuration
 const app = express();
 app.use(
   cors({

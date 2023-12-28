@@ -33,12 +33,12 @@ import { PayPalButtons, PayPalButtonsComponentProps, SCRIPT_LOADING_STATE, usePa
 import QRCode from 'react-qr-code'
 import emailjs from '@emailjs/browser'
 import CloseIcon from '@mui/icons-material/Close'
-
+import getBase64 from '../hooks/getBase64';
+import nodemailer from 'nodemailer'
 
 export default function OrderPage({ title, subtitle }: { title: string, subtitle: string }) {
   useTitle(title + subtitle)
 
-  const navigate = useNavigate()
   const params = useParams();
 
   const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer();
@@ -65,6 +65,43 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
 
     return details
   }
+
+  // const convertToBlob = ((data: string, contentType: string) => {
+  //   const arr = data.split(',');
+  //   const mime = arr?.[0]?.match(/:(.*?);/)?.[1];
+  //   const bstr = atob(arr[1]);
+  //   let n = bstr.length;
+  //   const u8arr = new Uint8Array(n);
+
+  //   while (n--) {
+  //     u8arr[n] = bstr.charCodeAt(n);
+  //   }
+
+  //   return new Blob([u8arr], { type: mime });
+
+  // })
+
+  function convertToBlob(data2: string, contentType: string) {
+    const data = data2.split(',');
+    contentType = contentType || '';
+    var sliceSize = 1024;
+    console.log('data: ', data);
+
+    var byteCharacters = window.atob(data[1]);
+    var byteArrays: Array<Uint8Array> = [];
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, { type: contentType })
+
+  }
+
   // Se paga a la segunda pulsación del botón
   // Se paga bien, pero tiene que volver a renderizarse para verlo
   const testPayHandler = () => {
@@ -92,26 +129,47 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
     }
 
     if (order && order.isPaid == true) {
-      try {
-        emailjs.send(
-          'service_rpirl1w',
-          'template_oprezrr',
-          {
-            to_name: userInfo?.name,
-            pickup_code: order?.pickUpCode,
-            to_email: userInfo?.email,
-            order_details: cartItemsDetail(),
-          },
-          'ElU7Zz_Kk2wIl9-bY',
-        )
-        setSnackBarMessage(`${t('orders.emailSent')}`);
-        setShowSnackBar(true);
-        setResult(true);
-      } catch (err) {
-        setSnackBarMessage(getError(err as ApiError));
-        setShowSnackBar(true);
-        setResult(false);
+      const baseQR = getBase64(order.pickUpCode);
+      const emailSent = async () => {
+        const result = await baseQR;
+
+        const objectURL = URL.createObjectURL(convertToBlob(result, 'image/png')!);
+        console.log('url: ', objectURL);
+        const img = document.createElement('img');
+        img.src = objectURL
+        console.log(img);
+        // document.body.appendChild(img)
+        // Prueba con cid???
+        // document.getElementById('image').src = objectURL
+        try {
+          // TODO:::::: Revisar https://www.youtube.com/watch?v=W3jGtgva46w&ab_channel=JuanPabloGuaman
+          console.log('AAAAAAAAAAAA');
+          // blob:http://localhost:5173/ae3c7ab1-6dc9-40d6-be54-e54b48e4efc1
+          // emailjs.send(
+          // 'service_uk7l8dh', //Outlook
+          //   'service_rpirl1w',
+          //   'template_oprezrr',
+          //   {
+          //     to_name: userInfo?.name,
+          //     pickup_code: order?.pickUpCode,
+          //     to_email: userInfo?.email,
+          //     order_details: cartItemsDetail(),
+          //   },
+          //   'ElU7Zz_Kk2wIl9-bY',
+          // )
+          // setSnackBarMessage(`${t('orders.emailSent')}`);
+          // setShowSnackBar(true);
+          // setResult(true);
+
+          console.log(result);
+        } catch (err) {
+          setSnackBarMessage(getError(err as ApiError));
+          setShowSnackBar(true);
+          setResult(false);
+        }
       }
+      emailSent()
+      // b()
     }
   }, [paypalConfig, order]);
 
