@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { orderRouter } from './routers/orderRouter';
 import { userRouter } from './routers/userRouter';
 import { keyRouter } from './routers/keyRouter';
+import { emailRouter } from './routers/emailRouter';
 
 // .env configurations
 dotenv.config();

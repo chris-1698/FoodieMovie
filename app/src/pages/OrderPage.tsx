@@ -145,6 +145,8 @@ export default function OrderPage({ title, subtitle }: { title: string, subtitle
           // TODO:::::: Revisar https://www.youtube.com/watch?v=W3jGtgva46w&ab_channel=JuanPabloGuaman
           console.log('AAAAAAAAAAAA');
           // blob:http://localhost:5173/ae3c7ab1-6dc9-40d6-be54-e54b48e4efc1
+
+          //TODO: Por ahora esta opción
           // emailjs.send(
           // 'service_uk7l8dh', //Outlook
           //   'service_rpirl1w',

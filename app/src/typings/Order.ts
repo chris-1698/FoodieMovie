@@ -8,8 +8,8 @@ export type Order = {
   paymentMethod: string;
   user: User;
   createdAt: string;
-  promoId: string;
-  promoApplied: boolean;
+  // promoId: string;
+  // promoApplied: boolean;
   isPaid: boolean;
   isDelivered: boolean;
   paidAt: string;

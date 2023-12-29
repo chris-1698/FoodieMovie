@@ -17,5 +17,6 @@ export const ROUTING_MANAGER = {
   PAYMENT: '/payment',
   CONFIRM_ORDER: '/placeOrder',
   ORDER: '/order/:id',
-  ORDER_HISTORY: '/orderHistory'
+  ORDER_HISTORY: '/orderHistory',
+  SANDBOX: '/sandbox'
 };

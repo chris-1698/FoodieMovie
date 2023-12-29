@@ -75,10 +75,15 @@ export default function PickupDetailsPage({
 
   const handleSetPickUpTime = (e) => {
     const timeAsObject = e.$d as Date;
+
+
+    timeAsObject.getMinutes
+
     const parsedTime = timeAsObject.toLocaleTimeString('es', {
       hour: '2-digit',
       minute: '2-digit',
     })
+
     setPickUpTime(parsedTime)
   }
 

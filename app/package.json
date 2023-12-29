@@ -52,7 +52,6 @@
     "react-i18next": "^12.2.2",
     "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.11.1",
-    "resend": "^2.1.0",
     "sanity": "3.0.0",
     "styled-components": "5.2.0",
     "xmlhttprequest": "^1.8.0"

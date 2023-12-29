@@ -42,6 +42,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Search from './pages/Search';
 import PickupDetailsPage from './pages/PickupDetailsPage';
 import ConfirmOrderPage from './pages/ConfirmOrderPage';
+import Sandbox from './pages/Sandbox';
 
 
 const AppComponent = () => {
@@ -96,6 +97,9 @@ const AppComponent = () => {
       <Route path={ROUTING_MANAGER.CART}
         element={<CartPage title={t('titles.brand')} subtitle={t('titles.cart')} />}
       />
+
+      <Route path={ROUTING_MANAGER.SANDBOX}
+        element={<Sandbox></Sandbox>}></Route>
 
       {/* Protected routes */}
       <Route path="" element={<ProtectedRoute />}>

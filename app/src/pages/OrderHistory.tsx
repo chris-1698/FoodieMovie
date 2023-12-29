@@ -21,10 +21,6 @@ export default function OrderHistory(
 
   return (
     <>
-      {/* TODO 30/9/2023: 
-    1. Cambiar id por código de entrega. Hecho
-    2. Ver si se puede poner el cursor por encima y que se vea el QR Hecho
-    3. Traducciones! */}
       <Layout title="order history" description="order history of the user">
         <Typography variant="h1">{t('orderHistory.orderHistory')}</Typography>
         {isLoading ? (
@@ -53,6 +49,7 @@ export default function OrderHistory(
                       <Typography>{t('orderHistory.delivered')}</Typography>
                     </TableCell>
                     <TableCell>
+                      {/* TODO: Texto */}
                       <Typography>Fecha recogida</Typography>
                     </TableCell>
                     <TableCell>

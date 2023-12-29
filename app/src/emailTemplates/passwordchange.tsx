@@ -12,10 +12,12 @@ import {
 } from '@react-email/components';
 // TODO: Esto: https://resend.com/
 // https://www.youtube.com/watch?v=D4pS4b9-DgA&ab_channel=ColbyFayock 5:59
+// no funciona. Necesito un dominio
 interface DropboxResetPasswordEmailProps {
   userFirstname?: string;
   resetPasswordLink?: string;
   language?: string;
+  imageLink?: string;
 }
 
 const baseUrl = process.env.VERCEL_URL
@@ -25,7 +27,8 @@ const baseUrl = process.env.VERCEL_URL
 export const ResetPasswordEmail = ({
   userFirstname = 'Zeno',
   resetPasswordLink = 'https://dropbox.com',
-  language = 'esp'
+  language = 'esp',
+  imageLink
 }: DropboxResetPasswordEmailProps) => {
   return (
     <Html>
@@ -41,7 +44,7 @@ export const ResetPasswordEmail = ({
             <Container style={container}>
               {/* Logo */}
               <Img
-                src={`${baseUrl}/static/dropbox-logo.png`}
+                src={imageLink}
                 width="40"
                 height="33"
                 alt="Foodie Movie"
