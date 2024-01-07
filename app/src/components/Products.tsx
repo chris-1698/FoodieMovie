@@ -1,5 +1,5 @@
 // React resources
-import { Key, useContext, useEffect, useState } from 'react';
+import { Key, useEffect, useState } from 'react';
 
 // Sanity client
 import client from '../utils/client';
@@ -13,7 +13,7 @@ import { getError } from '../utils/utils';
 import { ApiError } from '../typings/ApiError';
 import i18n from '../../i18n';
 
-export default function Combos() {
+export default function Products() {
 
 	const [productState, setProductState] = useState<any>({
 		products: [],

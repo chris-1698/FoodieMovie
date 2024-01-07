@@ -40,6 +40,7 @@
     "jsonwebtoken": "^9.0.1",
     "jwt-decode": "^3.1.2",
     "mongoose": "^7.4.1",
+    "mongoose-paginate-v2": "^1.8.0",
     "resend": "^2.1.0",
     "xmlhttprequest": "^1.8.0",
     "xmlhttprequest-ts": "^1.0.1"

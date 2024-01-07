@@ -29,7 +29,7 @@ export const useGetOrderHistoryQuery = () =>
       (await apiClient.get<Order[]>(`/api/orders/mine/orderHistory`)).data,
   });
 
-// Endpoint to et all orders
+// Endpoint to get all orders
 export const useGetAllOrdersQuery = () =>
   useQuery({
     queryKey: ['all-orders'],

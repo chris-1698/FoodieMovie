@@ -44,6 +44,56 @@ import PickupDetailsPage from './pages/PickupDetailsPage';
 import ConfirmOrderPage from './pages/ConfirmOrderPage';
 import Sandbox from './pages/Sandbox';
 
+// import { google } from 'googleapis'
+// import nodemailer from 'nodemailer';
+// import accountTransport from '../account_transport.json'
+
+// const OAuth2 = google.auth.OAuth2;
+// const accountTransport = require('../account_transport.json')
+// let transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     type: 'OAuth2',
+//     user: process.env.MAIL_USER,
+//     clientId: process.env.OAUTH_CLIENT_ID,
+//     clientSecret: process.env.OAUTH_CLIENT_SECRET,
+//     refreshToken: process.env.OAUTH_REFRESH_TOKEN
+//   }
+// });
+
+// let mailOptions = {
+//   from: 'foodiemoviecontact@gmail.com',
+//   to: "",
+//   subject: "Prueba",
+//   text: "Hola desde nodemailer",
+// }
+
+// transporter.sendMail(mailOptions, function(err, data) {
+//   if (err) {
+//     console.log('Error ', err);
+//   } else {
+//     console.log('Email sent successfully!');
+//   }
+// })
+
+// const mail_fm = async (callback: Function) => {
+//   const oauth2Client = new OAuth2(
+//     accountTransport.auth.clientId,
+//     accountTransport.auth.clientSecret,
+//     'https://developers.google.com/oauthplayground',
+//   );
+//   oauth2Client.setCredentials({
+//     refresh_token: accountTransport.auth.refreshToken,
+
+//   })
+//   oauth2Client.getAccessToken((err, token) => {
+//     if (err)
+//       return console.log(err);
+//     accountTransport.auth.accessToken = token || '';
+//     callback(nodemailer.createTransport(accountTransport))
+
+//   })
+// }
 
 const AppComponent = () => {
   const { t } = useTranslation();
@@ -169,6 +219,8 @@ const AppComponent = () => {
     </Routes>
   );
 };
+
+
 
 const queryClient = new QueryClient();
 

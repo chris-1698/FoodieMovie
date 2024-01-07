@@ -92,6 +92,8 @@ function reducer(state: AppState, action: Action): AppState {
 						email: '',
 						pickUpDate: '',
 						pickUpTime: '',
+						screenId: 1,
+						seatNumber: ''
 					},
 					itemsPrice: 0,
 					taxPrice: 0,

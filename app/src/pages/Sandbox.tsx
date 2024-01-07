@@ -1,36 +1,38 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useState } from "react";
-import { Resend } from "resend";
-import { useResetEmail, useResetPasswordEmail } from "../hooks/emailHooks";
+// import { useResetEmail, useResetPasswordEmail } from "../hooks/emailHooks";
+// import { google } from 'googleapis'
+// import send from 'gmail-send'
+import accountTransport from '../../account_transport.json';
+
+// TODO: Quitar Nodemailer. El problema me lo da al importarlo,
+// parece. ¿Otra alternativa? ¿Versión anterior?
 
 export default function Sandbox() {
-  const [username, setUsername] = useState('nombr3')
-  const [email, setEmail] = useState('letmechooseanemail1135@gmail.com')
-  const resend = new Resend('re_CkmuhCpo_LNPrxSXfVvxdzxKsJiHLQuVw')
-  const { mutateAsync: sendEmailres } = useResetEmail()
 
 
-  const sendEmail = () => {
+  // const mail_fm = async (callback: Function) => {
+  //   // const oauth2Client = new OAuth2(
+  //   //   accountTransport.auth.clientId,
+  //   //   accountTransport.auth.clientSecret,
+  //   //   'https://developers.google.com/oauthplayground',
+  //   // );
+  //   oauth2Client.setCredentials({
+  //     refresh_token: accountTransport.auth.refreshToken,
 
-    console.log('Antes de enviar correo');
+  //   })
+  //   oauth2Client.getAccessToken((err, token) => {
+  //     if (err)
+  //       return console.log(err);
+  //     accountTransport.auth.accessToken = token || '';
+  //     callback(nodemailer.createTransport(accountTransport))
 
-    sendEmailres({
-      userFirstname: 'a',
-      email: 'letmechooseanemail1135@gmail.com',
-      language: 'esp',
-      imageLink: 'www.google.com'
-    })
-
-    console.log('Después de enviar correo');
-  }
+  //   })
+  // }
 
   return (
     <>
-      <Button
-        onClick={sendEmail}
-        variant="contained">
-        Click
-      </Button>
+      <Typography> Página de pruebas </Typography>
     </>
   )
 }

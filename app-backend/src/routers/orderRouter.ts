@@ -3,11 +3,12 @@ import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 
 //Project resources
+// import { Order, OrderModel } from '../models/orderModel';
 import { OrderModel } from '../models/orderModel';
 import { CartItem } from '../types/CartItem';
 import { isAuth, isAuthAsEmployee } from '../utils/utils';
 import generator from 'generate-password-ts';
-
+import mongoose from 'mongoose';
 export const orderRouter = express.Router();
 
 orderRouter.get(
@@ -97,7 +98,11 @@ orderRouter.get(
   '/all/allOrders',
   isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
-    const orders = await OrderModel.find({});
+    const orders = await OrderModel.find({}).sort({
+      createdAt: -1,
+      paidAt: -1,
+    });
+    // const orders = await OrderModel.paginate();
     res.json(orders);
   })
 );

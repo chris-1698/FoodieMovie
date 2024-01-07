@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { redirect, useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import CheckoutRequirements from '../components/CheckoutRequirements';
-import { Alert, Button, Container, Grid, IconButton, Snackbar, TextField } from '@mui/material';
+import { Alert, Button, Checkbox, Collapse, Container, FormControlLabel, TextField, FormGroup, Grid, IconButton, Snackbar, Typography, MenuItem, Select } from '@mui/material';
 import Layout from '../layouts/Layout';
 import '../styles/App.css';
 import * as dayjs from 'dayjs';
@@ -12,9 +12,12 @@ import useTitle from '../hooks/useTitle';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close'
 import { StaticDateTimePicker } from '@mui/x-date-pickers';
+// import { useGetAllScreenNames } from '../hooks/screenHooks';
 
 const REGEXP = new RegExp('^[A-Za-z0-9]{3,16}$')
-
+const SEATREGEXP = new RegExp('^[A-Za-z]([1-9]|1[0-4])$')
+const MIN_SCREEN = 1;
+const MAX_SCREEN = 10;
 export default function PickupDetailsPage({
   title,
   subtitle,
@@ -42,12 +45,17 @@ export default function PickupDetailsPage({
   }, [userInfo, navigate]);
 
   const [fullName, setFullName] = useState(orderDetails.fullName || '');
-  const [email, setEmail] = useState(userInfo!.email || '');
+  const email = userInfo!.email || '';
   const [pickUpDate, setPickupDate] = useState(orderDetails.pickUpDate);
   const [pickUpTime, setPickUpTime] = useState(orderDetails.pickUpTime);
   const [disableContinue, setDisableContinue] = useState(true);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [screenId, setScreenId] = useState(1);
+  const [seatNumber, setSeatNumber] = useState('');
+  const [seatDeliver, setSeatDeliver] = useState(false);
+  // const { data: screens, isLoading, error } = useGetAllScreenNames();
+
   const days = [
     t('days.monday'),
     t('days.tuesday'),
@@ -58,6 +66,7 @@ export default function PickupDetailsPage({
     t('days.sunday'),
   ]
   const [dateAsObj, setDateAsObj] = useState(new Date() || null);
+
 
   const handleSetPickUpDate = (e: React.SyntheticEvent) => {
     const dateAsObject = e.$d as Date;
@@ -73,23 +82,24 @@ export default function PickupDetailsPage({
     setPickupDate(parsedDate)
   }
 
+  const handleChange = () => {
+    setSeatDeliver((deliver) => !deliver)
+  }
+
   const handleSetPickUpTime = (e) => {
     const timeAsObject = e.$d as Date;
-
-
     timeAsObject.getMinutes
 
     const parsedTime = timeAsObject.toLocaleTimeString('es', {
       hour: '2-digit',
       minute: '2-digit',
     })
-
     setPickUpTime(parsedTime)
   }
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (REGEXP.test(fullName)) {
+    if (REGEXP.test(fullName) && SEATREGEXP.test(seatNumber)) {
       dispatch({
         type: 'SAVE_ORDER_DETAILS',
         payload: {
@@ -97,6 +107,8 @@ export default function PickupDetailsPage({
           email,
           pickUpDate,
           pickUpTime,
+          screenId,
+          seatNumber,
         },
       });
       localStorage.setItem(
@@ -106,6 +118,8 @@ export default function PickupDetailsPage({
           email,
           pickUpDate,
           pickUpTime,
+          screenId,
+          seatNumber,
         })
       );
       localStorage.setItem('dateAsObj', dateAsObj.toString())
@@ -161,6 +175,52 @@ export default function PickupDetailsPage({
                   disabled
                 ></TextField>
               </Grid>
+              <Grid
+                item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={handleChange} />}
+                  // TODO: Texto
+                  label="¿Te lo entregamos en sala?" />
+              </Grid>
+              <Grid item xs={12}>
+                <Collapse orientation='vertical'
+                  in={seatDeliver}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label={'Sala'}
+                      value={screenId}
+                      type='number'
+                      onChange={(e) => {
+                        var value = parseInt(e.target.value, 10);
+
+                        if (value > MAX_SCREEN) value = MAX_SCREEN;
+                        if (value < MIN_SCREEN) value = MIN_SCREEN;
+                        setScreenId(value)
+                      }}
+                    >
+                    </TextField>
+                  </Grid>
+                </Collapse>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Collapse orientation='vertical'
+                  in={seatDeliver}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label={'Butaca (ej. B4)'}
+                      onChange={(e) => {
+                        setSeatNumber(e.target.value);
+                      }}
+                    >
+                    </TextField>
+
+                  </Grid>
+                </Collapse>
+              </Grid>
+
               <Grid item xs={12} md={12}>
                 <StaticDateTimePicker
                   disablePast
@@ -207,7 +267,7 @@ export default function PickupDetailsPage({
             {snackBarMessage}
           </Alert>
         </Snackbar>
-      </Layout>
+      </Layout >
     </>
   );
 }

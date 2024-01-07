@@ -13,7 +13,7 @@ import { CartItem } from '../typings/Cart';
 import { ApiError } from '../typings/ApiError';
 import { getError } from '../utils/utils';
 import { useTranslation } from 'react-i18next';
-
+// http://localhost:5173/placeOrder
 export default function ConfirmOrderPage({
   title,
   subtitle
@@ -97,7 +97,7 @@ export default function ConfirmOrderPage({
       <Typography component='h1' variant='h1'>
         {t('orders.placeOrder')}
       </Typography>
-
+      {/* TODO: Añadir los nuevos detalles bien. Sala y butaca */}
       <Grid container spacing={1}>
         <Grid item md={9} xs={12}>
           <Card sx={classes.section}>
@@ -113,6 +113,19 @@ export default function ConfirmOrderPage({
                   <Typography>{t('orders.email')}{`${cart.orderDetails?.email}`}</Typography>
                   <Typography>{t('orders.pickUpDate')}{`${cart.orderDetails?.pickUpDate}`}</Typography>
                   <Typography>{t('orders.pickUpTime')}{`${cart.orderDetails?.pickUpTime}`}</Typography>
+                  {cart.orderDetails.screenId ?
+                    (
+                      <Typography>Sala: {`${cart.orderDetails?.screenId}`}</Typography>
+                    ) : (
+                      <></>
+                    )}
+                  {cart.orderDetails.seatNumber ?
+                    (
+                      <Typography>Butaca: {`${cart.orderDetails?.seatNumber}`}</Typography>
+                    ) : (
+                      <></>
+                    )}
+
                 </Stack>
               </ListItem>
               <ListItem>

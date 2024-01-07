@@ -105,7 +105,9 @@
     "emailSent": "Te hemos mandado un correo con los detalles de tu pedido.",
     "showCode": "Mostrar código",
     "hideCode": "Ocultar código",
-    "seeCode": "Podrás ver el código de recogida una vez finalizado el pago"
+    "seeCode": "Podrás ver el código de recogida una vez finalizado el pago",
+    "screenId": "Sala: ",
+    "seatNumber": "Butaca: "
   },
   "settings": {
     "login": "Inicia sesión ▾",
@@ -140,7 +142,7 @@
     "fullName": "Nombre completo",
     "email": "Correo electrónico",
     "pickUpDate": "Fecha de recogida",
-    "nameFormat": "El nombre debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos."
+    "nameFormat": "Revisa tu nombre o el número de butaca. El nombre debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos."
   },
   "paymentMethod": {
     "choosePaymentMethod": "Elija un método de pago"

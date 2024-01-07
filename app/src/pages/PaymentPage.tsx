@@ -74,12 +74,12 @@ export default function PaymentPage({
                   onChange={(e) => handleSetPaymentMethodName(e.target.value)}
                 >
 
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     disabled
                     label={t('orders.stripe')}
                     value="Stripe"
                     control={<Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
-                  ></FormControlLabel>
+                  ></FormControlLabel> */}
                   <FormControlLabel
                     label="PayPal"
                     value="PayPal"

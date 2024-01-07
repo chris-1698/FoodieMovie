@@ -5,16 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "email": "email dev --dir src/emailTemplates"
+    "email": "email dev --dir src/emailTemplates",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@floating-ui/react": "^0.26.1",
+    "@google-cloud/local-auth": "2.1.0",
+    "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.15.1",
     "@mui/x-date-pickers": "^6.10.0",
@@ -28,6 +33,7 @@
     "@sanity/vision": "3",
     "@types/styled-components": "5.1.0",
     "axios": "^1.4.0",
+    "babel": "^6.23.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.9",
@@ -36,13 +42,11 @@
     "generate-password-ts": "^1.6.5",
     "i18next": "^22.4.15",
     "i18next-browser-languagedetector": "^7.0.1",
-    "jose": "^4.14.4",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.1",
     "next": "^13.0.0",
     "next-connect": "^1.0.0",
     "next-sanity": "4.3.3",
-    "nodemailer": "^6.9.7",
     "qrcode": "^1.5.3",
     "react": "^18.2.0",
     "react-datepicker": "^4.16.0",
@@ -51,26 +55,33 @@
     "react-hook-form": "^7.45.4",
     "react-i18next": "^12.2.2",
     "react-qr-code": "^2.0.12",
-    "react-router-dom": "^6.11.1",
+    "react-router-dom": "^6.21.1",
     "sanity": "3.0.0",
     "styled-components": "5.2.0",
-    "xmlhttprequest": "^1.8.0"
+    "vite-plugin-require": "^1.1.14",
+    "xmlhttprequest": "^1.8.0",
+    "yarn": "^1.22.21"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.3",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.3.1",
-    "@types/nodemailer": "^6.4.14",
     "@types/react": "^18.2.45",
     "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.0.0",
+    "babel-plugin-import": "^1.13.8",
+    "customize-cra": "^1.0.0",
     "eslint": "^8.40.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "react-app-rewired": "^2.2.1",
     "typescript": "^5.0.2",
     "vite": "^4.3.2"
+  },
+  "resolutions": {
+    "bcrypt": "^5.1.0"
   }
 }

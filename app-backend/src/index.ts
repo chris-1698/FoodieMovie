@@ -5,14 +5,14 @@ import dotenv from 'dotenv';
 import { orderRouter } from './routers/orderRouter';
 import { userRouter } from './routers/userRouter';
 import { keyRouter } from './routers/keyRouter';
-import { emailRouter } from './routers/emailRouter';
+// import { screenRouter } from './routers/screenRouter';
 
 // .env configurations
 dotenv.config();
 
 // Mongoose configuration
 const MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://localhost/foodie-movie-db';
+  process.env.MONGODB_URI || 'mongodb://localhost/foodie-movie-db'; //Protocolo
 mongoose.set('strictQuery', true);
 
 mongoose
@@ -20,8 +20,8 @@ mongoose
   .then(() => {
     console.log('Connected to database');
   })
-  .catch(() => {
-    console.log('Error mongodb');
+  .catch((err) => {
+    console.error('Error mongodb: ', err);
   });
 
 // Express configuration
@@ -41,6 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/keys', keyRouter);
+// app.use('/api/screens', screenRouter);
 
 const PORT = 4000;
 app.listen(PORT, () => {

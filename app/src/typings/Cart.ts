@@ -22,4 +22,6 @@ export type OrderDetails = {
   email: string;
   pickUpDate: string;
   pickUpTime: string;
+  screenId: number;
+  seatNumber: string;
 };
