@@ -11,12 +11,12 @@ export const ROUTING_MANAGER = {
   PRODUCT: '/products/:slug',
   CART: '/cart',
   ORDER_DETAILS: 'orderDetails',
-  SINGLE_ORDER: 'orderSummary/:id',
+  ORDER_SUMMARY: 'orderSummary/:id',
   CHECKOUT: '/checkout',
   USER_PROFILE: '/user/:id',
   PAYMENT: '/payment',
   CONFIRM_ORDER: '/placeOrder',
-  ORDER: '/order/:id',
+  PAY_ORDER: '/order/:id',
   ORDER_HISTORY: '/orderHistory',
   SANDBOX: '/sandbox'
 };

@@ -62,14 +62,16 @@ export default function OrderHistory(
                     <TableRow key={order._id}>
                       <TableCell>
                         <Link>
+
                           <QRHover text={order.pickUpCode}></QRHover>
                         </Link>
                       </TableCell>
                       <TableCell>{order.createdAt.substring(0, 10)}</TableCell>
                       <TableCell>{order.totalPrice.toFixed(2)}{t('currency')}</TableCell>
-                      <TableCell>{order.isPaid ? order.paidAt.substring(0, 10) : `${t('orderHistory.no')}`}</TableCell>
+                      <TableCell>{order.isPaid! && order.paidAt!
+                        ? order.paidAt.substring(0, 10) : `${t('orderHistory.no')}`}</TableCell>
                       <TableCell>{order.isDelivered ? `${t('orderHistory.yes')}` : `${t('orderHistory.no')}`}</TableCell>
-                      <TableCell>{order.orderDetails.pickUpDate}</TableCell>
+                      <TableCell>{new Date(order.orderDetails.pickUpDate).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <Button
                           type="button"

@@ -16,7 +16,7 @@ import {
 import useTitle from '../hooks/useTitle';
 import { useTranslation } from 'react-i18next';
 
-export default function PaymentPage({
+export default function PaymentMethodPage({
   title,
   subtitle,
 }: {
@@ -29,10 +29,8 @@ export default function PaymentPage({
     cart: { orderDetails, paymentMethod },
   } = state;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  // const orderDetails = JSON.parse(localStorage.getItem('orderDetails')!);
-  const [paymentMethodName, setPaymentMethodName] = useState(
-    paymentMethod || ''
-  );
+  const [paymentMethodName, setPaymentMethodName] = useState(paymentMethod || '');
+  const [isChecked, setIsChecked] = useState(false);
   const { t } = useTranslation()
 
   useTitle(title + subtitle);
@@ -73,18 +71,28 @@ export default function PaymentPage({
                   value={paymentMethodName}
                   onChange={(e) => handleSetPaymentMethodName(e.target.value)}
                 >
-
-                  {/* <FormControlLabel
-                    disabled
-                    label={t('orders.stripe')}
-                    value="Stripe"
-                    control={<Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
-                  ></FormControlLabel> */}
                   <FormControlLabel
                     label="PayPal"
                     value="PayPal"
                     control={
-                      <Radio onChange={(e) => handleSetPaymentMethodName(e.target.value)} />}
+                      <Radio onChange={
+                        (e) => {
+                          handleSetPaymentMethodName(e.target.value)
+                          setIsChecked(true)
+                        }
+                      }
+                      />}
+                  ></FormControlLabel>
+                  <FormControlLabel
+                    // TODO: Texto
+                    label="Efectivo"
+                    value="Cash"
+                    control={
+                      <Radio onChange={(e) => {
+                        handleSetPaymentMethodName(e.target.value)
+                        setIsChecked(true)
+                      }} />
+                    }
                   ></FormControlLabel>
                 </RadioGroup>
               </FormControl>
@@ -95,7 +103,7 @@ export default function PaymentPage({
                 type='submit'
                 variant='contained'
                 color='primary'
-                disabled={localStorage.getItem('paymentMethod') === ''}
+                disabled={!isChecked}
               >
                 {t('continueButton')}
               </Button>

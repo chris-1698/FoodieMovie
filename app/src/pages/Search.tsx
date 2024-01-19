@@ -4,10 +4,12 @@ import {
   CircularProgress,
   Grid,
   IconButton,
+  Paper,
   Snackbar,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   TextField,
@@ -17,7 +19,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next';
-import { useDeliverOrderMutation, useGetSomeOrdersQuery } from '../hooks/orderHooks';
+import { useConfirmOrderMutation, useDeliverOrderMutation, useGetSomeOrdersQuery } from '../hooks/orderHooks';
 import useTitle from '../hooks/useTitle';
 import Layout from '../layouts/Layout';
 import { ApiError } from '../typings/ApiError';
@@ -41,7 +43,17 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
   const { data: orders, isLoading, error } = useGetSomeOrdersQuery(a);
   const { t } = useTranslation();
   const { mutateAsync: deliverOrder } = useDeliverOrderMutation();
+  const { mutateAsync: confirmOrder } = useConfirmOrderMutation();
 
+  const days = [
+    t('days.monday'),
+    t('days.tuesday'),
+    t('days.wednesday'),
+    t('days.thursday'),
+    t('days.friday'),
+    t('days.saturday'),
+    t('days.sunday'),
+  ]
   useTitle(title + subtitle)
 
   const handleDeliverOrder = async (id: string) => {
@@ -55,6 +67,17 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
 
   const handleCloseSnackBar = () => {
     setOpenSnackBar(false);
+  }
+
+  const handleConfirmOrder = async (id: string) => {
+    try {
+      confirmOrder({ id })
+      // await confirmOrder({ id }).then(() =>
+      // setTimeout(function () { window.location = window.location }, 100)
+      // );
+    } catch (err) {
+      alert(getError(err as ApiError));
+    }
   }
 
   const closeSnackBar = (
@@ -95,21 +118,35 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
               navigate('/employeePage')
             }}>{t('allOrders.removeFilter')}</Button>
         </Grid>
-        <Grid container spacing={2}>
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>
-                  <Typography>{t('allOrders.code')}</Typography>
+                  <Typography fontWeight={'bold'}>{t('allOrders.code')}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography>{t('allOrders.time')}</Typography>
+                  <Typography fontWeight={'bold'}>{t('allOrders.time')}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography>{t('allOrders.isPaid')}</Typography>
+                  <Typography fontWeight={'bold'}>{t('allOrders.isPaid')}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography>{t('allOrders.isDelivered')}</Typography>
+                  <Typography fontWeight={'bold'}>{t('allOrders.isDelivered')}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontWeight={'bold'}>
+                    {/* TODO: Texto */}
+                    Entregar en
+                  </Typography>
+
+                </TableCell>
+                <TableCell>
+                  <Typography fontWeight={'bold'}>
+                    {/* TODO: Texto */}
+                    Estado
+                  </Typography>
+
                 </TableCell>
                 <TableCell>
                   <></>
@@ -128,14 +165,14 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
                   // If resource is not available
                 ) : error ? (
                   <TableRow>
-                    <TableCell colSpan={5}>
+                    <TableCell colSpan={7}>
                       <Alert severity='error'>{getError(error as ApiError)}</Alert>
                     </TableCell>
                   </TableRow>
                   // If there are no orders with the specified pickup code
                 ) : orders?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5}>
+                    <TableCell colSpan={7}>
                       <Alert severity='info'>{t('allOrders.noOrders')}</Alert>
                     </TableCell>
                   </TableRow>
@@ -148,8 +185,9 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
                           <QRHover text={order.pickUpCode}></QRHover>
                         </TableCell>
                         <TableCell>
-                          {order.orderDetails.pickUpDate}<br></br>
-                          {order.orderDetails.pickUpTime}
+                          {`${days[new Date(order.orderDetails.pickUpDate).getDay()]} `}
+                          {new Date(order.orderDetails.pickUpDate).toLocaleDateString()}<br></br>
+                          {new Date(order.orderDetails.pickUpDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </TableCell>
                         <TableCell>
                           <Typography>{order.isPaid ? t('allOrders.delivered') : t('allOrders.notDelivered')}</Typography>
@@ -158,14 +196,34 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
                           <Typography>{order.isDelivered ? t('allOrders.delivered') : t('allOrders.notDelivered')}</Typography>
                         </TableCell>
                         <TableCell>
-                          <Button variant='contained'
-                            disabled={order.isDelivered}
-                            onClick={() => {
-                              order.isDelivered = false
-                              handleDeliverOrder(order._id.toString())
-                            }}>
-                            {t('allOrders.deliver')}
-                          </Button>
+                          {order.isCancelled
+                            ? 'Anulado'
+                            : order.isPaid && order.isDelivered ? 'Pagado y entregado'
+                              : !order.isPaid && !order.isDelivered ? 'Pendiente de pago y entrega'
+                                : order.isPaid && !order.isDelivered ? 'Pendiente de entrega'
+                                  : ''}
+                        </TableCell>
+                        <TableCell>
+                          {order.paymentMethod === 'Cash' ?
+                            <Button
+                              variant='contained'
+                              color='secondary'
+                              disabled={order.isDelivered && order.isPaid}
+                              onClick={() => {
+                                handleConfirmOrder(order._id.toString())
+                              }}>
+                              Confirmar
+                            </Button>
+                            :
+                            <Button variant='contained'
+                              disabled={order.isDelivered || !order.isPaid}
+                              onClick={() => {
+                                handleDeliverOrder(order._id.toString())
+                              }}>
+                              {/* {t('allOrders.deliver')} */}
+                              Entregado
+                            </Button>
+                          }
                         </TableCell>
                       </TableRow>
                     ))}
@@ -174,7 +232,7 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
               }
             </TableBody>
           </Table>
-        </Grid>
+        </TableContainer>
       </>
       <Snackbar
         open={openSnackBar}

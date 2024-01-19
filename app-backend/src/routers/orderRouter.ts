@@ -3,13 +3,13 @@ import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 
 //Project resources
-// import { Order, OrderModel } from '../models/orderModel';
 import { OrderModel } from '../models/orderModel';
 import { CartItem } from '../types/CartItem';
 import { isAuth, isAuthAsEmployee } from '../utils/utils';
-import generator from 'generate-password-ts';
-import mongoose from 'mongoose';
 export const orderRouter = express.Router();
+
+//Pick up code generator
+import generator from 'generate-password-ts';
 
 orderRouter.get(
   // /api/orders/:id
@@ -22,6 +22,15 @@ orderRouter.get(
     } else {
       res.status(404).json({ message: 'Order not found' });
     }
+  })
+);
+
+//Para limpiar la BBDD
+orderRouter.delete(
+  '/deleteAll',
+  isAuthAsEmployee,
+  asyncHandler(async (req: Request, res: Response) => {
+    OrderModel.deleteMany({});
   })
 );
 
@@ -44,6 +53,8 @@ orderRouter.post(
         totalPrice: req.body.totalPrice,
         createdAt: Date.now(),
         isPaid: false,
+        paidAt: '',
+        isCancelled: false,
         isDelivered: false,
         pickUpCode: generator.generate({
           length: 12,
@@ -61,19 +72,23 @@ orderRouter.put(
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
     const order = await OrderModel.findById(req.params.id).populate('user');
-    if (order) {
-      order.isPaid = true;
-      order.paidAt = new Date(Date.now());
-      order.paymentResult = {
-        paymentId: req.body.id,
-        status: req.body.status,
-        updateTime: req.body.update_time,
-        emailAddress: req.body.email_address,
-      };
-      const updatedOrder = await order.save();
-      res.send({ order: updatedOrder, message: 'Order paid succesfully!' });
+    if (order?.isCancelled === false) {
+      if (order) {
+        order.isPaid = true;
+        order.paidAt = new Date(Date.now());
+        order.paymentResult = {
+          paymentId: req.body.id,
+          status: req.body.status,
+          updateTime: req.body.update_time,
+          emailAddress: req.body.email_address,
+        };
+        const updatedOrder = await order.save();
+        res.send({ order: updatedOrder, message: 'Order paid succesfully!' });
+      } else {
+        res.status(404).send({ message: 'Order not found' });
+      }
     } else {
-      res.status(404).send({ message: 'Order not found' });
+      res.status(412).send({ message: 'Order is cancelled!' });
     }
   })
 );
@@ -102,7 +117,6 @@ orderRouter.get(
       createdAt: -1,
       paidAt: -1,
     });
-    // const orders = await OrderModel.paginate();
     res.json(orders);
   })
 );
@@ -127,13 +141,75 @@ orderRouter.put(
   isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
     const order = await OrderModel.findById(req.body.id);
+    if (order?.isCancelled === false) {
+      if (
+        order &&
+        order.isDelivered === false &&
+        order.paymentMethod === 'PayPal'
+      ) {
+        order.isDelivered = true;
+        const updatedOrder = await order.save();
+        res.send({ order: updatedOrder, message: 'Order delivered!' });
+      } else if (order && order?.isDelivered === true) {
+        res.status(412).send({ message: 'Order already delivered!' });
+      } else {
+        res.status(404).send({ message: 'Order not found' });
+      }
+    } else {
+      res.status(412).send({ message: 'Order is cancelled!' });
+    }
+  })
+);
 
-    if (order && order.isDelivered === false) {
-      order.isDelivered = true;
-      const updatedOrder = await order.save();
-      res.send({ order: updatedOrder, message: 'Order delivered!' });
-    } else if (order && order?.isDelivered === true) {
-      res.status(412).send({ message: 'Order already delivered!' });
+orderRouter.put(
+  '/order/confirmOrder',
+  isAuthAsEmployee,
+  asyncHandler(async (req: Request, res: Response) => {
+    const order = await OrderModel.findById(req.body.id);
+    // console.log(order);
+    // console.log(order?.paymentMethod === 'Cash');
+    // console.log(order?.isDelivered);
+    if (order?.isCancelled === false) {
+      if (
+        order &&
+        order.paymentMethod === 'Cash' &&
+        order.isDelivered === false &&
+        order.isPaid === false
+      ) {
+        order.isDelivered = true;
+        order.isPaid = true;
+        order.paidAt = new Date();
+        const updatedOrder = await order.save();
+        res.send({ order: updatedOrder, message: 'Order confirmed!' });
+      } else if (order && order.isDelivered === true && order.isPaid === true) {
+        res.status(412).send({ message: 'Order already confirmed!' });
+      } else {
+        res.status(404).send({ message: 'Order not found' });
+      }
+    } else {
+      res.status(412).send({ message: 'Order is cancelled!' });
+    }
+  })
+);
+
+orderRouter.put(
+  `/order/cancelOrder`,
+  isAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    console.log(req.body.id);
+
+    const order = await OrderModel.findById(req.body.id);
+    console.log(order);
+
+    if (order) {
+      if (order!.isCancelled)
+        res.status(412).send({ message: 'Order already cancelled!' });
+      order.isCancelled = true;
+      const cancelledOrder = await order.save();
+      res.send({
+        order: cancelledOrder,
+        message: 'Order cancelled successfully',
+      });
     } else {
       res.status(404).send({ message: 'Order not found' });
     }

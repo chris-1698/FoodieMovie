@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import React, { createContext, useReducer } from 'react';
+import React from 'react';
 import { Cart, CartItem, OrderDetails } from '../typings/Cart';
 import { UserInfo } from '../typings/UserInfo';
 import { ForgotPasswordInfo } from '../typings/ForgotPasswordInfo';
@@ -90,9 +90,8 @@ function reducer(state: AppState, action: Action): AppState {
 					orderDetails: {
 						fullName: '',
 						email: '',
-						pickUpDate: '',
-						pickUpTime: '',
-						screenId: 1,
+						pickUpDate: new Date(),
+						screenId: -1,
 						seatNumber: ''
 					},
 					itemsPrice: 0,

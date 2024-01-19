@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import { Alert, Button, Checkbox, Collapse, Container, FormControlLabel, TextField, FormGroup, Grid, IconButton, Snackbar, Typography, MenuItem, Select } from '@mui/material';
@@ -12,12 +12,12 @@ import useTitle from '../hooks/useTitle';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close'
 import { StaticDateTimePicker } from '@mui/x-date-pickers';
-// import { useGetAllScreenNames } from '../hooks/screenHooks';
 
 const REGEXP = new RegExp('^[A-Za-z0-9]{3,16}$')
 const SEATREGEXP = new RegExp('^[A-Za-z]([1-9]|1[0-4])$')
 const MIN_SCREEN = 1;
 const MAX_SCREEN = 10;
+
 export default function PickupDetailsPage({
   title,
   subtitle,
@@ -46,93 +46,97 @@ export default function PickupDetailsPage({
 
   const [fullName, setFullName] = useState(orderDetails.fullName || '');
   const email = userInfo!.email || '';
-  const [pickUpDate, setPickupDate] = useState(orderDetails.pickUpDate);
-  const [pickUpTime, setPickUpTime] = useState(orderDetails.pickUpTime);
+  const [pickUpDate, setPickupDate] = useState(new Date() || null);
   const [disableContinue, setDisableContinue] = useState(true);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [screenId, setScreenId] = useState(1);
   const [seatNumber, setSeatNumber] = useState('');
   const [seatDeliver, setSeatDeliver] = useState(false);
-  // const { data: screens, isLoading, error } = useGetAllScreenNames();
 
-  const days = [
-    t('days.monday'),
-    t('days.tuesday'),
-    t('days.wednesday'),
-    t('days.thursday'),
-    t('days.friday'),
-    t('days.saturday'),
-    t('days.sunday'),
-  ]
-  const [dateAsObj, setDateAsObj] = useState(new Date() || null);
-
-
+  // TODO: Guardar Fecha como Date
   const handleSetPickUpDate = (e: React.SyntheticEvent) => {
     const dateAsObject = e.$d as Date;
-    setDateAsObj(dateAsObject)
-    var parsedDate = `
-      ${days[dateAsObject.getDay() - 1]}
-      ${dateAsObject.toLocaleDateString('es', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    })}
-      `
-    setPickupDate(parsedDate)
+    setPickupDate(dateAsObject)
+    console.log('La auténtica fecha: ', dateAsObject);
   }
 
   const handleChange = () => {
     setSeatDeliver((deliver) => !deliver)
-  }
-
-  const handleSetPickUpTime = (e) => {
-    const timeAsObject = e.$d as Date;
-    timeAsObject.getMinutes
-
-    const parsedTime = timeAsObject.toLocaleTimeString('es', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-    setPickUpTime(parsedTime)
+    if (seatDeliver === false) {
+      setSeatNumber('')
+    } else {
+    }
   }
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (REGEXP.test(fullName) && SEATREGEXP.test(seatNumber)) {
-      dispatch({
-        type: 'SAVE_ORDER_DETAILS',
-        payload: {
-          fullName,
-          email,
-          pickUpDate,
-          pickUpTime,
-          screenId,
-          seatNumber,
-        },
-      });
-      localStorage.setItem(
-        'orderDetails',
-        JSON.stringify({
-          fullName,
-          email,
-          pickUpDate,
-          pickUpTime,
-          screenId,
-          seatNumber,
-        })
-      );
-      localStorage.setItem('dateAsObj', dateAsObj.toString())
-      navigate('/payment');
+
+    // Entrega en asiento
+    if (seatDeliver) {
+      if (REGEXP.test(fullName) && SEATREGEXP.test(seatNumber)) {
+        // console.log('Nombre y asiento bien. Entrega en butaca');
+        dispatch({
+          type: 'SAVE_ORDER_DETAILS',
+          payload: {
+            fullName,
+            email,
+            pickUpDate,
+            screenId,
+            seatNumber,
+          },
+        });
+        localStorage.setItem(
+          'orderDetails',
+          JSON.stringify({
+            fullName,
+            email,
+            pickUpDate,
+            screenId,
+            seatNumber,
+          })
+        );
+        navigate('/payment');
+      } else {
+        // Nombre o asiento mal
+        // console.log('Nombre o asiento mal');
+        setOpenSnackBar(true);
+        setSnackBarMessage(`${t('pickupDetails.seatNameFormat')}`)
+      }
     } else {
-      setOpenSnackBar(true);
-      setSnackBarMessage(`${t('pickupDetails.nameFormat')}`)
+      // Entrega en bar
+      if (REGEXP.test(fullName)) {
+        console.log('Nombre bien. Entrega en bar');
+        dispatch({
+          type: 'SAVE_ORDER_DETAILS',
+          payload: {
+            fullName,
+            email,
+            pickUpDate,
+          },
+        });
+        localStorage.setItem(
+          'orderDetails',
+          JSON.stringify({
+            fullName,
+            email,
+            pickUpDate,
+          })
+        );
+        navigate('/payment');
+      } else {
+        // Nombre mal
+        // console.log('Nombre mal');
+        setOpenSnackBar(true);
+        setSnackBarMessage(`${t('pickupDetails.nameFormat')}`)
+      }
     }
 
   };
 
   const handleCloseSnackBar = () => {
     setOpenSnackBar(false);
+    setSnackBarMessage('')
   }
 
   const closeSnackBar = (
@@ -189,6 +193,7 @@ export default function PickupDetailsPage({
                   in={seatDeliver}>
                   <Grid item xs={12}>
                     <TextField
+                      // TODO: Texto
                       label={'Sala'}
                       value={screenId}
                       type='number'
@@ -210,9 +215,10 @@ export default function PickupDetailsPage({
                   in={seatDeliver}>
                   <Grid item xs={12}>
                     <TextField
+                      // TODO: Texto
                       label={'Butaca (ej. B4)'}
                       onChange={(e) => {
-                        setSeatNumber(e.target.value);
+                        setSeatNumber(e.target.value.toUpperCase());
                       }}
                     >
                     </TextField>
@@ -227,14 +233,12 @@ export default function PickupDetailsPage({
                   ampm
                   onAccept={(e) => {
                     handleSetPickUpDate(e);
-                    handleSetPickUpTime(e);
                     setDisableContinue(false)
                   }}
                   orientation='landscape'
                   reduceAnimations
                   onChange={(e) => {
                     handleSetPickUpDate(e);
-                    handleSetPickUpTime(e);
                   }} />
               </Grid>
               <Grid item xs={12}>
@@ -242,7 +246,6 @@ export default function PickupDetailsPage({
                   type="submit"
                   disabled={disableContinue}
                   variant="contained"
-                  onClick={() => redirect('/payment')}
                 >
                   {t('continueButton')}
                 </Button>

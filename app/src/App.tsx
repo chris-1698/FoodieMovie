@@ -10,9 +10,9 @@ import {
 import AllProductsPage from './pages/AllProductsPage';
 import ProductInfo from './pages/product/[slug]';
 import CartPage from './pages/CartPage';
-import OrderDetailsPage from './pages/OrderDetailsPage';
-import PaymentPage from './pages/PaymentPage';
-import OrderPage from './pages/OrderPage';
+import OrderSummaryPage from './pages/OrderSummaryPage';
+import PaymentMethodPage from './pages/PaymentMethodPage';
+import PayOrderPage from './pages/PayOrderPage';
 import SignIn from './pages/authentication/SignIn';
 import SignUp from './pages/authentication/SignUp';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -158,7 +158,7 @@ const AppComponent = () => {
         <Route
           path={ROUTING_MANAGER.PAYMENT}
           element={
-            <PaymentPage
+            <PaymentMethodPage
               title={t('titles.brand')}
               subtitle={t('titles.paymentMethod')} />
           }
@@ -187,9 +187,9 @@ const AppComponent = () => {
         />
         {/* Single order page */}
         <Route
-          path={ROUTING_MANAGER.SINGLE_ORDER}
+          path={ROUTING_MANAGER.ORDER_SUMMARY}
           element={
-            <OrderDetailsPage
+            <OrderSummaryPage
               title={t('titles.brand')}
               subtitle={t('titles.orderDetails')}
             />
@@ -198,9 +198,9 @@ const AppComponent = () => {
 
         {/* Place order */}
         <Route
-          path={ROUTING_MANAGER.ORDER}
+          path={ROUTING_MANAGER.PAY_ORDER}
           element={
-            <OrderPage
+            <PayOrderPage
               title={t('titles.brand')}
               subtitle={t('titles.order')}
             />

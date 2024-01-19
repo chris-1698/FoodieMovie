@@ -27,18 +27,16 @@ import Layout from '../layouts/Layout'
 import useTitle from '../hooks/useTitle'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  useDeliverOrderMutation,
-  useGetAllOrdersQuery
-} from '../hooks/orderHooks'
-import CloseIcon from '@mui/icons-material/Close'
+import { useConfirmOrderMutation, useDeliverOrderMutation, useGetAllOrdersQuery } from '../hooks/orderHooks'
 import { TablePaginationActionsProps } from '@mui/material/TablePagination/TablePaginationActions'
-import LastPageIcon from '@mui/icons-material/LastPage';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import SearchIcon from '@mui/icons-material/Search'
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
-
+import {
+  LastPage,
+  FirstPage,
+  Search,
+  KeyboardArrowRight,
+  KeyboardArrowLeft,
+  Close
+} from '@mui/icons-material'
 
 const REGEXP = new RegExp('^[A-Za-z0-9]{1,12}$')
 
@@ -51,14 +49,24 @@ export default function EmployeePage(
   const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const { data: orders, isLoading, error } = useGetAllOrdersQuery();
-
   const orderList = orders!
+
   const { t } = useTranslation();
   const { mutateAsync: deliverOrder } = useDeliverOrderMutation();
+  const { mutateAsync: confirmOrder } = useConfirmOrderMutation();
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const days = [
+    t('days.monday'),
+    t('days.tuesday'),
+    t('days.wednesday'),
+    t('days.thursday'),
+    t('days.friday'),
+    t('days.saturday'),
+    t('days.sunday'),
+  ]
   useTitle(title + subtitle)
 
   const handleDeliverOrder = async (id: string) => {
@@ -66,6 +74,17 @@ export default function EmployeePage(
       await (deliverOrder({ id })).then(() =>
         setTimeout(function () { window.location = window.location }, 100)
       );
+    } catch (err) {
+      alert(getError(err as ApiError));
+    }
+  }
+  // TODO: ¿Quitar columnas de "Pagado" y "Entregado"?
+  const handleConfirmOrder = async (id: string) => {
+    try {
+      confirmOrder({ id })
+      // await confirmOrder({ id }).then(() =>
+      // setTimeout(function () { window.location = window.location }, 100)
+      // );
     } catch (err) {
       alert(getError(err as ApiError));
     }
@@ -96,13 +115,13 @@ export default function EmployeePage(
     }
 
     return (
-      <Box sx={{ flexShrink: 0, m1: 2.5 }}>
+      <Box maxWidth={'sm'} sx={{ flexShrink: 0, m1: 2.5, alignContent: 'center' }}>
         <IconButton
           onClick={handleFirstPageButtonClick}
           disabled={page === 0}
           aria-label='primera página'
         >
-          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+          {theme.direction === 'rtl' ? <LastPage /> : <FirstPage />}
         </IconButton>
         <IconButton
           onClick={handleBackButtonClick}
@@ -123,7 +142,7 @@ export default function EmployeePage(
           disabled={page >= Math.ceil(count / rowsPerPage) - 1}
           aria-label='última página'
         >
-          {theme.direction == 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+          {theme.direction == 'rtl' ? <FirstPage /> : <LastPage />}
         </IconButton>
       </Box>
     )
@@ -154,7 +173,7 @@ export default function EmployeePage(
         color='inherit'
         onClick={handleCloseSnackBar}
       >
-        <CloseIcon fontSize="small" />
+        <Close fontSize="small" />
       </IconButton>
     </React.Fragment>
   )
@@ -166,8 +185,6 @@ export default function EmployeePage(
       ) : error ? (
         <Alert severity="error"> {getError(error as ApiError)}</Alert>
       ) : (
-        // https://www.youtube.com/watch?v=6hUUOZxVVCo&ab_channel=FaztCode
-        // Revisar este vídeo para la paginación.
         <>
           <Grid container maxWidth='sm' sx={{ paddingBottom: '3%' }}>
             <TextField size='small' sx={{ width: '90%' }} onChange={(e) => setSearchTerm(e.target.value)}></TextField>
@@ -179,7 +196,7 @@ export default function EmployeePage(
                 setOpenSnackBar(true)
               }
             }}>
-              <SearchIcon />
+              <Search />
             </IconButton>
           </Grid>
           <TableContainer component={Paper}>
@@ -215,12 +232,13 @@ export default function EmployeePage(
                   : orderList
                 ).map((order) => (
                   <TableRow key={order._id}>
-                    <TableCell>
+                    <TableCell sx={order.pickUpCode ? { color: 'inherit' } : { color: 'primary' }}>
                       <QRHover text={order.pickUpCode}></QRHover>
                     </TableCell>
                     <TableCell>
-                      {order.orderDetails.pickUpDate}<br></br>
-                      {order.orderDetails.pickUpTime}
+                      {`${days[new Date(order.orderDetails.pickUpDate).getDay()]} `}
+                      {new Date(order.orderDetails.pickUpDate).toLocaleDateString()}<br></br>
+                      {new Date(order.orderDetails.pickUpDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </TableCell>
                     <TableCell>
                       <Typography>
@@ -242,20 +260,44 @@ export default function EmployeePage(
                     <TableCell>
                       <Typography>
                         {order.orderDetails.screenId && order.orderDetails.seatNumber
-                          ? ('Sala ' + order.orderDetails.screenId + ', butaca ' + order.orderDetails.seatNumber)
+                          // TODO: Texto
+                          ? ('Sala ' + order.orderDetails.screenId +
+                            ', butaca ' + order.orderDetails.seatNumber)
                           : ('Bar')}
                       </Typography>
                     </TableCell>
-                    <TableCell>a</TableCell>
+                    {/* TODO: Texto */}
                     <TableCell>
-                      {/* TODO: Cambiar por Select? */}
-                      <Button variant='contained'
-                        disabled={order.isDelivered}
-                        onClick={() => {
-                          handleDeliverOrder(order._id.toString())
-                        }}>
-                        {t('allOrders.deliver')}
-                      </Button>
+                      {order.isCancelled
+                        // TODO: Texto
+                        ? 'Anulado'
+                        : order.isPaid && order.isDelivered ? 'Pagado y entregado'
+                          : !order.isPaid && !order.isDelivered ? 'Pendiente de pago y entrega'
+                            : order.isPaid && !order.isDelivered ? 'Pendiente de entrega'
+                              : ''}
+                    </TableCell>
+                    {/* TODO: Anular pedido */}
+                    <TableCell>
+                      {order.paymentMethod === 'Cash' ?
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          disabled={order.isDelivered && order.isPaid}
+                          onClick={() => {
+                            handleConfirmOrder(order._id.toString())
+                          }}>
+                          Confirmar
+                        </Button>
+                        :
+                        <Button variant='contained'
+                          disabled={order.isDelivered || !order.isPaid}
+                          onClick={() => {
+                            handleDeliverOrder(order._id.toString())
+                          }}>
+                          {/* {t('allOrders.deliver')} */}
+                          Entregado
+                        </Button>
+                      }
                     </TableCell>
                   </TableRow>
                 ))}
@@ -266,9 +308,9 @@ export default function EmployeePage(
                 )}
               </TableBody>
               <TableFooter>
-                <TableRow>
+                <TableRow >
                   <TablePagination
-                    rowsPerPageOptions={[10, 25, { label: 'All', value: -1 }]}
+                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                     colSpan={3}
                     count={orderList.length}
                     rowsPerPage={rowsPerPage}
@@ -276,6 +318,16 @@ export default function EmployeePage(
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                     ActionsComponent={TablePaginationActions}
+                    labelDisplayedRows={
+                      ({ from, to, count }) => {
+                        return t('pagination.orders')
+                          + from + t('pagination.to')
+                          + to + t('pagination.of') + count
+                      }
+                    }
+                    labelRowsPerPage={
+                      t('pagination.rowsPerPage')
+                    }
                   >
                   </TablePagination>
                 </TableRow>
@@ -306,124 +358,3 @@ export default function EmployeePage(
   )
 }
 
-// <>
-//   <Grid container maxWidth='sm' sx={{ paddingBottom: '3%' }}>
-//     <TextField size='small' sx={{ width: '90%' }} onChange={(e) => setSearchTerm(e.target.value)}></TextField>
-//     <IconButton disabled={searchTerm === ''} onClick={() => {
-//       if (REGEXP.test(searchTerm)) {
-//         navigate(`/employeePage/search/?filter=${searchTerm}`)
-//       } else {
-//         setSnackBarMessage(`${t('allOrders.verifySearch')}`)
-//         setOpenSnackBar(true)
-//       }
-//     }}>
-//       <SearchIcon />
-//     </IconButton>
-//   </Grid>
-//   <Grid container spacing={2}>
-//     <Table
-//       // TODO: Cambiar si tal
-//       size='small'>
-//       <TableHead>
-//         <TableRow>
-//           <TableCell>
-//             <Typography>{t('allOrders.code')}</Typography>
-//           </TableCell>
-//           <TableCell>
-//             <Typography>{t('allOrders.time')}</Typography>
-//           </TableCell>
-//           <TableCell>
-//             <Typography>{t('allOrders.isPaid')}</Typography>
-//           </TableCell>
-//           <TableCell>
-//             <Typography>{t('allOrders.isDelivered')}</Typography>
-//           </TableCell>
-//           <TableCell>
-//             <Typography>Entregar en</Typography>
-//           </TableCell>
-//           <TableCell>
-//             <Typography>Estado</Typography>
-//           </TableCell>
-//           <TableCell>
-//             <></>
-//           </TableCell>
-//         </TableRow>
-//       </TableHead>
-//       <TableBody>
-//         {
-//           isLoading ? (
-//             <TableCell colSpan={5}>
-//               <CircularProgress />
-//             </TableCell>
-//           ) : error ? (
-//             <TableCell colSpan={5}>
-//               <Alert severity='error'>{getError(error as ApiError)}</Alert>
-//             </TableCell>
-//           ) : orders?.length === 0 ? (
-//             <TableCell colSpan={5}>
-//               <Alert severity='info'>{t('allOrders.noOrders')}</Alert>
-//             </TableCell>
-//           ) : (
-//             <>
-//               {orders!.map((order) => (
-//                 <TableRow key={order._id}>
-//                   <TableCell>
-//                     <QRHover text={order.pickUpCode}></QRHover>
-//                   </TableCell>
-//                   <TableCell>
-//                     {order.orderDetails.pickUpDate}<br></br>
-//                     {order.orderDetails.pickUpTime}
-//                   </TableCell>
-//                   <TableCell>
-//                     <Typography>
-//                       {order.isPaid ?
-//                         t('allOrders.delivered')
-//                         : t('allOrders.notDelivered')
-//                       }
-//                     </Typography>
-//                   </TableCell>
-//                   <TableCell key={order._id}>
-//                     <Typography>
-//                       {order.isDelivered ?
-//                         t('allOrders.delivered')
-//                         : t('allOrders.notDelivered')
-//                       }
-//                     </Typography>
-//                   </TableCell>
-//                   <TableCell>
-//                     <Typography>
-//                       {order.screenId && order.seatNumber ? ('Sala ' + order.screenId + ' butaca' + order.seatNumber) : ('Bar')}
-//                     </Typography>
-//                   </TableCell>
-//                   <TableCell>a</TableCell>
-//                   <TableCell>
-//                     {/* TODO: Cambiar por Select? */}
-//                     <Button variant='contained'
-//                       disabled={order.isDelivered}
-//                       onClick={() => {
-//                         handleDeliverOrder(order._id.toString())
-//                       }}>
-//                       {t('allOrders.deliver')}
-//                     </Button>
-//                   </TableCell>
-//                 </TableRow>
-//               ))}
-//             </>
-//           )
-//         }
-//       </TableBody>
-//     </Table>
-//   </Grid>
-//   <Grid container spacing={1}>
-//     <TablePagination
-//       rowsPerPageOptions={[10, 25]}
-//       component="div"
-//       count={orderList.length}
-//       rowsPerPage={10}
-//       page={page}
-//       onPageChange={handleChangePage}
-
-//     />
-
-//   </Grid>
-// </>

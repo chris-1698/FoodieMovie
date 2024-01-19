@@ -80,6 +80,7 @@
     "pickUpTime": "Hora de recogida: ",
     "payment": "Detalles de pago",
     "paymentMethod": "Método de pago: ",
+    "paymentCash": "Efectivo",
     "stripe": "Stripe (próximamente)",
     "items": "Productos",
     "image": "Imagen",
@@ -107,7 +108,10 @@
     "hideCode": "Ocultar código",
     "seeCode": "Podrás ver el código de recogida una vez finalizado el pago",
     "screenId": "Sala: ",
-    "seatNumber": "Butaca: "
+    "seatNumber": "Butaca: ",
+    "cancelOrderConfirm": "¿De verdad quieres cancelar tu pedido? Una vez cancelado el proceso no se podrá deshacer.",
+    "yes": "Sí",
+    "no": "No"
   },
   "settings": {
     "login": "Inicia sesión ▾",
@@ -142,7 +146,8 @@
     "fullName": "Nombre completo",
     "email": "Correo electrónico",
     "pickUpDate": "Fecha de recogida",
-    "nameFormat": "Revisa tu nombre o el número de butaca. El nombre debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos."
+    "seatNameFormat": "Revisa tu nombre o el número de butaca. El nombre debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos.",
+    "nameFormat": "Revisa tu nombre. Debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos."
   },
   "paymentMethod": {
     "choosePaymentMethod": "Elija un método de pago"
@@ -181,5 +186,11 @@
     "sentEmail": "Perfecto, hemos enviado un correo a tu cuenta",
     "inputEmail": "Por favor, introduzca su email",
     "resetPassword": "Restablecer contraseña"
+  },
+  "pagination": {
+    "orders": "Pedidos ",
+    "to": " al ",
+    "of": " de ",
+    "rowsPerPage": "Filas por página:"
   }
 }

@@ -8,11 +8,10 @@ export type Order = {
   paymentMethod: string;
   user: User;
   createdAt: string;
-  // promoId: string;
-  // promoApplied: boolean;
   isPaid: boolean;
   isDelivered: boolean;
   paidAt: string;
+  isCancelled: boolean;
   taxPrice: number;
   itemsPrice: number;
   totalPrice: number;

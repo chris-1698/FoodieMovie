@@ -1470,6 +1470,11 @@ mongodb@5.9.1:
   optionalDependencies:
     "@mongodb-js/saslprep" "^1.1.0"
 
+mongoose-paginate-v2@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/mongoose-paginate-v2/-/mongoose-paginate-v2-1.8.0.tgz#29343fde550b9c6e23a9c9e1cb23c97dee77743e"
+  integrity sha512-JiGbGxc/ytIA8UL4GaJdCLuxv5i99+XmTdP4v9YXwiJ85tdOxdrc2NQJL+0O+NRbIl+aAhaOnDbL9bJt7o3zIA==
+
 mongoose@^7.4.1:
   version "7.6.7"
   resolved "https://registry.npmjs.org/mongoose/-/mongoose-7.6.7.tgz"
@@ -1893,6 +1898,7 @@ statuses@2.0.1:
   integrity sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==

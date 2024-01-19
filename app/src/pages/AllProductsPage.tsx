@@ -13,7 +13,7 @@ export default function AllProductsPage({
 
   // TODO: Checkbox y que aparezca el elegir sala y butaca. Probar que se refleje en la BBDD
   // TODO: Traducciones
-  // TODO: Borrar Stripe?
+  // TODO: Borrar Stripe? Hecho
   // TODO: Pagar en efectivo y estados de pedido?m
 
   return (

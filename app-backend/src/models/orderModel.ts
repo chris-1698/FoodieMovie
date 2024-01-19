@@ -10,9 +10,7 @@ import { OrderDetails } from '../types/OrderDetails';
 import { User } from './userModel';
 import { PaginateModel, Schema, model } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-// import { paginate } from 'mongoose-paginate-v2';
 
-// const mongoosePaginate = require('mongoose-paginate-v2');
 class Item {
   @prop({ required: true })
   public name!: string;
@@ -68,6 +66,9 @@ export class Order {
   @prop({ required: true, default: false })
   public isPaid!: boolean;
 
+  @prop({ required: false, default: false })
+  public isCancelled?: boolean;
+
   @prop({ required: true, default: false })
   public isDelivered!: boolean;
 
@@ -87,11 +88,6 @@ export class Order {
   public pickUpCode!: string;
 }
 
-// export const OrderModel = getModelForClass(Order);
-
-// export const orderSchema = OrderModel.schema;
-// orderSchema.plugin(mongoosePaginate);
-
 interface IOrder extends Document {
   _id: String;
   orderItems: Item[];
@@ -102,27 +98,12 @@ interface IOrder extends Document {
   createdAt: Date;
   isPaid: boolean;
   isDelivered: boolean;
+  isCancelled: boolean;
   paidAt: Date;
   itemsPrice: Number;
   totalPrice: Number;
   pickUpCode: String;
 }
-
-// const OrderSchema = new Schema({
-//     _id: String,
-//     orderItems: Item[],
-//     orderDetails: OrderDetails,
-//     user: Ref<User>,
-//     paymentMethod: String,
-//     paymentResult: PaymentResult,
-//     createdAt: Date,
-//     isPaid: Boolean,
-//     isDelivered: Boolean,
-//     paidAt: Date,
-//     itemsPrice: Number,
-//     totalPrice: Number,
-//     pickUpCode: String,
-// })
 
 const OrderSchema: Schema = getModelForClass(Order).schema;
 OrderSchema.plugin(mongoosePaginate);

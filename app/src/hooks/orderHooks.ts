@@ -60,6 +60,16 @@ export const useDeliverOrderMutation = () =>
       ).data,
   });
 
+export const useConfirmOrderMutation = () =>
+  useMutation({
+    mutationFn: async ({ id }: { id: string }) =>
+      (
+        await apiClient.put<string>(`api/orders/order/confirmOrder`, {
+          id,
+        })
+      ).data,
+  });
+
 // Endpoint to create a new order
 export const useCreateOrderMutation = () =>
   useMutation({
@@ -72,6 +82,8 @@ export const useCreateOrderMutation = () =>
       totalPrice: number;
       isPaid: boolean;
       isDelivered: boolean;
+      paidAt: string;
+      isCancelled: boolean;
     }) =>
       (
         await apiClient.post<{ message: string; order: Order }>(
@@ -90,5 +102,25 @@ export const usePayOrderMutation = () =>
           `api/orders/${details.orderId}/pay`,
           { details } //Contains payment result. Email address and other info.
         )
+      ).data,
+  });
+
+// export const useCancelOrderMutation = () =>
+//   useMutation({
+//     mutationFn: async ({ orderId }: { orderId: string }) =>
+//       (
+//         await apiClient.put<string>(`api/orders/order/cancelOrder`, {
+//           orderId,
+//         })
+//       ).data,
+//   });
+
+export const useCancelOrderMutation = () =>
+  useMutation({
+    mutationFn: async ({ id }: { id: string }) =>
+      (
+        await apiClient.put<string>(`api/orders/order/cancelOrder`, {
+          id,
+        })
       ).data,
   });

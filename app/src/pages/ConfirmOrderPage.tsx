@@ -13,6 +13,7 @@ import { CartItem } from '../typings/Cart';
 import { ApiError } from '../typings/ApiError';
 import { getError } from '../utils/utils';
 import { useTranslation } from 'react-i18next';
+
 // http://localhost:5173/placeOrder
 export default function ConfirmOrderPage({
   title,
@@ -28,7 +29,15 @@ export default function ConfirmOrderPage({
   const { cart } = state
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
-
+  const days = [
+    t('days.monday'),
+    t('days.tuesday'),
+    t('days.wednesday'),
+    t('days.thursday'),
+    t('days.friday'),
+    t('days.saturday'),
+    t('days.sunday'),
+  ]
   // Redondea un número a dos decimales
   const roundTo2 = (num: number) => Math.round(num * 100 + Number.EPSILON) / 100
 
@@ -80,6 +89,8 @@ export default function ConfirmOrderPage({
         totalPrice: cart.totalPrice,
         isPaid: false,
         isDelivered: false,
+        paidAt: '',
+        isCancelled: false,
       })
       dispatch({ type: 'CART_CLEAR' })
       localStorage.removeItem('cartItems')
@@ -111,16 +122,27 @@ export default function ConfirmOrderPage({
                 <Stack direction='column'>
                   <Typography>{t('orders.name')}{`${cart.orderDetails?.fullName}`}</Typography>
                   <Typography>{t('orders.email')}{`${cart.orderDetails?.email}`}</Typography>
-                  <Typography>{t('orders.pickUpDate')}{`${cart.orderDetails?.pickUpDate}`}</Typography>
-                  <Typography>{t('orders.pickUpTime')}{`${cart.orderDetails?.pickUpTime}`}</Typography>
+                  <Typography>
+                    {t('orders.pickUpDate')}
+                    {
+                      `${days[cart.orderDetails?.pickUpDate.getDay() - 1]}
+                      ${cart.orderDetails?.pickUpDate.toLocaleDateString()}`
+                    }
+                  </Typography>
+                  <Typography>
+                    {t('orders.pickUpTime')}
+                    {`${cart.orderDetails?.pickUpDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                  </Typography>
                   {cart.orderDetails.screenId ?
                     (
+                      // TODO: Texto
                       <Typography>Sala: {`${cart.orderDetails?.screenId}`}</Typography>
                     ) : (
                       <></>
                     )}
                   {cart.orderDetails.seatNumber ?
                     (
+                      // TODO: Texto
                       <Typography>Butaca: {`${cart.orderDetails?.seatNumber}`}</Typography>
                     ) : (
                       <></>
@@ -144,7 +166,8 @@ export default function ConfirmOrderPage({
                 </Typography>
               </ListItem>
               <ListItem>
-                {t('orders.paymentMethod')} {cart.paymentMethod}
+                {`${t('orders.paymentMethod')}`}
+                {cart.paymentMethod === 'Cash' ? `${t('orders.paymentCash')}` : `Paypal`}
               </ListItem>
               <ListItem>
                 <Button
@@ -186,7 +209,6 @@ export default function ConfirmOrderPage({
                               width={50}
                               height={50}
                             ></CardMedia>
-                            {/* </Link> */}
                           </TableCell>
 
                           <TableCell sx={{ paddingLeft: '6%' }}>

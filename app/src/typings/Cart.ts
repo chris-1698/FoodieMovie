@@ -20,8 +20,7 @@ export type Cart = {
 export type OrderDetails = {
   fullName: string;
   email: string;
-  pickUpDate: string;
-  pickUpTime: string;
-  screenId: number;
-  seatNumber: string;
+  pickUpDate: Date;
+  screenId?: number;
+  seatNumber?: string;
 };

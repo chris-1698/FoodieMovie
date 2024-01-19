@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useGetOrderDetailsQuery, useGetPaypalClientIdQuery, usePayOrderMutation } from '../hooks/orderHooks';
+import { useCancelOrderMutation, useGetOrderDetailsQuery, useGetPaypalClientIdQuery, usePayOrderMutation } from '../hooks/orderHooks';
 import {
   CircularProgress,
   Alert,
@@ -18,6 +18,10 @@ import {
   IconButton,
   Button,
   Snackbar,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import { getError } from '../utils/utils';
 import { ApiError } from '../typings/ApiError';
@@ -35,7 +39,8 @@ import { Store } from '../utils/Store';
 import CloseIcon from '@mui/icons-material/Close'
 
 // http://localhost:5173/orderSummary/:id
-export default function OrderDetailsPage({ title, subtitle }: { title: string, subtitle: string }) {
+// TODO: No olvides descomentar lo del envío de correo!
+export default function OrderSummaryPage({ title, subtitle }: { title: string, subtitle: string }) {
   useTitle(title + subtitle)
   // Revisar esto. No pilla el id de la url! HECHO. Revisar página y quitar lo que
   // no haga falta
@@ -46,13 +51,28 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
   const { data: paypalConfig } = useGetPaypalClientIdQuery()
   const { state } = useContext(Store);
   const { userInfo } = state;
+
   const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer();
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [result, setResult] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const { t } = useTranslation();
   const { mutateAsync: payOrder, isLoading: loadingPay } = usePayOrderMutation();
+  const { mutateAsync: cancelOrder } = useCancelOrderMutation();
+  const days = [
+    t('days.monday'),
+    t('days.tuesday'),
+    t('days.wednesday'),
+    t('days.thursday'),
+    t('days.friday'),
+    t('days.saturday'),
+    t('days.sunday'),
+  ]
+
+  const orderDate = order?.orderDetails.pickUpDate
+  const pickUpDate = new Date(orderDate!)
 
   const cartItemsDetail = () => {
     let details = "";
@@ -73,31 +93,68 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
     alert(t('orders.paid'))
   }
 
+  /**
+   * 
+   */
   const handleSendEmail = () => {
     if (order) {
       try {
-        emailjs.send(
-          // 'service_uk7l8dh', //Outlook
-          'service_rpirl1w',
-          'template_oprezrr',
-          {
-            to_name: userInfo?.name,
-            pickup_code: order?.pickUpCode,
-            to_email: userInfo?.email,
-            order_details: cartItemsDetail(),
-          },
-          'ElU7Zz_Kk2wIl9-bY',
-        )
+        // TODO: Descomentar!!
+        // emailjs.send(
+        //   // 'service_uk7l8dh', //Outlook
+        //   'service_rpirl1w',
+        //   'template_oprezrr',
+        //   {
+        //     to_name: userInfo?.name,
+        //     pickup_code: order?.pickUpCode,
+        //     to_email: userInfo?.email,
+        //     order_details: cartItemsDetail(),
+        //   },
+        //   'ElU7Zz_Kk2wIl9-bY',
+        // )
         setSnackBarMessage(`${t('orders.emailSent')}`);
         setShowSnackBar(true);
-        setResult(true)
-        // console.log('Correo enviado!'); Send email test
+        setResult(true);
+        console.log('Correo enviado!'); //Send email test
       } catch (err) {
         setSnackBarMessage(getError(err as ApiError));
         setShowSnackBar(true);
         setResult(false)
       }
     }
+  }
+
+  /**
+   * 
+   * @param id 
+   */
+  const handleCancelOrder = async (id: string) => {
+    if (Math.abs(new Date().getTime() - new Date(order!.orderDetails.pickUpDate).getTime()) / 60000 < 30) {
+      console.log('No puedes pedir!');
+      // TODO: Texto
+      setSnackBarMessage("No puedes cancelar tu pedido ahora.");
+      setShowSnackBar(true);
+      setResult(true);
+      return
+    } else {
+      if (!order?.isPaid && !order?.isDelivered) {
+        try {
+          // await cancelOrder({ id })
+          console.log('Cancelada!');
+          setShowQR(false)
+          // TODO: Texto
+          setSnackBarMessage("Tu pedido ha sido cancelado!");
+          setShowSnackBar(true);
+          setResult(true);
+
+        } catch (err) {
+          setSnackBarMessage(getError(err as ApiError));
+          setShowSnackBar(true);
+          setResult(false)
+        }
+      }
+    }
+
   }
 
   useEffect(() => {
@@ -123,6 +180,9 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
 
   }, [paypalConfig, order])
 
+  /**
+   * PayPal transaction props
+   */
   const paypalbuttonTransactionProps: PayPalButtonsComponentProps = {
     style: { layout: 'vertical' },
     createOrder(data, actions) {
@@ -153,6 +213,7 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
       alert(getError(err as ApiError))
     }
   }
+
   const handleCloseSnackBar = () => {
     setShowSnackBar(false);
   }
@@ -194,8 +255,17 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                 <ListItem>
                   <Stack direction='column' >
                     <Typography>{t('orders.name')}{order.orderDetails.fullName}</Typography>
-                    <Typography>{t('orders.pickUpDate')}{order.orderDetails.pickUpDate}</Typography>
-                    <Typography>{t('orders.pickUpTime')}{order.orderDetails.pickUpTime}</Typography>
+                    <Typography>
+                      {t('orders.pickUpDate')}
+                      {
+                        `${days[pickUpDate.getDay() - 1]}
+                        ${pickUpDate.toLocaleDateString()}`
+                      }
+                    </Typography>
+                    <Typography>
+                      {t('orders.pickUpTime')}
+                      {`${pickUpDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                    </Typography>
                     {
                       order.orderDetails.screenId && order.orderDetails.seatNumber
                         ? (
@@ -216,7 +286,6 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                 </ListItem>
               </List>
             </Card>
-
             <Card sx={classes.section}>
               <List>
                 <ListItem>
@@ -224,7 +293,10 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                     {t('orders.payment')}
                   </Typography>
                 </ListItem>
-                <ListItem>{t('orders.paymentMethod')}{order.paymentMethod}</ListItem>
+                <ListItem>
+                  {`${t('orders.paymentMethod')}`}
+                  {order.paymentMethod === 'Cash' ? `${t('orders.paymentCash')}` : `Paypal`}
+                </ListItem>
                 <ListItem>
                   {order.isPaid === true
                     ?
@@ -286,7 +358,10 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
               </List>
             </Card>
           </Grid>
-          <Grid item md={3} xs={12}>
+          <Grid item md={3} xs={12}
+            sx={{
+              marginTop: "8px"
+            }}>
             <Card>
               <List>
                 <ListItem>
@@ -322,7 +397,7 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                     </Grid>
                   </Grid>
                 </ListItem>
-                {!order.isPaid && (
+                {!order.isPaid && order.paymentMethod === 'PayPal' && (
                   <ListItem style={{ width: '100%' }}>
                     {isPending ? (
                       <CircularProgress />
@@ -343,16 +418,14 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                 )}
                 <ListItem>
                   <Stack direction='column' alignContent='center'>
-
                     <Typography align='center'>
                       {t('orders.pickupCode')}
                     </Typography>
                     {
-                      showQR === true
+                      (showQR === true || order.paymentMethod === 'Cash') && order.isCancelled === false
                         ? (
                           <>
                             <QRCode
-                              // id='pickUpQR'
                               size={200}
                               bgColor='white'
                               fgColor='black'
@@ -366,6 +439,15 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                             >
                               {order.pickUpCode}
                             </Typography>
+                            <Button
+                              sx={{ marginTop: '20%' }}
+                              variant='contained'
+                              color='error'
+                              onClick={() => setOpenDialog(true)}
+                            // TODO: Funcionalidad
+                            >
+                              Anular pedido
+                            </Button>
                           </>
                         ) : (
                           <>
@@ -373,7 +455,8 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                               (
                                 <Typography>
                                   {t('orders.seeCode')}
-                                </Typography>) : (
+                                </Typography>
+                              ) : (
                                 <></>
                               )
                             }
@@ -382,6 +465,13 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
                     }
                   </Stack>
                 </ListItem>
+                {order.isCancelled ?
+                  <ListItem>
+                    <Alert
+                      severity='error'>
+                      Este pedido ha sido cancelado.
+                    </Alert>
+                  </ListItem> : <></>}
               </List>
             </Card>
           </Grid>
@@ -402,6 +492,52 @@ export default function OrderDetailsPage({ title, subtitle }: { title: string, s
           {snackBarMessage}
         </Alert>
       </Snackbar>
+
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+      >
+        <DialogContent>
+          <DialogContentText fontWeight={500}>
+            {/* TODO: Texto */}
+            {/* ¿De verdad quieres cancelar tu pedido?
+            Una vez cancelado el proceso no se podrá deshacer. */}
+            {t('orders.cancelOrderConfirm')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Grid
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              alignItems: 'center'
+            }}>
+            <Button
+              color='error'
+              variant='contained'
+              onClick={() => {
+                handleCancelOrder(order!._id.toString());
+                setOpenDialog(false);
+              }}
+              sx={{
+                display: 'inline-block',
+                marginInline: '5%'
+              }}>
+              {t('orders.yes')}
+            </Button>
+            {/* <Grid sx={{ width: "10%" }}></Grid> */}
+            <Button
+              variant='contained'
+              onClick={() => setOpenDialog(false)}
+              sx={{
+                display: 'inline-block',
+                marginInline: '5%'
+              }}>
+              {t('orders.no')}
+            </Button>
+          </Grid>
+        </DialogActions>
+      </Dialog>
     </Layout>
   )
 }
