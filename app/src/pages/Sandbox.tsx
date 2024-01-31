@@ -1,8 +1,5 @@
 import { Button, Typography } from "@mui/material";
 import { useState } from "react";
-// import { useResetEmail, useResetPasswordEmail } from "../hooks/emailHooks";
-// import { google } from 'googleapis'
-// import send from 'gmail-send'
 import accountTransport from '../../account_transport.json';
 
 // TODO: Quitar Nodemailer. El problema me lo da al importarlo,

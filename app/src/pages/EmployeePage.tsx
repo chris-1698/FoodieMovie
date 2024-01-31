@@ -15,7 +15,6 @@ import {
   Box,
   TableContainer,
   Paper,
-  TableFooter,
   TextField,
   Grid
 } from '@mui/material'
@@ -78,13 +77,9 @@ export default function EmployeePage(
       alert(getError(err as ApiError));
     }
   }
-  // TODO: ¿Quitar columnas de "Pagado" y "Entregado"?
   const handleConfirmOrder = async (id: string) => {
     try {
       confirmOrder({ id })
-      // await confirmOrder({ id }).then(() =>
-      // setTimeout(function () { window.location = window.location }, 100)
-      // );
     } catch (err) {
       alert(getError(err as ApiError));
     }
@@ -210,11 +205,14 @@ export default function EmployeePage(
                     <Typography fontWeight={'bold'}>{t('allOrders.time')}</Typography>
                   </TableCell>
                   <TableCell>
+                    <Typography fontWeight={'bold'}>Metodo de pago</Typography>
+                  </TableCell>
+                  {/* <TableCell>
                     <Typography fontWeight={'bold'}>{t('allOrders.isPaid')}</Typography>
                   </TableCell>
                   <TableCell>
                     <Typography fontWeight={'bold'}>{t('allOrders.isDelivered')}</Typography>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <Typography fontWeight={'bold'}>Entregar en</Typography>
                   </TableCell>
@@ -235,12 +233,21 @@ export default function EmployeePage(
                     <TableCell sx={order.pickUpCode ? { color: 'inherit' } : { color: 'primary' }}>
                       <QRHover text={order.pickUpCode}></QRHover>
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        // paddingRight: '20px'
+                      }}>
                       {`${days[new Date(order.orderDetails.pickUpDate).getDay()]} `}
                       {new Date(order.orderDetails.pickUpDate).toLocaleDateString()}<br></br>
                       {new Date(order.orderDetails.pickUpDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </TableCell>
                     <TableCell>
+                      <Typography>
+                        {order.paymentMethod === 'Cash' ?
+                          'Efectivo' : 'PayPal'}
+                      </Typography>
+                    </TableCell>
+                    {/* <TableCell>
                       <Typography>
                         {
                           order.isPaid ?
@@ -256,46 +263,45 @@ export default function EmployeePage(
                           : t('allOrders.notDelivered')
                         }
                       </Typography>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Typography>
                         {order.orderDetails.screenId && order.orderDetails.seatNumber
-                          // TODO: Texto
-                          ? ('Sala ' + order.orderDetails.screenId +
-                            ', butaca ' + order.orderDetails.seatNumber)
-                          : ('Bar')}
+                          ? `${t('allOrders.screen')} ${order.orderDetails.screenId}, 
+                          ${t('allOrders.seat')} ${order.orderDetails.seatNumber}`
+                          : `${t('allOrders.bar')}`}
                       </Typography>
                     </TableCell>
-                    {/* TODO: Texto */}
                     <TableCell>
                       {order.isCancelled
-                        // TODO: Texto
-                        ? 'Anulado'
-                        : order.isPaid && order.isDelivered ? 'Pagado y entregado'
-                          : !order.isPaid && !order.isDelivered ? 'Pendiente de pago y entrega'
-                            : order.isPaid && !order.isDelivered ? 'Pendiente de entrega'
-                              : ''}
+                        ? t('allOrders.cancelled')
+                        : order.isPaid && order.isDelivered ? t('allOrders.paidDelivered')
+                          : !order.isPaid && !order.isDelivered ? t('allOrders.pendingPaymentDelivery')
+                            : order.isPaid && !order.isDelivered ? t('allOrders.pendingDelivery')
+                              : '-----'}
                     </TableCell>
-                    {/* TODO: Anular pedido */}
                     <TableCell>
                       {order.paymentMethod === 'Cash' ?
                         <Button
                           variant='contained'
                           color='secondary'
-                          disabled={order.isDelivered && order.isPaid}
+                          //TODO:  Si ha sido entregado y pagado ya, o
+                          // está cancelado, disabled
+                          disabled={order.isDelivered && order.isPaid || order.isCancelled}
                           onClick={() => {
                             handleConfirmOrder(order._id.toString())
                           }}>
-                          Confirmar
+                          {t('allOrders.confirm')}
                         </Button>
                         :
                         <Button variant='contained'
+                          // TODO: Si el método es PayPal pero no está pagado o ya fue entregado, 
+                          // disabled
                           disabled={order.isDelivered || !order.isPaid}
                           onClick={() => {
                             handleDeliverOrder(order._id.toString())
                           }}>
-                          {/* {t('allOrders.deliver')} */}
-                          Entregado
+                          {t('allOrders.deliver')}
                         </Button>
                       }
                     </TableCell>
@@ -307,31 +313,32 @@ export default function EmployeePage(
                   </TableRow>
                 )}
               </TableBody>
-              <TableFooter>
-                <TableRow >
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                    colSpan={3}
-                    count={orderList.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
-                    labelDisplayedRows={
-                      ({ from, to, count }) => {
-                        return t('pagination.orders')
-                          + from + t('pagination.to')
-                          + to + t('pagination.of') + count
-                      }
+              {/* <TableFooter> */}
+              <TableRow>
+                <TablePagination
+                  colSpan={7}
+                  rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                  count={orderList.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                  labelDisplayedRows={
+                    ({ from, to, count }) => {
+                      return t('pagination.orders')
+                        + from + t('pagination.to')
+                        + to + t('pagination.of') + count
                     }
-                    labelRowsPerPage={
-                      t('pagination.rowsPerPage')
-                    }
-                  >
-                  </TablePagination>
-                </TableRow>
-              </TableFooter>
+                  }
+                  labelRowsPerPage={
+                    t('pagination.rowsPerPage')
+                  }
+                >
+
+                </TablePagination>
+              </TableRow>
+              {/* </TableFooter> */}
             </Table>
           </TableContainer>
         </>

@@ -37,6 +37,22 @@ export const useGetAllOrdersQuery = () =>
       (await apiClient.get<Order[]>(`api/orders/all/allOrders`)).data,
   });
 
+export interface PendingOrdersResponse {
+  message: string;
+  orders: number;
+}
+
+export const useGetPendingOrders = () =>
+  useQuery({
+    queryKey: ['pending-orders'],
+    queryFn: async () =>
+      (
+        await apiClient.get<PendingOrdersResponse>(
+          `/api/orders/order/getPendingOrders`
+        )
+      ).data,
+  });
+
 // Endpoint to get those orders which pickup code matches searchTerm
 export const useGetSomeOrdersQuery = (searchTerm: string) =>
   useQuery({

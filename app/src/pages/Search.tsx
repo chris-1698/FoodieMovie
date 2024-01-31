@@ -136,15 +136,13 @@ export default function Search({ title, subtitle }: { title: string, subtitle: s
                 </TableCell>
                 <TableCell>
                   <Typography fontWeight={'bold'}>
-                    {/* TODO: Texto */}
-                    Entregar en
+                    {t('allOrders.deliverAt')}
                   </Typography>
 
                 </TableCell>
                 <TableCell>
                   <Typography fontWeight={'bold'}>
-                    {/* TODO: Texto */}
-                    Estado
+                    {t('allOrders.state')}
                   </Typography>
 
                 </TableCell>

@@ -39,12 +39,8 @@ import { Store } from '../utils/Store';
 import CloseIcon from '@mui/icons-material/Close'
 
 // http://localhost:5173/orderSummary/:id
-// TODO: No olvides descomentar lo del envío de correo!
 export default function OrderSummaryPage({ title, subtitle }: { title: string, subtitle: string }) {
   useTitle(title + subtitle)
-  // Revisar esto. No pilla el id de la url! HECHO. Revisar página y quitar lo que
-  // no haga falta
-  // Revisar también lo del correo, crear otra cuenta en emailjs y probar.
   const params = useParams();
   const { id: orderId } = params;
   const { data: order, isLoading, error, refetch } = useGetOrderDetailsQuery(orderId!);
@@ -99,19 +95,19 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
   const handleSendEmail = () => {
     if (order) {
       try {
-        // TODO: Descomentar!!
-        // emailjs.send(
-        //   // 'service_uk7l8dh', //Outlook
-        //   'service_rpirl1w',
-        //   'template_oprezrr',
-        //   {
-        //     to_name: userInfo?.name,
-        //     pickup_code: order?.pickUpCode,
-        //     to_email: userInfo?.email,
-        //     order_details: cartItemsDetail(),
-        //   },
-        //   'ElU7Zz_Kk2wIl9-bY',
-        // )
+        // TODO: Comentar para pruebas
+        emailjs.send(
+          // 'service_uk7l8dh', //Outlook
+          'service_rpirl1w',
+          'template_oprezrr',
+          {
+            to_name: userInfo?.name,
+            pickup_code: order?.pickUpCode,
+            to_email: userInfo?.email,
+            order_details: cartItemsDetail(),
+          },
+          'ElU7Zz_Kk2wIl9-bY',
+        )
         setSnackBarMessage(`${t('orders.emailSent')}`);
         setShowSnackBar(true);
         setResult(true);
@@ -124,26 +120,32 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
     }
   }
 
+  const compareDates = (dateA: Date, dateB: Date): boolean => {
+    const timeDifferencee = dateB.getTime() - dateA.getTime();
+
+    const minutesDifference = timeDifferencee / (1000 * 60);
+
+    return minutesDifference >= 30;
+  }
+
   /**
-   * 
+   *
    * @param id 
    */
   const handleCancelOrder = async (id: string) => {
-    if (Math.abs(new Date().getTime() - new Date(order!.orderDetails.pickUpDate).getTime()) / 60000 < 30) {
-      console.log('No puedes pedir!');
-      // TODO: Texto
-      setSnackBarMessage("No puedes cancelar tu pedido ahora.");
+    if (!compareDates(new Date(), new Date(order!.orderDetails.pickUpDate))) {
+      // console.log('No puedes pedir!');
+      setSnackBarMessage(`${t('orders.cancelError')}`);
       setShowSnackBar(true);
       setResult(true);
       return
     } else {
       if (!order?.isPaid && !order?.isDelivered) {
         try {
-          // await cancelOrder({ id })
-          console.log('Cancelada!');
+          await cancelOrder({ id })
+          // console.log('Cancelada!');
           setShowQR(false)
-          // TODO: Texto
-          setSnackBarMessage("Tu pedido ha sido cancelado!");
+          setSnackBarMessage(`${t('orders.cancelled')}`);
           setShowSnackBar(true);
           setResult(true);
 
@@ -154,7 +156,6 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
         }
       }
     }
-
   }
 
   useEffect(() => {
@@ -444,9 +445,8 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
                               variant='contained'
                               color='error'
                               onClick={() => setOpenDialog(true)}
-                            // TODO: Funcionalidad
                             >
-                              Anular pedido
+                              {t('orders.cancel')}
                             </Button>
                           </>
                         ) : (
@@ -499,9 +499,6 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
       >
         <DialogContent>
           <DialogContentText fontWeight={500}>
-            {/* TODO: Texto */}
-            {/* ¿De verdad quieres cancelar tu pedido?
-            Una vez cancelado el proceso no se podrá deshacer. */}
             {t('orders.cancelOrderConfirm')}
           </DialogContentText>
         </DialogContent>

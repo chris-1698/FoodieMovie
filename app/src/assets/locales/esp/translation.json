@@ -111,7 +111,11 @@
     "seatNumber": "Butaca: ",
     "cancelOrderConfirm": "¿De verdad quieres cancelar tu pedido? Una vez cancelado el proceso no se podrá deshacer.",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "cancelError": "Lo sentimos, pero los pedidos solo pueden cancelarse si la solicitud se realiza con al menos media hora de antelación. \nPor favor, asegúrate de realizar cualquier cancelación dentro de ese plazo. ¡Gracias por tu comprensión!",
+    "cancelled": "¡Tu pedido ha sido cancelado!",
+    "cancel": "Anular pedido",
+    "confirmError": "Para establecer tu pedido, por favor, asegúrate de hacerlo al menos una hora antes de la hora programada de entrega. Agradecemos tu comprensión."
   },
   "settings": {
     "login": "Inicia sesión ▾",
@@ -123,7 +127,7 @@
     "deleteAccount": "Borrar cuenta",
     "logOut": "Cerrar sesión",
     "enterCode": "Introduce el código",
-    "wrongCode": "Código incorrecto, por favor inténtalo de nuevo.",
+    "wrongCode": "El código es incorrecto, o bien tienes pedidos pendientes.",
     "deleteText1": "¿De verdad quieres borrar tu cuenta?",
     "deleteText2": "Este paso es irreversible. Para estar seguros, escribe el siguiente código:",
     "cancel": "Cancelar",
@@ -147,21 +151,26 @@
     "email": "Correo electrónico",
     "pickUpDate": "Fecha de recogida",
     "seatNameFormat": "Revisa tu nombre o el número de butaca. El nombre debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos.",
-    "nameFormat": "Revisa tu nombre. Debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos."
+    "nameFormat": "Revisa tu nombre. Debe ocupar entre 3 y 18 caracteres. Sólo se aceptan caracteres alfanuméricos.",
+    "deliverSeat": "¿Te lo entregamos en sala?",
+    "screen": "Sala",
+    "seat": "Butaca (ej. B4)"
   },
   "paymentMethod": {
-    "choosePaymentMethod": "Elija un método de pago"
+    "choosePaymentMethod": "Elija un método de pago",
+    "cash": "Efectivo"
   },
   "orderHistory": {
     "orderHistory": "Historial de pedidos",
     "code": "Código",
-    "date": "Fecha",
+    "date": "Fecha realizado",
     "total": "Total",
     "paid": "Pagado",
     "details": "Detalles",
     "delivered": "Entregado",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "pickupDate": "Fecha recogida"
   },
   "resetPassword": {
     "notMatch": "Las contraseñas no coinciden.",
@@ -176,11 +185,21 @@
     "isPaid": "Pagado",
     "isDelivered": "Entregado",
     "noOrders": "No se han encontrado pedidos con ese código de recogida.",
-    "deliver": "Entregado",
+    "deliver": "Entregar",
+    "confirm": "Confirmar",
     "delivered": "Sí",
     "notDelivered": "No",
     "removeFilter": "Quitar filtros",
-    "verifySearch": "Sólo se admiten caracteres alfanuméricos. Además, el término de búsqueda no puede ocupar más de 12 caracteres."
+    "verifySearch": "Sólo se admiten caracteres alfanuméricos. Además, el término de búsqueda no puede ocupar más de 12 caracteres.",
+    "screen": "Sala ",
+    "seat": "Butaca ",
+    "bar": "Bar",
+    "paidDelivered": "Pagado y entregado",
+    "pendingPaymentDelivery": "Pendiente de pago y entrega",
+    "pendingDelivery": "Pendiente de entrega",
+    "cancelled": "Anulado",
+    "deliverAt": "Entregar en",
+    "state": "Estado"
   },
   "forgotPassword": {
     "sentEmail": "Perfecto, hemos enviado un correo a tu cuenta",

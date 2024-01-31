@@ -111,7 +111,11 @@
     "seatNumber": "Seat: ",
     "cancelOrderConfirm": "Do you really want to cancel your order? Once canceled the process cannot be undone.",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "cancelError": "We're sorry, but orders can only be canceled if the request is made at least half an hour in advance. Please make sure to initiate any cancellations within that timeframe. Thank you for your understanding!",
+    "cancelled": "Your order was successfully cancelled!",
+    "cancel": "Cancel order",
+    "confirmError": "To place your order, please make sure to do so at least one hour before the scheduled delivery time. We appreciate your understanding."
   },
   "settings": {
     "login": "Login ▾",
@@ -123,7 +127,7 @@
     "deleteAccount": "Delete account",
     "logOut": "Log out",
     "enterCode": "Enter code",
-    "wrongCode": "Wrong code, please try again.",
+    "wrongCode": "Wrong code or you have pending orders.",
     "deleteText1": "Do you really want to delete your account?",
     "deleteText2": "This step is irreversible. To be sure, write the following code:",
     "cancel": "Cancel",
@@ -147,21 +151,26 @@
     "email": "Email",
     "pickUpDate": "Pickup date",
     "seatNameFormat": "Check your name or the seat format. Name must be between 3 and 18 characters long. Only alphanumeric characters are accepted.",
-    "nameFormat": "Check your name. It must be between 3 and 18 characters long. Only alphanumeric characters are accepted."
+    "nameFormat": "Check your name. It must be between 3 and 18 characters long. Only alphanumeric characters are accepted.",
+    "deliverSeat": "Do we deliver it to your screen?",
+    "screen": "Screen",
+    "seat": "Seat (e.g. B4)"
   },
   "paymentMethod": {
-    "choosePaymentMethod": "Choose a payment method"
+    "choosePaymentMethod": "Choose a payment method",
+    "cash": "Cash"
   },
   "orderHistory": {
     "orderHistory": "Order history",
     "code": "Code",
-    "date": "Date",
+    "date": "Date made",
     "total": "Total",
     "paid": "Paid",
     "details": "Details",
     "delivered": "Delivered",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "pickupDate": "Pickup date"
   },
   "resetPassword": {
     "notMatch": "Passwords don't match.",
@@ -177,10 +186,20 @@
     "isDelivered": "Delivered",
     "noOrders": "No orders found with that pickup code.",
     "deliver": "Delivered",
+    "confirm": "Confirm",
     "delivered": "Yes",
     "notDelivered": "No",
     "removeFilter": "Remove filters",
-    "verifySearch": "Only alphanumeric characters are allowed. In addition, the search term cannot be longer than 12 characters."
+    "verifySearch": "Only alphanumeric characters are allowed. In addition, the search term cannot be longer than 12 characters.",
+    "screen": "Screen ",
+    "seat": "Seat ",
+    "bar": "Bar",
+    "paidDelivered": "Paid and delivered",
+    "pendingPaymentDelivery": "Pending payment and delivery",
+    "pendingDelivery": "Pending delivery",
+    "cancelled": "Cancelled",
+    "deliverAt": "Deliver at",
+    "state": "State"
   },
   "forgotPassword": {
     "sentEmail": "Perfect, we have sent an email to your account.",

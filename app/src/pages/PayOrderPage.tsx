@@ -100,18 +100,19 @@ export default function PayOrderPage({ title, subtitle }: { title: string, subti
   const handleSendEmail = () => {
     if (order) {
       try {
-        // emailjs.send(
-        //   // 'service_uk7l8dh', //Outlook
-        //   'service_rpirl1w',
-        //   'template_oprezrr',
-        //   {
-        //     to_name: userInfo?.name,
-        //     pickup_code: order?.pickUpCode,
-        //     to_email: userInfo?.email,
-        //     order_details: cartItemsDetail(),
-        //   },
-        //   'ElU7Zz_Kk2wIl9-bY',
-        // )
+        // TODO: Comentar para pruebas
+        emailjs.send(
+          // 'service_uk7l8dh', //Outlook
+          'service_rpirl1w',
+          'template_oprezrr',
+          {
+            to_name: userInfo?.name,
+            pickup_code: order?.pickUpCode,
+            to_email: userInfo?.email,
+            order_details: cartItemsDetail(),
+          },
+          'ElU7Zz_Kk2wIl9-bY',
+        )
         setSnackBarMessage(`${t('orders.emailSent')}`);
         setShowSnackBar(true);
         setResult(true);
@@ -182,7 +183,6 @@ export default function PayOrderPage({ title, subtitle }: { title: string, subti
     },
     onError: (err) => {
       alert(getError(err as ApiError))
-      //TODO: error as ApiError snackbar
     },
   }
 

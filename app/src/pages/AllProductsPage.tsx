@@ -11,11 +11,6 @@ export default function AllProductsPage({
   // const { mutateAsync: sendResetEmail } = useResetPasswordEmail()
   useTitle(title + subtitle);
 
-  // TODO: Checkbox y que aparezca el elegir sala y butaca. Probar que se refleje en la BBDD
-  // TODO: Traducciones
-  // TODO: Borrar Stripe? Hecho
-  // TODO: Pagar en efectivo y estados de pedido?m
-
   return (
     <>
       <Layout title="appetizers" description="all appetizers">

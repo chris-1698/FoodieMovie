@@ -54,7 +54,6 @@ export default function PickupDetailsPage({
   const [seatNumber, setSeatNumber] = useState('');
   const [seatDeliver, setSeatDeliver] = useState(false);
 
-  // TODO: Guardar Fecha como Date
   const handleSetPickUpDate = (e: React.SyntheticEvent) => {
     const dateAsObject = e.$d as Date;
     setPickupDate(dateAsObject)
@@ -69,69 +68,81 @@ export default function PickupDetailsPage({
     }
   }
 
+  const isOneHourBefore = (dateA: Date, dateB: Date): boolean => {
+    const timeDifference = dateB.getTime() - dateA.getTime();
+
+    const hoursDifference = timeDifference / (1000 * 60 * 60)
+    return hoursDifference >= 1;
+  }
+
+  {/* TODO: Probar esto mañana 24-1-2024 */ }
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-
-    // Entrega en asiento
-    if (seatDeliver) {
-      if (REGEXP.test(fullName) && SEATREGEXP.test(seatNumber)) {
-        // console.log('Nombre y asiento bien. Entrega en butaca');
-        dispatch({
-          type: 'SAVE_ORDER_DETAILS',
-          payload: {
-            fullName,
-            email,
-            pickUpDate,
-            screenId,
-            seatNumber,
-          },
-        });
-        localStorage.setItem(
-          'orderDetails',
-          JSON.stringify({
-            fullName,
-            email,
-            pickUpDate,
-            screenId,
-            seatNumber,
-          })
-        );
-        navigate('/payment');
-      } else {
-        // Nombre o asiento mal
-        // console.log('Nombre o asiento mal');
-        setOpenSnackBar(true);
-        setSnackBarMessage(`${t('pickupDetails.seatNameFormat')}`)
-      }
+    if (!isOneHourBefore(new Date(), pickUpDate)) {
+      setSnackBarMessage(`${t('orders.confirmError')}`);
+      setOpenSnackBar(true);
+      return
     } else {
-      // Entrega en bar
-      if (REGEXP.test(fullName)) {
-        console.log('Nombre bien. Entrega en bar');
-        dispatch({
-          type: 'SAVE_ORDER_DETAILS',
-          payload: {
-            fullName,
-            email,
-            pickUpDate,
-          },
-        });
-        localStorage.setItem(
-          'orderDetails',
-          JSON.stringify({
-            fullName,
-            email,
-            pickUpDate,
-          })
-        );
-        navigate('/payment');
+      // Entrega en asiento
+      if (seatDeliver) {
+        if (REGEXP.test(fullName) && SEATREGEXP.test(seatNumber)) {
+          // console.log('Nombre y asiento bien. Entrega en butaca');
+          dispatch({
+            type: 'SAVE_ORDER_DETAILS',
+            payload: {
+              fullName,
+              email,
+              pickUpDate,
+              screenId,
+              seatNumber,
+            },
+          });
+          localStorage.setItem(
+            'orderDetails',
+            JSON.stringify({
+              fullName,
+              email,
+              pickUpDate,
+              screenId,
+              seatNumber,
+            })
+          );
+          navigate('/payment');
+        } else {
+          // Nombre o asiento mal
+          // console.log('Nombre o asiento mal');
+          setOpenSnackBar(true);
+          setSnackBarMessage(`${t('pickupDetails.seatNameFormat')}`)
+        }
       } else {
-        // Nombre mal
-        // console.log('Nombre mal');
-        setOpenSnackBar(true);
-        setSnackBarMessage(`${t('pickupDetails.nameFormat')}`)
+        // Entrega en bar
+        if (REGEXP.test(fullName)) {
+          console.log('Nombre bien. Entrega en bar');
+          dispatch({
+            type: 'SAVE_ORDER_DETAILS',
+            payload: {
+              fullName,
+              email,
+              pickUpDate,
+            },
+          });
+          localStorage.setItem(
+            'orderDetails',
+            JSON.stringify({
+              fullName,
+              email,
+              pickUpDate,
+            })
+          );
+          navigate('/payment');
+        } else {
+          // Nombre mal
+          // console.log('Nombre mal');
+          setOpenSnackBar(true);
+          setSnackBarMessage(`${t('pickupDetails.nameFormat')}`)
+        }
       }
     }
-
   };
 
   const handleCloseSnackBar = () => {
@@ -185,16 +196,14 @@ export default function PickupDetailsPage({
                   control={
                     <Checkbox
                       onChange={handleChange} />}
-                  // TODO: Texto
-                  label="¿Te lo entregamos en sala?" />
+                  label={t('pickupDetails.deliverSeat')} />
               </Grid>
               <Grid item xs={12}>
                 <Collapse orientation='vertical'
                   in={seatDeliver}>
                   <Grid item xs={12}>
                     <TextField
-                      // TODO: Texto
-                      label={'Sala'}
+                      label={t('pickupDetails.screen')}
                       value={screenId}
                       type='number'
                       onChange={(e) => {
@@ -215,8 +224,7 @@ export default function PickupDetailsPage({
                   in={seatDeliver}>
                   <Grid item xs={12}>
                     <TextField
-                      // TODO: Texto
-                      label={'Butaca (ej. B4)'}
+                      label={t('pickupDetails.seat')}
                       onChange={(e) => {
                         setSeatNumber(e.target.value.toUpperCase());
                       }}
@@ -264,6 +272,7 @@ export default function PickupDetailsPage({
           }}
         >
           <Alert
+            sx={{ fontWeight: 'bold' }}
             onClose={handleCloseSnackBar}
             severity='error'
           >

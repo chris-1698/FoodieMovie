@@ -116,7 +116,6 @@ const AppComponent = () => {
           />
         }
       />
-      {/*TODO:  Cambiar todo lo de admin por employee*/}
       {/* Employee page */}
       <Route path={ROUTING_MANAGER.EMPLOYEE_PAGE} element={<EmployeePage title={t('titles.brand')} subtitle={t('titles.employee')}></EmployeePage>}></Route>
 
@@ -233,7 +232,7 @@ const App = () => {
             deferLoading={true}>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
               <QueryClientProvider client={queryClient}>
-                <ReactQueryDevtools initialIsOpen={false} />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                 <AppComponent />
               </QueryClientProvider>
             </LocalizationProvider>

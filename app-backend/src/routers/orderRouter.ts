@@ -110,6 +110,23 @@ orderRouter.get(
 );
 
 orderRouter.get(
+  `/order/getPendingOrders`,
+  isAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const orders = await OrderModel.count({
+      isCancelled: false,
+      isPaid: false,
+      user: req.user._id,
+    });
+    if (orders === 0) {
+      res.status(200).send({ message: 'Deletion correct!', orders });
+    } else {
+      res.status(200).send({ message: 'You have pending orders', orders });
+    }
+  })
+);
+
+orderRouter.get(
   '/all/allOrders',
   isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
@@ -196,11 +213,10 @@ orderRouter.put(
   `/order/cancelOrder`,
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
-    console.log(req.body.id);
+    // console.log(req.body.id);
 
     const order = await OrderModel.findById(req.body.id);
-    console.log(order);
-
+    // console.log(order);
     if (order) {
       if (order!.isCancelled)
         res.status(412).send({ message: 'Order already cancelled!' });

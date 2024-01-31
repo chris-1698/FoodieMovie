@@ -29,6 +29,7 @@ export default function ConfirmOrderPage({
   const { cart } = state
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
+  const [result, setResult] = useState(false);
   const days = [
     t('days.monday'),
     t('days.tuesday'),
@@ -78,6 +79,8 @@ export default function ConfirmOrderPage({
     </React.Fragment>
   )
 
+
+
   const placeOrderHandler = async () => {
     try {
       const data = await createOrder({
@@ -99,6 +102,7 @@ export default function ConfirmOrderPage({
     } catch (err) {
       setSnackBarMessage(getError(err as ApiError))
       setOpenSnackbar(true)
+      setResult(false)
     }
   }
 
@@ -108,7 +112,6 @@ export default function ConfirmOrderPage({
       <Typography component='h1' variant='h1'>
         {t('orders.placeOrder')}
       </Typography>
-      {/* TODO: Añadir los nuevos detalles bien. Sala y butaca */}
       <Grid container spacing={1}>
         <Grid item md={9} xs={12}>
           <Card sx={classes.section}>
@@ -135,15 +138,13 @@ export default function ConfirmOrderPage({
                   </Typography>
                   {cart.orderDetails.screenId ?
                     (
-                      // TODO: Texto
-                      <Typography>Sala: {`${cart.orderDetails?.screenId}`}</Typography>
+                      <Typography>{t('orders.screenId')} {`${cart.orderDetails?.screenId}`}</Typography>
                     ) : (
                       <></>
                     )}
                   {cart.orderDetails.seatNumber ?
                     (
-                      // TODO: Texto
-                      <Typography>Butaca: {`${cart.orderDetails?.seatNumber}`}</Typography>
+                      <Typography>{t('orders.seatNumber')} {`${cart.orderDetails?.seatNumber}`}</Typography>
                     ) : (
                       <></>
                     )}
@@ -292,7 +293,7 @@ export default function ConfirmOrderPage({
         open={openSnackbar}
         action={closeSnackBar}
       >
-        <Alert severity='error' onClose={handleCloseSnackBar}>
+        <Alert severity={result ? 'success' : 'error'} onClose={handleCloseSnackBar}>
           {snackBarMessage}
         </Alert>
       </Snackbar>

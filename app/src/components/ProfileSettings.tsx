@@ -8,20 +8,24 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useTranslation } from 'react-i18next';
 import generator from 'generate-password-ts'
 import { useDeleteUserMutation } from '../hooks/userHooks';
+import { useGetPendingOrders } from '../hooks/orderHooks';
+import { getError } from '../utils/utils';
+import { ApiError } from '../typings/ApiError';
 
 const CODE_REGEXP = new RegExp('^[A-Za-z0-9]+$')
 
 export default function ProfileSettings() {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [openDialog, setOpenDialog] = useState(false)
-  const [deleteCode, setDeleteCode] = useState('')
-  const [codeError, setCodeError] = useState(false)
-  const [deleteConfirm, setDeleteConfirm] = useState('')
-  const [labelValue, setLabelValue] = useState(`${t('settings.enterCode')}`)
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteCode, setDeleteCode] = useState('');
+  const [codeError, setCodeError] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [labelValue, setLabelValue] = useState(`${t('settings.enterCode')}`);
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
-  const { mutateAsync: deleteUser } = useDeleteUserMutation()
+  const { mutateAsync: deleteUser } = useDeleteUserMutation();
+  const { data: pendingOrders, isLoading, error } = useGetPendingOrders();
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -50,10 +54,25 @@ export default function ProfileSettings() {
     }
   }
 
+  const checkPendingOrders = (): boolean => {
+    try {
+      if (pendingOrders!.orders === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (err) {
+      alert(getError(err as ApiError))
+      return false;
+    }
+  }
+
   const handleDeleteAccount = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const userData = JSON.parse(localStorage.getItem('userInfo')!)
-    if (verifyCode(deleteConfirm)) {
+    if (verifyCode(deleteConfirm) && checkPendingOrders()) {
+      console.log('a?');
+
       // Calling endpoint
       await deleteUser({
         email: userData.email,

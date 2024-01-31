@@ -84,8 +84,7 @@ export default function PaymentMethodPage({
                       />}
                   ></FormControlLabel>
                   <FormControlLabel
-                    // TODO: Texto
-                    label="Efectivo"
+                    label={t('paymentMethod.cash')}
                     value="Cash"
                     control={
                       <Radio onChange={(e) => {
