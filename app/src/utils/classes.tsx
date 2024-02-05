@@ -35,7 +35,7 @@ const classes = {
     justifyContent: 'space-between',
   },
   switchDivider: {
-    marginLeft: '90%',
+    marginLeft: '75%',
     marginBottom: '2%',
   },
 

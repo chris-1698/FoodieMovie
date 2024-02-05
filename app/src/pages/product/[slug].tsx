@@ -16,7 +16,7 @@ import {
   IconButton,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // React resources
 import React, { useContext, useEffect, useState } from 'react';
 
@@ -123,7 +123,8 @@ export default function ProductInfo({
                 }
               }}
             >
-              <Typography>back to result</Typography>
+              {/* <Typography>back to result</Typography> */}
+              <ArrowBackIcon />
             </Link>
           </Box>
           <Grid container spacing={1}>
