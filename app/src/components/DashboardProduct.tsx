@@ -21,8 +21,21 @@ import React, { useContext, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { ROUTING_MANAGER } from '../navigation/Router';
 
+// TODO: Revisar que esto funcione
+// interface IProduct {
+//   _id: string,
+//   countInStock: number,
+//   name: string,
+//   slug: { current: string },
+//   rating: number,
+//   numReviews: number,
+//   image: string,
+//   price: number
+// }
+
 /* eslint-disable */
 export default function DashboardProduct({ product }) {
+  // export default function DashboardProduct(product) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const { t } = useTranslation();
@@ -82,56 +95,54 @@ export default function DashboardProduct({ product }) {
           <CardContent>
             <Typography>{product.name}</Typography>
             <Typography>
-              <Rating value={product.rating} readOnly></Rating> (
+              <Rating value={product.rating} readOnly precision={0.5}></Rating> (
               {product.numReviews} {t('dashboard.reviews')})
             </Typography>
           </CardContent>
         </CardActionArea>
       </Link>
-      <CardActions>
+      <CardActions sx={{ justifyContent: 'space-between', padding: '0 1rem' }}>
+        {/* <Grid className='prueba-class' sx={{ justifyContent: 'space-between', display: 'flex', width: '100%', padding: '0 0.5rem' }}> */}
         <Typography variant='h2' fontSize='large'>
           {product.price} {t('currency')}
         </Typography>
-        <Grid sx={{ paddingRight: '40%' }}></Grid>
+
         {/* If there's no stock for the product, disable "add to cart" button */}
-        {product.countInStock === 0 ? (
-          <Button
-            size="small"
-            disabled
-            variant='contained'
-            sx={{ width: '140px' }}
+        <Button
+          size='small'
+
+          disabled={product.countInStock === 0}
+          color={product.countInStock > 0 ? 'primary' : undefined}
+          variant='contained'
+          onClick={() => {
+            if (product.countInStock > 0) {
+              addToCartHandler()
+            }
+          }}
+        >
+          {product.countInStock === 0 ?
+            t('dashboard.noStockProduct') :
+            t('dashboard.addCart')
+          }
+        </Button>
+        {/* </Grid> */}
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackBar}
+          action={closeSnackBar}
+          anchorOrigin={{
+            horizontal: 'center',
+            vertical: 'top'
+          }}
+        >
+          <Alert
+            onClose={handleCloseSnackBar}
+            severity="success"
           >
-            {t('dashboard.noStockProduct')}
-          </Button>
-        ) : (
-          <>
-            <Button
-              size="small"
-              color="primary"
-              onClick={addToCartHandler}
-              variant="contained"
-            >
-              {t('dashboard.addCart')}
-            </Button>
-            <Snackbar
-              open={openSnackBar}
-              autoHideDuration={6000}
-              onClose={handleCloseSnackBar}
-              action={closeSnackBar}
-              anchorOrigin={{
-                horizontal: 'center',
-                vertical: 'top'
-              }}
-            >
-              <Alert
-                onClose={handleCloseSnackBar}
-                severity="success"
-              >
-                {snackBarMessage}
-              </Alert>
-            </Snackbar>
-          </>
-        )}
+            {snackBarMessage}
+          </Alert>
+        </Snackbar>
       </CardActions>
     </Card>
   );

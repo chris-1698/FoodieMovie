@@ -13,7 +13,14 @@ import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close'
 import { StaticDateTimePicker } from '@mui/x-date-pickers';
 
-const REGEXP = new RegExp('^[A-Za-z0-9]{3,16}$')
+
+// const REGEXP = new RegExp('^[A-Za-z0-9nÑ ]{3,18}$')
+
+// const REGEXP = new RegExp('/^[a-zA-Z\s-]+$/');
+// '^[a-zA-ZÀ-ÿ\u00f1\u00d1]{3,18}(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]{0,18}$'
+// const REGEXP = new RegExp('^[a-zA-ZÀ-ÿ\u00f1\u00d1]{3,18}(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]{0,18}$');
+// const REGEXP = ^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]{3,18}$;
+const REGEXP = /^(?=.{3,18}$)[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$/;
 const SEATREGEXP = new RegExp('^[A-Za-z]([1-9]|1[0-4])$')
 const MIN_SCREEN = 1;
 const MAX_SCREEN = 10;
@@ -57,7 +64,6 @@ export default function PickupDetailsPage({
   const handleSetPickUpDate = (e: React.SyntheticEvent) => {
     const dateAsObject = e.$d as Date;
     setPickupDate(dateAsObject)
-    console.log('La auténtica fecha: ', dateAsObject);
   }
 
   const handleChange = () => {
@@ -116,8 +122,9 @@ export default function PickupDetailsPage({
         }
       } else {
         // Entrega en bar
+        fullName.trim();
+
         if (REGEXP.test(fullName)) {
-          console.log('Nombre bien. Entrega en bar');
           dispatch({
             type: 'SAVE_ORDER_DETAILS',
             payload: {
@@ -137,7 +144,6 @@ export default function PickupDetailsPage({
           navigate('/payment');
         } else {
           // Nombre mal
-          // console.log('Nombre mal');
           setOpenSnackBar(true);
           setSnackBarMessage(`${t('pickupDetails.nameFormat')}`)
         }

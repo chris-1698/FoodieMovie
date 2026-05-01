@@ -1,15 +1,16 @@
+import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { TablePaginationActionsProps } from '@mui/material/TablePagination/TablePaginationActions'
 import { Alert, Box, Button, CircularProgress, Grid, IconButton, Link, Table, TableBody, useTheme, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@mui/material"
+import { ArrowBack, FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage } from "@mui/icons-material"
 import { useGetOrderHistoryQuery } from "../hooks/orderHooks"
+import QRHover from "../components/QRHover"
 import useTitle from "../hooks/useTitle"
 import Layout from "../layouts/Layout"
 import { ApiError } from "../typings/ApiError"
 import { getError } from "../utils/utils"
-import { useNavigate } from "react-router-dom"
-import { useTranslation } from "react-i18next"
-import QRHover from "../components/QRHover"
-import { useState } from "react"
-import { TablePaginationActionsProps } from '@mui/material/TablePagination/TablePaginationActions'
-import { FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage } from "@mui/icons-material"
+import EmptyState from "../utils/EmptyState"
 
 export default function OrderHistory(
   { title, subtitle }:
@@ -23,10 +24,19 @@ export default function OrderHistory(
   const navigate = useNavigate();
   const { t } = useTranslation();
   const orderList = orders!;
+  const columnTitles = [
+    { title: t('orderHistory.code') },
+    { title: t('orderHistory.date') },
+    { title: t('orderHistory.total') },
+    { title: t('orderHistory.paid') },
+    { title: t('orderHistory.delivered') },
+    { title: t('orderHistory.pickupDate') },
+    { title: ' ' }
+  ]
 
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orderList.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orderList?.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -98,105 +108,148 @@ export default function OrderHistory(
 
   return (
     <>
-      <Layout title="order history" description="order history of the user">
-        <Typography variant="h1">{t('orderHistory.orderHistory')}</Typography>
-        {isLoading ? (
-          <CircularProgress />
-        ) : error ? (
-          <Alert severity="error">{getError(error as ApiError)}</Alert>
-        ) : (
-          <Grid container spacing={2}>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <Typography>{t('orderHistory.code')}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{t('orderHistory.date')}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{t('orderHistory.total')}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{t('orderHistory.paid')}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{t('orderHistory.delivered')}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{t('orderHistory.pickupDate')}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <></>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(rowsPerPage > 0
-                    ? orderList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    : orderList
-                  ).map((order) => (
-                    <TableRow key={order._id}>
-                      <TableCell>
-                        <Link>
-                          <QRHover text={order.pickUpCode}></QRHover>
-                        </Link>
-                      </TableCell>
-                      <TableCell>{order.createdAt.substring(0, 10)}</TableCell>
-                      <TableCell>{order.totalPrice.toFixed(2)}{t('currency')}</TableCell>
-                      <TableCell>{order.isPaid! && order.paidAt!
-                        ? order.paidAt.substring(0, 10) : `${t('orderHistory.no')}`}</TableCell>
-                      <TableCell>{order.isDelivered ? `${t('orderHistory.yes')}` : `${t('orderHistory.no')}`}</TableCell>
-                      <TableCell>{order.orderDetails.pickUpDate.toString().substring(0, 10)}</TableCell>
-                      <TableCell>
-                        <Button
-                          type="button"
-                          variant="contained"
-                          onClick={() => {
-                            navigate(`/orderSummary/${order._id}`)
-                          }}
-                        >{t('orderHistory.details')}</Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                      colSpan={7}
-                      sx={{ justifyContent: 'center' }}
-                      count={orderList.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      ActionsComponent={TablePaginationActions}
-                      labelDisplayedRows={
-                        ({ from, to, count }) => {
-                          return t('pagination.orders')
-                            + from + t('pagination.to')
-                            + to + t('pagination.of') + count
-                        }
-                      }
-                      labelRowsPerPage={
-                        t('pagination.rowsPerPage')
-                      }>
-                    </TablePagination>
-                  </TableRow>
-                </TableFooter>
-              </Table>
-            </TableContainer>
+      <Layout
+        title="order history"
+        description="order history of the user"
+      >
+        <Grid
+          className="order-history__content"
+          height={'100%'}
+          display={'flex'}
+          flex={1}
+          flexDirection={'column'}>
+          <Grid
+            className="order-history__content--title"
+            container
+            direction={'row'}
+            gap={'1rem'}
+            padding={'0 0 3rem 0'}>
+            <Button onClick={() => navigate(-1)}>
+              <ArrowBack />
+            </Button>
+            <Typography variant="h1">{t('orderHistory.orderHistory')}</Typography>
           </Grid>
-        )
-        }
+          <Grid
+            className="order-history__content--table-container"
+            container spacing={2}
+            height={'100%'}
+            display={'flex'}
+            flex={'1'}
+            justifyContent={'center'}
+            alignContent={'center'}>
+            {isLoading ? (
+              <CircularProgress />
+            ) : error ? (
+              <Alert severity="error">{getError(error as ApiError)}</Alert>
+            ) : (
+              orders?.length ? (
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        {columnTitles.map((e) => (
+                          <TableCell>
+                            <Typography>{e.title}</Typography>
+                          </TableCell>
+                        ))}
+                        {/* <TableCell>
+                          <Typography>{t('orderHistory.code')}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{t('orderHistory.date')}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{t('orderHistory.total')}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{t('orderHistory.paid')}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{t('orderHistory.delivered')}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{t('orderHistory.pickupDate')}</Typography>
+                        </TableCell>
+                        <TableCell> */}
+                        <></>
+                        {/* </TableCell> */}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {(rowsPerPage > 0 && orderList
+                        ? orderList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        : orderList
+                      ).map((order) => (
+                        <TableRow key={order._id}>
+                          <TableCell>
+                            <Link>
+                              <QRHover text={order.pickUpCode}></QRHover>
+                            </Link>
+                          </TableCell>
+                          <TableCell>{order.createdAt.substring(0, 10)}</TableCell>
+                          <TableCell>{order.totalPrice.toFixed(2)}{t('currency')}</TableCell>
+                          <TableCell>{order.isPaid! && order.paidAt!
+                            ? order.paidAt.substring(0, 10) : `${t('orderHistory.no')}`}</TableCell>
+                          <TableCell>{order.isDelivered ? `${t('orderHistory.yes')}` : `${t('orderHistory.no')}`}</TableCell>
+                          <TableCell>{order.orderDetails.pickUpDate.toString().substring(0, 10)}</TableCell>
+                          <TableCell>
+                            <Button
+                              type="button"
+                              variant="contained"
+                              onClick={() => {
+                                navigate(`/orderSummary/${order._id}`)
+                              }}
+                            >{t('orderHistory.details')}</Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                          colSpan={7}
+                          sx={{ justifyContent: 'center' }}
+                          count={orderList?.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                          ActionsComponent={TablePaginationActions}
+                          labelDisplayedRows={
+                            ({ from, to, count }) => {
+                              return t('pagination.orders')
+                                + from + t('pagination.to')
+                                + to + t('pagination.of') + count
+                            }
+                          }
+                          labelRowsPerPage={
+                            t('pagination.rowsPerPage')
+                          }>
+                        </TablePagination>
+                      </TableRow>
+                    </TableFooter>
+                  </Table>
+                </TableContainer>
+              ) :
+                <Grid
+                  className="order-history__content--empty-state"
+                  container
+                  justifyContent={'center'}>
+                  <EmptyState title={t('allOrders.emptyState')}
+                    subtitle={t('allOrders.emptyStateSubtitle')} />
+                </Grid>
+              // }
+            )
+            }
+          </Grid>
+        </Grid>
+
       </Layout>
     </>
   )

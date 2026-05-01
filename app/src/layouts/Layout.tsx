@@ -74,7 +74,11 @@ function Layout({
 	};
 
 	return (
-		<>
+		<Box sx={{
+			display: 'flex',
+			flexDirection: 'column',
+			minHeight: '100vh' // 👈 puedes usar 100% si ya configuraste html/body/root
+		}}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
 				<AppBar position="static" sx={classes.appbar}>
@@ -111,7 +115,13 @@ function Layout({
 						</Stack>
 					</Toolbar>
 				</AppBar>
-				<Container component="main" sx={classes.main}>
+				<Container component="main"
+					sx={{
+						...classes.main,
+						flex: 1,
+						display: 'flex',
+						flexDirection: 'column'
+					}}>
 					<Divider sx={classes.switchDivider}>
 						<Switch
 							checked={darkMode}
@@ -134,7 +144,7 @@ function Layout({
 					<Typography>{t('dashboard.copyright')}</Typography>
 				</Box>
 			</ThemeProvider>
-		</>
+		</Box>
 	);
 }
 export default Layout;

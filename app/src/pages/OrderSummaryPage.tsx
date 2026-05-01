@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCancelOrderMutation, useGetOrderDetailsQuery, useGetPaypalClientIdQuery, usePayOrderMutation } from '../hooks/orderHooks';
 import {
   CircularProgress,
@@ -22,6 +22,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Icon,
 } from '@mui/material';
 import { getError } from '../utils/utils';
 import { ApiError } from '../typings/ApiError';
@@ -37,6 +38,7 @@ import { PayPalButtons, PayPalButtonsComponentProps, SCRIPT_LOADING_STATE, usePa
 import emailjs from '@emailjs/browser'
 import { Store } from '../utils/Store';
 import CloseIcon from '@mui/icons-material/Close'
+import { ArrowBack } from '@mui/icons-material';
 
 // http://localhost:5173/orderSummary/:id
 export default function OrderSummaryPage({ title, subtitle }: { title: string, subtitle: string }) {
@@ -47,6 +49,7 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
   const { data: paypalConfig } = useGetPaypalClientIdQuery()
   const { state } = useContext(Store);
   const { userInfo } = state;
+  const navigate = useNavigate();
 
   const [{ isPending, isRejected }, paypalDispatch] = usePayPalScriptReducer();
   const [showSnackBar, setShowSnackBar] = useState(false);
@@ -97,8 +100,8 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
       try {
         // TODO: Comentar para pruebas
         emailjs.send(
-          // 'service_uk7l8dh', //Outlook
-          'service_rpirl1w',
+          'service_uk7l8dh', //Outlook
+          // 'service_rpirl1w',
           'template_oprezrr',
           {
             to_name: userInfo?.name,
@@ -234,9 +237,12 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
 
   return (
     <Layout title='order' description='order'>
-      <Typography component='h2' variant='h2'>
-        {t('orders.order')} {order?._id}
-      </Typography>
+      <Grid direction={'row'} gap={'1rem'} container>
+        <Button onClick={() => navigate(-1)}><ArrowBack /></Button>
+        <Typography component='h2' variant='h2'>
+          {t('orders.order')} {order?._id}
+        </Typography>
+      </Grid>
       {isLoading ? (
         <CircularProgress></CircularProgress>
       ) : error ? (
@@ -497,12 +503,19 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
         open={openDialog}
         onClose={() => setOpenDialog(false)}
       >
-        <DialogContent>
+        <DialogContent
+          style={{
+            width: 'auto',
+          }}
+        >
           <DialogContentText fontWeight={500}>
             {t('orders.cancelOrderConfirm')}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions
+          sx={{
+            width: 'fit-content',
+          }}>
           <Grid
             sx={{
               display: 'flex',

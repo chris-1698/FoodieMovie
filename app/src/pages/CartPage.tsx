@@ -27,6 +27,7 @@ import {
 import { urlForCart } from '../utils/image';
 import useTitle from '../hooks/useTitle';
 import { useTranslation } from 'react-i18next';
+import EmptyState from '../utils/EmptyState';
 
 export default function CartPage({
   title,
@@ -67,17 +68,25 @@ export default function CartPage({
 
   return (
     <div>
-      <Layout title="Carro" description="a">
+      <Layout title="carrito" description="a">
         <Typography component="h1" variant="h1">
           {' '}
           {t('cart.cart')}
         </Typography>
         {cartItems.length === 0 ? (
-          <Box>
-            <Typography>
+          <Box display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            flex={1}>
+            <EmptyState
+              title={t('cart.emptyCart')}
+              subtitle={t('cart.productLink')}
+              hasSubtitleLink
+              hrefSubtitle='/products' />
+            {/* <Typography>
               {t('cart.emptyCart')}{' '}
               <Link href="/products">{t('cart.productLink')}</Link>
-            </Typography>
+            </Typography> */}
           </Box>
         ) : (
           <Grid container spacing={2}>

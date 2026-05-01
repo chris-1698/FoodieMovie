@@ -19,7 +19,7 @@ export const generateToken = (user: User) => {
     },
     process.env.JWT_SECRET || 'secretkey',
     {
-      expiresIn: '1d',
+      expiresIn: '1h',
     }
   );
 };
@@ -43,7 +43,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
 
     next();
   } else {
-    res.status(401).json({ message: 'No Token' });
+    res.status(401).json({ message: 'You have no permissions.' });
   }
 };
 

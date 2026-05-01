@@ -7,7 +7,6 @@ const useTitle = title => {
   useEffect(() => {
     if (!documentDefined) return;
     if (document.title !== title) document.title = title;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => { document.title = originalTitle.current };
   }, [documentDefined, title]);
 };

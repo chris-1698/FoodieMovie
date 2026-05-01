@@ -26,8 +26,15 @@ export const useGetOrderHistoryQuery = () =>
   useQuery({
     queryKey: ['order-history'],
     queryFn: async () =>
-      (await apiClient.get<Order[]>(`/api/orders/mine/orderHistory`)).data,
+      (await apiClient.get<Order[]>(`/api/orders/mine/orderHistory`, {})).data,
   });
+
+// export const useGetOrderHistoryByIdQuery = (userId: string) =>
+//   useQuery({
+//     queryKey: ['order-history-id', userId],
+//     queryFn: async () =>
+//     (await apiClient.get<Order[]>(`api/orders/mine/orderHistory`, )).data,
+//   })
 
 // Endpoint to get all orders
 export const useGetAllOrdersQuery = () =>
@@ -48,7 +55,7 @@ export const useGetPendingOrders = () =>
     queryFn: async () =>
       (
         await apiClient.get<PendingOrdersResponse>(
-          `/api/orders/order/getPendingOrders`
+          `/api/orders/order/getPendingOrders`,
         )
       ).data,
   });
@@ -60,7 +67,7 @@ export const useGetSomeOrdersQuery = (searchTerm: string) =>
     queryFn: async () =>
       (
         await apiClient.get<Order[]>(
-          `api/orders/orders/searchOrder/${searchTerm}`
+          `api/orders/orders/searchOrder/${searchTerm}`,
         )
       ).data,
   });
@@ -104,7 +111,7 @@ export const useCreateOrderMutation = () =>
       (
         await apiClient.post<{ message: string; order: Order }>(
           `api/orders`,
-          order
+          order,
         )
       ).data,
   });
@@ -116,7 +123,7 @@ export const usePayOrderMutation = () =>
       (
         await apiClient.put<{ message: string; order: Order }>(
           `api/orders/${details.orderId}/pay`,
-          { details } //Contains payment result. Email address and other info.
+          { details }, //Contains payment result. Email address and other info.
         )
       ).data,
   });

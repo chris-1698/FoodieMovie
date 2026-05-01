@@ -44,7 +44,7 @@ userRouter.post(
         return;
       }
     }
-
+    // console.log('_Res___', res);
     res.status(401).send({ message: 'Invalid email or password' });
   })
 );
@@ -81,7 +81,7 @@ userRouter.post(
         { _id: user._id },
         process.env.JWT_SECRET || 'secretkey',
         {
-          expiresIn: '2h',
+          expiresIn: '1h',
         }
       );
       // Revisar error al cambiar contraseña con el enlace del correo
@@ -108,6 +108,7 @@ userRouter.post(
 
 userRouter.post(
   '/reset-password',
+  // isAuth,
   asyncHandler(async (req: Request, res: Response) => {
     jwt.verify(
       req.body.token,
@@ -136,7 +137,6 @@ userRouter.post(
     );
   })
 );
-
 userRouter.delete(
   '/delete-user',
   isAuth,

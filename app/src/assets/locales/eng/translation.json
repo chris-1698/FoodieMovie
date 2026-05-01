@@ -199,7 +199,9 @@
     "pendingDelivery": "Pending delivery",
     "cancelled": "Cancelled",
     "deliverAt": "Deliver at",
-    "state": "State"
+    "state": "State",
+    "emptyState": "It seems there isn't any orders here!",
+    "emptyStateDescription": "Want to change that?"
   },
   "forgotPassword": {
     "sentEmail": "Perfect, we have sent an email to your account.",

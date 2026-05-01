@@ -26,7 +26,7 @@
   "dashboard": {
     "pageName": "Foodie Movie",
     "copyright": "Todos los derechos reservados. Foodie Movie",
-    "addCart": "Añadir al carro",
+    "addCart": "Añadir",
     "noStockProduct": "Sin stock",
     "status": "Estado",
     "price": "Precio",
@@ -36,14 +36,14 @@
     "category": "Categoría: ",
     "productAvailable": "Disponible",
     "productUnavailable": "No disponible",
-    "xAddedToCart": " se ha añadido al carro.",
-    "addedToCart": "El aperitivo se ha añadido al carro.",
+    "xAddedToCart": " se ha añadido al carrito.",
+    "addedToCart": "El aperitivo se ha añadido al carrito.",
     "noStock": "Lo sentimos. El producto no tiene stock."
   },
   "titles": {
     "brand": "Foodie Movie",
     "allCombos": " - Aperitivos",
-    "cart": " - Carro",
+    "cart": " - Carrito",
     "profile": " - Perfil",
     "orderDetails": " - Detalles del pedido",
     "paymentMethod": " - Método de pago",
@@ -134,8 +134,8 @@
     "confirm": "Confirmar"
   },
   "cart": {
-    "cart": "Carro",
-    "emptyCart": "El carro está vacío. ",
+    "cart": "Carrito",
+    "emptyCart": "El carrito está vacío. ",
     "productLink": "¿Y si cambiamos eso?",
     "image": "Imagen",
     "name": "Nombre",
@@ -199,7 +199,9 @@
     "pendingDelivery": "Pendiente de entrega",
     "cancelled": "Anulado",
     "deliverAt": "Entregar en",
-    "state": "Estado"
+    "state": "Estado",
+    "emptyState": "¡Parece que no hay pedidos disponibles!",
+    "emptyStateDescription": "¿Te animas a cambiar eso?"
   },
   "forgotPassword": {
     "sentEmail": "Perfecto, hemos enviado un correo a tu cuenta",

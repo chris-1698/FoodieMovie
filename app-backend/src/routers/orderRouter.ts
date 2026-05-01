@@ -22,7 +22,7 @@ orderRouter.get(
     } else {
       res.status(404).json({ message: 'Order not found' });
     }
-  })
+  }),
 );
 
 //Para limpiar la BBDD
@@ -31,7 +31,7 @@ orderRouter.delete(
   isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
     OrderModel.deleteMany({});
-  })
+  }),
 );
 
 orderRouter.post(
@@ -64,7 +64,7 @@ orderRouter.post(
       });
       res.status(201).json({ message: 'Order created', order: createdOrder });
     }
-  })
+  }),
 );
 
 orderRouter.put(
@@ -90,7 +90,7 @@ orderRouter.put(
     } else {
       res.status(412).send({ message: 'Order is cancelled!' });
     }
-  })
+  }),
 );
 
 orderRouter.get(
@@ -102,11 +102,13 @@ orderRouter.get(
   '/mine/orderHistory',
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
+    // console.log('The request: ', req);
+
     const orders = await OrderModel.find({
       user: req.user._id,
     }).sort({ createdAt: -1, paidAt: -1 });
     res.json(orders);
-  })
+  }),
 );
 
 orderRouter.get(
@@ -123,7 +125,7 @@ orderRouter.get(
     } else {
       res.status(200).send({ message: 'You have pending orders', orders });
     }
-  })
+  }),
 );
 
 orderRouter.get(
@@ -135,7 +137,7 @@ orderRouter.get(
       paidAt: -1,
     });
     res.json(orders);
-  })
+  }),
 );
 
 orderRouter.get(
@@ -150,7 +152,7 @@ orderRouter.get(
     } else {
       res.status(404).send({ message: 'No orders found' });
     }
-  })
+  }),
 );
 
 orderRouter.put(
@@ -175,7 +177,7 @@ orderRouter.put(
     } else {
       res.status(412).send({ message: 'Order is cancelled!' });
     }
-  })
+  }),
 );
 
 orderRouter.put(
@@ -183,9 +185,6 @@ orderRouter.put(
   isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
     const order = await OrderModel.findById(req.body.id);
-    // console.log(order);
-    // console.log(order?.paymentMethod === 'Cash');
-    // console.log(order?.isDelivered);
     if (order?.isCancelled === false) {
       if (
         order &&
@@ -206,17 +205,14 @@ orderRouter.put(
     } else {
       res.status(412).send({ message: 'Order is cancelled!' });
     }
-  })
+  }),
 );
 
 orderRouter.put(
   `/order/cancelOrder`,
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
-    // console.log(req.body.id);
-
     const order = await OrderModel.findById(req.body.id);
-    // console.log(order);
     if (order) {
       if (order!.isCancelled)
         res.status(412).send({ message: 'Order already cancelled!' });
@@ -229,5 +225,5 @@ orderRouter.put(
     } else {
       res.status(404).send({ message: 'Order not found' });
     }
-  })
+  }),
 );
