@@ -22,11 +22,18 @@ export const useGetPaypalClientIdQuery = () =>
   });
 
 // Endpoint to get the order history for a user
-export const useGetOrderHistoryQuery = () =>
+export const useGetOrderHistoryQuery = (page: number, limit: number) =>
   useQuery({
-    queryKey: ['order-history'],
+    queryKey: ['order-history', page, limit],
     queryFn: async () =>
-      (await apiClient.get<Order[]>(`/api/orders/mine/orderHistory`, {})).data,
+      (
+        await apiClient.get(`/api/orders/mine/orderHistory`, {
+          params: { page: page + 1, limit },
+        })
+      ).data,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
+    // (await apiClient.get<Order[]>(`/api/orders/mine/orderHistory`, {})).data,
   });
 
 // export const useGetOrderHistoryByIdQuery = (userId: string) =>
@@ -58,6 +65,7 @@ export const useGetPendingOrders = () =>
           `/api/orders/order/getPendingOrders`,
         )
       ).data,
+    refetchOnWindowFocus: false,
   });
 
 // Endpoint to get those orders which pickup code matches searchTerm

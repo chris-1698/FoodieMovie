@@ -20,10 +20,12 @@ export default function OrderHistory(
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { data: orders, isLoading, error } = useGetOrderHistoryQuery();
+  const { data: orders, isLoading, error } = useGetOrderHistoryQuery(page, rowsPerPage);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const orderList = orders!;
+
+  const orderList = orders?.orders ?? [];
+  const totalOrders = orders?.totalOrders ?? 0;
   const columnTitles = [
     { title: t('orderHistory.code') },
     { title: t('orderHistory.date') },
@@ -35,8 +37,6 @@ export default function OrderHistory(
   ]
 
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orderList?.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -142,7 +142,7 @@ export default function OrderHistory(
             ) : error ? (
               <Alert severity="error">{getError(error as ApiError)}</Alert>
             ) : (
-              orders?.length ? (
+              orderList?.length > 0 ? (
                 <TableContainer>
                   <Table>
                     <TableHead>
@@ -152,36 +152,12 @@ export default function OrderHistory(
                             <Typography>{e.title}</Typography>
                           </TableCell>
                         ))}
-                        {/* <TableCell>
-                          <Typography>{t('orderHistory.code')}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography>{t('orderHistory.date')}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography>{t('orderHistory.total')}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography>{t('orderHistory.paid')}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography>{t('orderHistory.delivered')}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography>{t('orderHistory.pickupDate')}</Typography>
-                        </TableCell>
-                        <TableCell> */}
-                        <></>
-                        {/* </TableCell> */}
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {(rowsPerPage > 0 && orderList
-                        ? orderList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        : orderList
-                      ).map((order) => (
+                      {orderList.map((order) => (
                         <TableRow key={order._id}>
-                          <TableCell>
+                          <TableCell key={order._id + 'order'}>
                             <Link>
                               <QRHover text={order.pickUpCode}></QRHover>
                             </Link>
@@ -203,19 +179,14 @@ export default function OrderHistory(
                           </TableCell>
                         </TableRow>
                       ))}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} />
-                        </TableRow>
-                      )}
                     </TableBody>
                     <TableFooter>
                       <TableRow>
                         <TablePagination
-                          rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                          rowsPerPageOptions={[5, 10, 25]}
                           colSpan={7}
                           sx={{ justifyContent: 'center' }}
-                          count={orderList?.length}
+                          count={totalOrders}
                           rowsPerPage={rowsPerPage}
                           page={page}
                           onPageChange={handleChangePage}
@@ -243,6 +214,7 @@ export default function OrderHistory(
                   justifyContent={'center'}>
                   <EmptyState title={t('allOrders.emptyState')}
                     subtitle={t('allOrders.emptyStateSubtitle')} />
+                  <h1>NO</h1>
                 </Grid>
               // }
             )

@@ -92,22 +92,51 @@ orderRouter.put(
     }
   }),
 );
+// Anterior endpoint
+// orderRouter.get(
+//   // 27/09/2023
+//   // Fallaba porque estaba siguiendo el formato de
+//   // api/orders/:id, por lo que estaba tomando "mine" como id y fallaba al hacer
+//   // el casteo a Order, porque mine no es un ObjectId válido.
+//   // Respuesta de 43 likes https://stackoverflow.com/questions/14940660/whats-mongoose-error-cast-to-objectid-failed-for-value-xxx-at-path-id
+//   '/mine/orderHistory',
+//   isAuth,
+//   asyncHandler(async (req: Request, res: Response) => {
+//     // console.log('The request: ', req);
+
+//     const orders = await OrderModel.find({
+//       user: req.user._id,
+//     }).sort({ createdAt: -1, paidAt: -1 });
+//     res.json(orders);
+//   }),
+// );
 
 orderRouter.get(
-  // 27/09/2023
-  // Fallaba porque estaba siguiendo el formato de
-  // api/orders/:id, por lo que estaba tomando "mine" como id y fallaba al hacer
-  // el casteo a Order, porque mine no es un ObjectId válido.
-  // Respuesta de 43 likes https://stackoverflow.com/questions/14940660/whats-mongoose-error-cast-to-objectid-failed-for-value-xxx-at-path-id
   '/mine/orderHistory',
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
-    // console.log('The request: ', req);
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 5;
+
+    const skip = (page - 1) * limit;
+
+    const totalOrders = await OrderModel.countDocuments({
+      user: req.user._id,
+    });
 
     const orders = await OrderModel.find({
       user: req.user._id,
-    }).sort({ createdAt: -1, paidAt: -1 });
-    res.json(orders);
+    })
+      .sort({ createdAt: -1, paidAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      orders,
+      totalOrders,
+      page,
+      totalPages: Math.ceil(totalOrders / limit),
+    });
   }),
 );
 

@@ -108,6 +108,14 @@ export default function SignIn({
     }
   }, [navigate, redirect, userInfo])
 
+  useEffect(() => {
+    const message = sessionStorage.getItem('authMessage');
+
+    if (message) {
+      setSnackBarMessage(message);
+    }
+  })
+
   const handleCloseSnackBar = () => {
     setOpenSnackBar(false);
   };

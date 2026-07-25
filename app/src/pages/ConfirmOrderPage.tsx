@@ -128,7 +128,7 @@ export default function ConfirmOrderPage({
                   <Typography>
                     {t('orders.pickUpDate')}
                     {
-                      `${days[cart.orderDetails?.pickUpDate.getDay() - 1]}
+                      `${days[cart.orderDetails?.pickUpDate.getDay() - 1 || new Date().getDay() - 1]}
                       ${cart.orderDetails?.pickUpDate.toLocaleDateString()}`
                     }
                   </Typography>

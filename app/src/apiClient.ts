@@ -18,7 +18,29 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     Promise.reject(error);
-  }
+  },
+);
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const message = error?.response?.data?.message;
+
+    if (
+      status === 401 &&
+      (message?.includes('jwt expired') ||
+        message?.includes('TokenExpiredError') ||
+        message?.includes('jwt'))
+    ) {
+      localStorage.removeItem('userInfo');
+      sessionStorage.setItem('authMessage', 'Tu sesión ha expirado.');
+
+      window.location.href = '/signin';
+    }
+
+    return Promise.reject(error);
+  },
 );
 
 export default apiClient;

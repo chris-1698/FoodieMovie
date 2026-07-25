@@ -95,11 +95,11 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
   /**
    * 
    */
-  const handleSendEmail = () => {
+  const handleSendEmail = async () => {
     if (order) {
       try {
         // TODO: Comentar para pruebas
-        emailjs.send(
+        await emailjs.send(
           'service_uk7l8dh', //Outlook
           // 'service_rpirl1w',
           'template_oprezrr',
@@ -110,12 +110,16 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
             order_details: cartItemsDetail(),
           },
           'ElU7Zz_Kk2wIl9-bY',
-        )
+        ).then((res) => {
+          console.log('OK', res);
+        })
         setSnackBarMessage(`${t('orders.emailSent')}`);
         setShowSnackBar(true);
         setResult(true);
         console.log('Correo enviado!'); //Send email test
       } catch (err) {
+        console.log('Error EmailJS ', err);
+
         setSnackBarMessage(getError(err as ApiError));
         setShowSnackBar(true);
         setResult(false)
