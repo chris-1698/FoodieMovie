@@ -201,7 +201,12 @@
     "deliverAt": "Deliver at",
     "state": "State",
     "emptyState": "It seems there isn't any orders here!",
-    "emptyStateDescription": "Want to change that?"
+    "emptyStateDescription": "Want to change that?",
+    "orderConfirm": "Confirm cash payment?",
+    "deliveryConfirm": "Confirm order as delivered?",
+    "confirmMessage_1": "You're about to confirm the payment in cash ",
+    "confirmMessage_2": "This action cannot be undone.",
+    "deliverMessage_1": "You're about to mark the order as delivered  "
   },
   "forgotPassword": {
     "sentEmail": "Perfect, we have sent an email to your account.",
@@ -212,6 +217,7 @@
     "orders": "Orders ",
     "to": " to ",
     "of": " of ",
-    "rowsPerPage": "Rows per page:"
+    "rowsPerPage": "Rows per page:",
+    "loading": "Loading orders..."
   }
 }

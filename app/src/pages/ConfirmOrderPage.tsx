@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Store } from '../utils/Store';
 import { Alert, Button, Card, CardMedia, CircularProgress, Grid, IconButton, List, ListItem, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import CheckoutRequirements from '../components/CheckoutRequirements';
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 import classes from '../utils/classes';
 import { urlForCart } from '../utils/image';
 import useTitle from '../hooks/useTitle';
@@ -51,7 +51,7 @@ export default function ConfirmOrderPage({
   cart.taxPrice = roundTo2(0.1 * cart.itemsPrice)
   cart.totalPrice = cart.itemsPrice + cart.taxPrice
 
-  const { mutateAsync: createOrder, isLoading } = useCreateOrderMutation()
+  const { mutateAsync: createOrder, isPending: isLoading } = useCreateOrderMutation()
 
   const handleCloseSnackBar = () => {
     setOpenSnackbar(false);
@@ -82,6 +82,7 @@ export default function ConfirmOrderPage({
 
 
   const placeOrderHandler = async () => {
+    if (isLoading) return;
     try {
       const data = await createOrder({
         orderItems: cart.cartItems,

@@ -1,6 +1,6 @@
 import Products from '../components/Products';
 import useTitle from '../hooks/useTitle';
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 export default function AllProductsPage({
   title,
   subtitle,

@@ -17,7 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Store } from "../../utils/Store";
 import { useResetPasswordMutation } from "../../hooks/userHooks";
 import { useTranslation } from "react-i18next";
-import Layout from "../../layouts/Layout";
+import Layout from "../../layouts/Header";
 import CloseIcon from '@mui/icons-material/Close';
 import { getError } from "../../utils/utils";
 import { ApiError } from "../../typings/ApiError";

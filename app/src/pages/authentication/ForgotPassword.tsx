@@ -14,7 +14,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Store } from "../../utils/Store";
 import { useForgotPasswordMutation } from "../../hooks/userHooks";
-import Layout from "../../layouts/Layout";
+import Layout from "../../layouts/Header";
 import useTitle from "../../hooks/useTitle";
 import emailjs from "@emailjs/browser"
 import { getError } from "../../utils/utils";

@@ -201,7 +201,12 @@
     "deliverAt": "Entregar en",
     "state": "Estado",
     "emptyState": "¡Parece que no hay pedidos disponibles!",
-    "emptyStateDescription": "¿Te animas a cambiar eso?"
+    "emptyStateDescription": "¿Te animas a cambiar eso?",
+    "orderConfirm": "¿Confirmar cobro en efectivo?",
+    "deliveryConfirm": "¿Marcar pedido como entregado?",
+    "confirmMessage_1": "Vas a confirmar el pago en efectivo del pedido ",
+    "confirmMessage_2": "Esta acción no se puede deshacer.",
+    "deliverMessage_1": "Vas a marcar como entregado el pedido "
   },
   "forgotPassword": {
     "sentEmail": "Perfecto, hemos enviado un correo a tu cuenta",
@@ -212,6 +217,7 @@
     "orders": "Pedidos ",
     "to": " al ",
     "of": " de ",
-    "rowsPerPage": "Filas por página:"
+    "rowsPerPage": "Filas por página:",
+    "loading": "Cargando pedidos..."
   }
 }

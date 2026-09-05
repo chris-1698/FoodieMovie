@@ -8,6 +8,7 @@ import { Alert, Box, Grid, Skeleton } from '@mui/material';
 import DashboardProduct from './DashboardProduct';
 import { getError } from '../utils/utils';
 import { ApiError } from '../typings/ApiError';
+import ProductFilters from '../fragments/eCommerce/ProductFilters';
 import i18n from '../../i18n';
 
 function ProductSkeleton() {
@@ -21,18 +22,11 @@ function ProductSkeleton() {
 				bgcolor: 'grey.900',
 			}}
 		>
-			{/* Imagen del producto */}
 			<Skeleton variant="rectangular" height={220} sx={{ borderRadius: 1 }} />
-
-			{/* Nombre del producto */}
 			<Skeleton variant="text" width="50%" sx={{ fontSize: '1rem', mt: 1.5 }} />
-
-			{/* Estrellas de valoración */}
 			<Box display="flex" alignItems="center" mt={1}>
 				<Skeleton variant="text" width={80} sx={{ fontSize: '0.875rem', ml: 0.5 }} />
 			</Box>
-
-			{/* Precio y botón */}
 			<Box display="flex" justifyContent="space-between" alignItems="center" mt={1.5}>
 				<Skeleton variant="text" width={60} sx={{ fontSize: '1.25rem' }} />
 				<Skeleton variant="rounded" width={90} height={36} />
@@ -47,28 +41,42 @@ export default function Products() {
 		error: '',
 		loading: true,
 	});
+	const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
 	const { products, error, loading } = productState;
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setProductState((prev: any) => ({ ...prev, loading: true }));
 			try {
-				var products;
-				if (i18n.language === 'en-EN') {
-					products = await client.fetch(`*[_type == "product" && language == "en"]`);
-				} else if (i18n.language === 'es-ES') {
-					products = await client.fetch(`*[_type == "product" && language == "es"]`);
-				}
+				const lang = i18n.language === 'en-EN' ? 'en' : 'es';
+
+				const query =
+					selectedCategory === 'all'
+						? `*[_type == "product" && language == $lang]`
+						: `*[_type == "product" && language == $lang && category == $category]`;
+
+				const params =
+					selectedCategory === 'all'
+						? { lang }
+						: { lang, category: selectedCategory };
+
+				const products = await client.fetch(query, params);
 				setProductState({ products, loading: false, error: '' });
 			} catch (err) {
 				setProductState({ products: [], loading: false, error: getError(err as ApiError) });
 			}
 		};
 		fetchData();
-	}, []);
+	}, [i18n.language, selectedCategory]);
 
 	return (
-		<Box display="flex" flex={1} alignItems="center" justifyContent="center">
+		<Box display="flex" flexDirection="column" flex={1} alignItems="center" justifyContent="center">
+			<ProductFilters
+				selectedCategory={selectedCategory}
+				onCategoryChange={setSelectedCategory}
+			/>
+
 			{loading ? (
 				<Grid container spacing={3}>
 					{[1, 2, 3, 4, 5, 6].map((i) => (

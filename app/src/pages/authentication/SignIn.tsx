@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Store } from "../../utils/Store";
 import { useSigninMutation } from "../../hooks/userHooks";
-import Layout from "../../layouts/Layout";
+import Layout from "../../layouts/Header";
 import {
   Alert,
   CircularProgress,

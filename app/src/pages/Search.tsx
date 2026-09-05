@@ -21,7 +21,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next';
 import { useConfirmOrderMutation, useDeliverOrderMutation, useGetSomeOrdersQuery } from '../hooks/orderHooks';
 import useTitle from '../hooks/useTitle';
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 import { ApiError } from '../typings/ApiError';
 import { getError } from '../utils/utils';
 import QRHover from '../components/QRHover';

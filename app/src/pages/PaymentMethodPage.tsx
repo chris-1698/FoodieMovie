@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import React, { useContext, useState, useEffect } from 'react';
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import {
   Button,

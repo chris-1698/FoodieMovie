@@ -14,7 +14,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Store } from "../../utils/Store";
 import { useSignupMutation } from "../../hooks/userHooks";
-import Layout from "../../layouts/Layout";
+import Layout from "../../layouts/Header";
 import { useTranslation } from "react-i18next";
 import useTitle from "../../hooks/useTitle";
 import CloseIcon from '@mui/icons-material/Close'
@@ -149,6 +149,7 @@ export default function SignUp({
             </ListItem>
             <ListItem>
               <TextField
+                InputLabelProps={{ shrink: true }}
                 label={t('session.dayOfBirth')}
                 fullWidth
                 required

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import CheckoutRequirements from '../components/CheckoutRequirements';
 import { Alert, Button, Checkbox, Collapse, Container, FormControlLabel, TextField, FormGroup, Grid, IconButton, Snackbar, Typography, MenuItem, Select } from '@mui/material';
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 import '../styles/App.css';
 import * as dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';

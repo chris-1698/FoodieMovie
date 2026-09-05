@@ -7,7 +7,7 @@ import { ArrowBack, FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage }
 import { useGetOrderHistoryQuery } from "../hooks/orderHooks"
 import QRHover from "../components/QRHover"
 import useTitle from "../hooks/useTitle"
-import Layout from "../layouts/Layout"
+import Layout from "../layouts/Header"
 import { ApiError } from "../typings/ApiError"
 import { getError } from "../utils/utils"
 import EmptyState from "../utils/EmptyState"

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Store } from '../utils/Store';
 import { useContext } from 'react';
 import { CartItem } from '../typings/Cart';
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';

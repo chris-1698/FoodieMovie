@@ -30,7 +30,7 @@ import { Card } from '@mui/material'
 import useTitle from '../hooks/useTitle';
 import classes from '../utils/classes';
 import { urlForCart } from '../utils/image';
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'react-qr-code'
 import React, { useContext, useEffect, useState } from 'react';
@@ -58,7 +58,7 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
   const [showQR, setShowQR] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const { t } = useTranslation();
-  const { mutateAsync: payOrder, isLoading: loadingPay } = usePayOrderMutation();
+  const { mutateAsync: payOrder, isPending: loadingPay } = usePayOrderMutation();
   const { mutateAsync: cancelOrder } = useCancelOrderMutation();
   const days = [
     t('days.monday'),
@@ -85,12 +85,31 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
     return details
   }
 
-  const testPayHandler = () => {
-    payOrder({ orderId: orderId! })
-    handleSendEmail()
-    refetch()
-    alert(t('orders.paid'))
+  const testPayHandler = async () => {
+    try {
+      await payOrder({ orderId: orderId! })
+      await refetch()
+      await handleSendEmail()
+      setSnackBarMessage(t('orders.paid'))
+      setShowSnackBar(true)
+      setResult(true)
+    } catch (err) {
+      setSnackBarMessage(getError(err as ApiError))
+      setShowSnackBar(true)
+      setResult(false)
+    }
   }
+  // TODO: Probar lo de arriba, si no funciona, quedarse con lo de abajo
+  // const testPayHandler = async () => {
+  //   try {
+  //     await payOrder({ orderId: orderId! })
+  //     await refetch()
+  //     await handleSendEmail()
+  //     alert(t('orders.paid'))
+  //   } catch (err) {
+  //     alert(getError(err as ApiError))
+  //   }
+  // }
 
   /**
    * 
@@ -206,17 +225,31 @@ export default function OrderSummaryPage({ title, subtitle }: { title: string, s
         return orderID
       })
     },
+    // TODO: Lo mismo acá. Probar, si no, quedar con lo de abajo.
     onApprove(data, actions) {
       return actions.order!.capture().then(async (details) => {
         try {
-          payOrder({ orderId: orderId!, ...details })
-          handleSendEmail()
-          refetch()
+          await payOrder({ orderId: orderId!, ...details })
+          await refetch()
+          await handleSendEmail()
         } catch (err) {
-          alert(getError(err as ApiError))
+          setSnackBarMessage(getError(err as ApiError))
+          setShowSnackBar(true)
+          setResult(false)
         }
       })
     },
+    // onApprove(data, actions) {
+    //   return actions.order!.capture().then(async (details) => {
+    //     try {
+    //       await payOrder({ orderId: orderId!, ...details })
+    //       await refetch()
+    //       await handleSendEmail()
+    //     } catch (err) {
+    //       alert(getError(err as ApiError))
+    //     }
+    //   })
+    // },
     onError: (err) => {
       alert(getError(err as ApiError))
     }

@@ -44,11 +44,16 @@ export const useGetOrderHistoryQuery = (page: number, limit: number) =>
 //   })
 
 // Endpoint to get all orders
-export const useGetAllOrdersQuery = () =>
+export const useGetAllOrdersQuery = (page: number, limit: number) =>
   useQuery({
-    queryKey: ['all-orders'],
+    queryKey: ['all-orders', page, limit],
     queryFn: async () =>
-      (await apiClient.get<Order[]>(`api/orders/all/allOrders`)).data,
+      (
+        await apiClient.get<{ orders: Order[]; totalCount: number }>(
+          `api/orders/all/allOrders?page=${page + 1}&limit=${limit}`,
+        )
+      ).data,
+    placeholderData: (previousData) => previousData, // React Query v5
   });
 
 export interface PendingOrdersResponse {

@@ -22,7 +22,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 // Project resources
 import client from '../../../src/utils/client';
-import Layout from '../../layouts/Layout';
+import Layout from '../../layouts/Header';
 import classes from '../../utils/classes';
 import { getImageUrl } from '../../utils/image';
 import { Store } from '../../utils/Store';
@@ -223,11 +223,21 @@ export default function ProductInfo({
                     {product.name}
                   </Typography>
                 </ListItem>
-                <ListItem>
-                  {t('dashboard.category')} {product.category}
+                <ListItem sx={{ gap: '0.5rem' }}>
+                  <Typography fontWeight={700}>
+                    {t('dashboard.category')}
+                  </Typography>
+                  <Typography >
+                    {product.category}
+                  </Typography>
                 </ListItem>
-                <ListItem>
-                  {t('dashboard.brand')} {product.brand}
+                <ListItem sx={{ gap: '0.5rem' }}>
+                  <Typography fontWeight={700} >
+                    {t('dashboard.brand')}
+                  </Typography>
+                  <Typography >
+                    {product.brand}
+                  </Typography>
                 </ListItem>
                 <ListItem>
                   <Rating value={product.rating} readOnly></Rating>
@@ -235,8 +245,17 @@ export default function ProductInfo({
                     ({product.numReviews} {t('dashboard.reviews')})
                   </Typography>
                 </ListItem>
-                <ListItem>
-                  {t('dashboard.description')} {product.description}
+                <ListItem sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '0.5rem'
+                }}>
+                  <Typography fontWeight={700}>
+                    {t('dashboard.description')}
+                  </Typography>
+                  <Typography>
+                    {product.description}
+                  </Typography>
                 </ListItem>
               </List>
             </Grid>
@@ -246,7 +265,7 @@ export default function ProductInfo({
                   <ListItem>
                     <Grid container>
                       <Grid item xs={6}>
-                        <Typography>{t('dashboard.price')}</Typography>
+                        <Typography fontWeight={700}>{t('dashboard.price')}</Typography>
                       </Grid>
                       <Grid item xs={6}>
                         <Typography>{product.price}€</Typography>
@@ -256,7 +275,7 @@ export default function ProductInfo({
                   <ListItem>
                     <Grid container>
                       <Grid item xs={6}>
-                        <Typography>{t('dashboard.status')}</Typography>
+                        <Typography fontWeight={700}>{t('dashboard.status')}</Typography>
                       </Grid>
                       <Grid item xs={6}>
                         <Typography>

@@ -2,7 +2,7 @@
 import { UserProfile } from '@clerk/clerk-react';
 
 //Project resources
-import Layout from '../layouts/Layout';
+import Layout from '../layouts/Header';
 import useTitle from '../hooks/useTitle';
 
 export default function Profile({

@@ -161,11 +161,19 @@ orderRouter.get(
   '/all/allOrders',
   isAuthAsEmployee,
   asyncHandler(async (req: Request, res: Response) => {
-    const orders = await OrderModel.find({}).sort({
-      createdAt: -1,
-      paidAt: -1,
-    });
-    res.json(orders);
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.max(1, Number(req.query.limit) || 5);
+    const skip = (page - 1) * limit;
+
+    const [orders, totalCount] = await Promise.all([
+      OrderModel.find({})
+        .sort({ createdAt: -1, paidAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      OrderModel.countDocuments({}),
+    ]);
+
+    res.json({ orders, totalCount });
   }),
 );
 
